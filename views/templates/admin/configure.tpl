@@ -24,15 +24,16 @@
 *}
 
 <div class="panel">
-	<h3><i class="icon icon-truck"></i> {l s='My shipping module' mod='cocolis'}</h3>
+	<h3><i class="icon icon-truck"></i> {l s='Bienvenue dans un nouveau monde de livraison' mod='cocolis'}</h3>
 	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
-	<p>
-		<strong>{l s='Here is my new shipping module!' mod='cocolis'}</strong><br />
-		{l s='Thanks to PrestaShop, now I have a great shipping module.' mod='cocolis'}<br />
-		{l s='I can configure it using the following configuration form.' mod='cocolis'}
-	</p>
-	<br />
-	<p>	
-		{l s='This module will boost your sales!' mod='cocolis'}
-	</p>
+		<h2><strong>{l s="Merci d'avoir installé Cocolis - Votre module de livraison collaborative !" mod='cocolis'}</strong><br /></h2>
+	<h2>
+		{l s="Vous proposez maintenant sur votre site une livraison collaborative, économique et écologique." mod='cocolis'}<br />
+		{l s="Vos clients pourront ainsi trouver le meilleur transporteur pour effectuer leur livraison." mod='cocolis'}
+	</h2>
+	<h2>
+		<br />
+		<i class="icon icon-angle-right"></i> 
+		{l s='Vous pouvez en savoir plus sur la configuration de ce module' mod='cocolis'} <a href="https://doc.cocolis.fr/">ici.</a>
+	</h2>
 </div>
