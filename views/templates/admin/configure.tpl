@@ -36,14 +36,3 @@
 		{l s='This module will boost your sales!' mod='cocolis'}
 	</p>
 </div>
-
-<div class="panel">
-	<h3><i class="icon icon-tags"></i> {l s='Documentation' mod='cocolis'}</h3>
-	<p>
-		&raquo; {l s='You can get a PDF documentation to configure this module' mod='cocolis'} :
-		<ul>
-			<li><a href="#" target="_blank">{l s='English' mod='cocolis'}</a></li>
-			<li><a href="#" target="_blank">{l s='French' mod='cocolis'}</a></li>
-		</ul>
-	</p>
-</div>

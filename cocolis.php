@@ -50,7 +50,7 @@ class Cocolis extends CarrierModule
         $this->displayName = $this->l('Cocolis');
         $this->description = $this->l('Utilisez cocolis.fr comme mode de livraison. Spécialisé dans la livraison communautaire, cocolis vous permettra d\'envoyer des colis hors format.');
 
-        $this->confirmUninstall = $this->l('Voulez vous vraiment désinstaller notre module?');
+        $this->confirmUninstall = $this->l('Voulez-vous vraiment désinstaller notre module ?');
 
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
     }
@@ -151,30 +151,30 @@ class Cocolis extends CarrierModule
                 'input' => array(
                     array(
                         'type' => 'switch',
-                        'label' => $this->l('Live mode'),
+                        'label' => $this->l('Mode production'),
                         'name' => 'COCOLIS_LIVE_MODE',
                         'is_bool' => true,
-                        'desc' => $this->l('Use this module in live mode'),
+                        'desc' => $this->l('Utiliser ce module en mode développement (sandbox) ou production ?'),
                         'values' => array(
                             array(
                                 'id' => 'active_on',
                                 'value' => true,
-                                'label' => $this->l('Enabled')
+                                'label' => $this->l('Activer le mode production')
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => false,
-                                'label' => $this->l('Disabled')
+                                'label' => $this->l('Désactiver le mode production')
                             )
                         ),
                     ),
                     array(
                         'col' => 3,
                         'type' => 'text',
-                        'prefix' => '<i class="icon icon-envelope"></i>',
-                        'desc' => $this->l('Enter a valid email address'),
+                        'prefix' => '<i class="icon icon-terminal"></i>',
+                        'desc' => $this->l("Entrez l'app-id qui vous a été fourni"),
                         'name' => 'COCOLIS_ACCOUNT_EMAIL',
-                        'label' => $this->l('Email'),
+                        'label' => $this->l("ID de l'application"),
                     ),
                     array(
                         'type' => 'password',
@@ -183,7 +183,7 @@ class Cocolis extends CarrierModule
                     ),
                 ),
                 'submit' => array(
-                    'title' => $this->l('Save'),
+                    'title' => $this->l('Enregister'),
                 ),
             ),
         );
