@@ -1,0 +1,37 @@
+{
+  "name": "cocolis/prestashop",
+  "type": "prestashop-module",
+  "description": "Prestashop module to use Cocolis.fr as delivery method",
+  "keywords": ["cocolis","php", "prestashop"],
+  "homepage": "https://www.cocolis.fr",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.6.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.17@dev"
+  },
+  "authors": [
+    {
+        "name": "Sébastien Fieloux",
+        "email": "sebastien.fieloux@gmail.com",
+        "homepage": "https://www.sebfie.com",
+        "role": "Developer"
+    },
+    {
+        "name": "Alexandre Bettan",
+        "email": "contact@alexandre.business",
+        "role": "Developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "PrestaShop\\Module\\Cocolis\\": "src/"
+    },
+    "exclude-from-classmap": []
+  },
+  "config": {
+    "preferred-install": "dist",
+    "prepend-autoloader": false
+  }
+}
