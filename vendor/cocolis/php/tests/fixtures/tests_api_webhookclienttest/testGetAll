@@ -1,0 +1,89 @@
+
+-
+    request:
+        method: POST
+        url: 'https://sandbox-api.cocolis.fr/api/v1/app_auth/sign_in'
+        headers:
+            Host: sandbox-api.cocolis.fr
+            Expect: null
+            Accept-Encoding: null
+            User-Agent: 'GuzzleHttp/Guzzle curl/7.70.0 PHP/7.3.18'
+            Content-Type: application/json
+            Accept: null
+        body: '{"app_id":"e0611906","password":"sebfie"}'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Cowboy
+            Date: 'Tue, 02 Jun 2020 20:04:51 GMT'
+            Connection: keep-alive
+            X-Frame-Options: SAMEORIGIN
+            X-Xss-Protection: '1; mode=block'
+            X-Content-Type-Options: nosniff
+            X-Download-Options: noopen
+            X-Permitted-Cross-Domain-Policies: none
+            Referrer-Policy: strict-origin-when-cross-origin
+            Content-Type: 'application/json; charset=utf-8'
+            Access-Token: p8NRouSaM3oh5Dyb_w-2iw
+            Token-Type: Bearer
+            Client: aNzhIGMQXgcmKgi6rkcCJA
+            Expiry: '1592337891'
+            Uid: e0611906
+            Set-Cookie: '_session_id=BfdJFowKX7QSzaLt%2BWWjrnOovpAEDH%2BPKIQnzNVHfwK811y9%2Fr7t1NKXMUCeP2%2BsB%2BSdwzah7VKxqrep8Sml0IVwcl9t3EDVbm1ajwEV5BuPqiargjtlhwtiJ6q0nQ3R4vYx%2BEURnpz0PoV9fvMTsg3%2BkXWLJP2fW9OsBTjGgiXik3g%3D--q1lLUUNbBL9ub26M--5cF8DZWJV8MdC6qOzz6XJw%3D%3D; path=/; HttpOnly; secure, _session_id=BfdJFowKX7QSzaLt%2BWWjrnOovpAEDH%2BPKIQnzNVHfwK811y9%2Fr7t1NKXMUCeP2%2BsB%2BSdwzah7VKxqrep8Sml0IVwcl9t3EDVbm1ajwEV5BuPqiargjtlhwtiJ6q0nQ3R4vYx%2BEURnpz0PoV9fvMTsg3%2BkXWLJP2fW9OsBTjGgiXik3g%3D--q1lLUUNbBL9ub26M--5cF8DZWJV8MdC6qOzz6XJw%3D%3D; path=/; HttpOnly; secure, _backend_session=aSWwKB4CACQJE8lC%2BTWGSzbF6F6ajptnvxDyICQJ1SNYsBO51FflAP0d7MOVg9weJSOXJvAG7v8cgyvGDwulD0%2Ff9%2BdKOG9cEpTGcdjBs6oYfcdeRmlc7%2FkwkEFVLXyxPcKykugheZbQP5AyMPqwa1bOAYeKZqJ3eZ7tlDS6h2OKRy8M6cekbA%3D%3D--bpkhY6WLmSPoEmqj--f9%2BAhBCN6ORFiy4HpOXwrg%3D%3D; path=/; HttpOnly; secure'
+            Etag: 'W/"a5f0f0102316b381310c8dcdb3284719"'
+            Cache-Control: 'max-age=0, private, must-revalidate'
+            X-Request-Id: c1ed5e1b-b09d-4a8e-b47d-04a0e9395e6f
+            X-Runtime: '0.302375'
+            Strict-Transport-Security: 'max-age=31536000; includeSubDomains'
+            Transfer-Encoding: chunked
+            Via: '1.1 vegur'
+        body: '{"data":{"id":1,"user_id":2,"app_id":"e0611906","name":"Sebfie","description":null,"created_at":"2020-04-20T18:15:12.542+02:00","updated_at":"2020-06-02T22:04:51.963+02:00","reserve_amount":0,"balance":3000000,"running_balance":1560300,"suffisant_balance?":true}}'
+-
+    request:
+        method: GET
+        url: 'https://sandbox-api.cocolis.fr/api/v1/applications/webhooks/'
+        headers:
+            Host: sandbox-api.cocolis.fr
+            Expect: null
+            Accept-Encoding: null
+            User-Agent: 'GuzzleHttp/Guzzle curl/7.70.0 PHP/7.3.18'
+            Content-Type: application/json
+            access-token: p8NRouSaM3oh5Dyb_w-2iw
+            client: aNzhIGMQXgcmKgi6rkcCJA
+            expiry: '1592337891'
+            uid: e0611906
+            Accept: null
+        body: '[]'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Cowboy
+            Date: 'Tue, 02 Jun 2020 20:04:52 GMT'
+            Connection: keep-alive
+            X-Frame-Options: SAMEORIGIN
+            X-Xss-Protection: '1; mode=block'
+            X-Content-Type-Options: nosniff
+            X-Download-Options: noopen
+            X-Permitted-Cross-Domain-Policies: none
+            Referrer-Policy: strict-origin-when-cross-origin
+            Content-Type: 'application/json; charset=utf-8'
+            Access-Token: p8NRouSaM3oh5Dyb_w-2iw
+            Token-Type: Bearer
+            Client: aNzhIGMQXgcmKgi6rkcCJA
+            Expiry: '1592337891'
+            Uid: e0611906
+            Set-Cookie: '_session_id=gEPgSESSeDQyw%2Bapk8A5H8Tam3gSZxcr4rntnhVwo%2FVOKbrUH%2BeVyivHY4KZPyKby4jgT0bOsEPxqnHwwruSGSFVOROGozLt4dywoNZzR4dNRedCRuwBnetsJWPoNSYf7q2As7B9bnnfWBbWMh%2FcYDmK1rAeWuPjdVeT4365Uj4%2FYC62zeK%2F0UIBm0gODh%2BMZJ2OyAFr6wzFPUgjqy2%2Bwmx%2BGjmjcw4J4NFy5tTpEkP9sCKnxnP%2BHfSXOPo8xYt62BzLFORLZoepEeFgJ2B9VAQ%2BT5igFgVw2jfMAGNFDOQIbbWY3DmqYLns6M%2Bwu7ZCoUlHu1C62P2dWZsRKrC4k%2FTApWGdQQ%2FSaSImIExIVPig4JhhnQL0rl5pvjoBaKBKQlmAfHp1yCW%2FVBrp7MJbOKpxYtoHT1xnApajzlY9UOCW6nzl9nGF49ciZvNTiD989qb0bG4u3bdgtsEWSHWtTfLXFRSfC%2BaMDLNfm%2BkpimmkMt0StnBqYWvv5313tuUe7fQ1YJNcvL5Ww%2BcaYD2nOF3jh5dDXpX%2FoW2b35ZVLAoQXgd1KfigVEBzPnKR0quAcYOYG8TcS3SjCJtrFvYqpYAtcu563xJr1xJHJT4lo0d2R80UCYlxrcTFEMNSH86cSrfKc%2Bk603TUWwkrKlqXajL8e%2FQsq5VoAcLt%2FVcyZvMJBMY%3D--ukXuqLUYE68sXRwY--N%2B7KzVr2xA0tIOedqz0PQg%3D%3D; path=/; HttpOnly; secure, _session_id=gEPgSESSeDQyw%2Bapk8A5H8Tam3gSZxcr4rntnhVwo%2FVOKbrUH%2BeVyivHY4KZPyKby4jgT0bOsEPxqnHwwruSGSFVOROGozLt4dywoNZzR4dNRedCRuwBnetsJWPoNSYf7q2As7B9bnnfWBbWMh%2FcYDmK1rAeWuPjdVeT4365Uj4%2FYC62zeK%2F0UIBm0gODh%2BMZJ2OyAFr6wzFPUgjqy2%2Bwmx%2BGjmjcw4J4NFy5tTpEkP9sCKnxnP%2BHfSXOPo8xYt62BzLFORLZoepEeFgJ2B9VAQ%2BT5igFgVw2jfMAGNFDOQIbbWY3DmqYLns6M%2Bwu7ZCoUlHu1C62P2dWZsRKrC4k%2FTApWGdQQ%2FSaSImIExIVPig4JhhnQL0rl5pvjoBaKBKQlmAfHp1yCW%2FVBrp7MJbOKpxYtoHT1xnApajzlY9UOCW6nzl9nGF49ciZvNTiD989qb0bG4u3bdgtsEWSHWtTfLXFRSfC%2BaMDLNfm%2BkpimmkMt0StnBqYWvv5313tuUe7fQ1YJNcvL5Ww%2BcaYD2nOF3jh5dDXpX%2FoW2b35ZVLAoQXgd1KfigVEBzPnKR0quAcYOYG8TcS3SjCJtrFvYqpYAtcu563xJr1xJHJT4lo0d2R80UCYlxrcTFEMNSH86cSrfKc%2Bk603TUWwkrKlqXajL8e%2FQsq5VoAcLt%2FVcyZvMJBMY%3D--ukXuqLUYE68sXRwY--N%2B7KzVr2xA0tIOedqz0PQg%3D%3D; path=/; HttpOnly; secure, _backend_session=EfOL7F8BZwhTr6U%2FrEtmLl%2BCjuDF%2BHfkzpCArv8E78IrRMNTW3ouEjvdm%2B%2FoFaaKvHXjQN%2FWwGfmvEBFJVAIHQfUXDw833h5u%2B7YFqLfIx8eOnuluY4oiLubuKRFKujCtPkJetffrapHcszyB7eRZVLNm3bL33osWH4%2BEk4S8H9NiFfW9ha4spIfNPu0AthOJtqPZuo7Rj0MdzWsjcXibHokmFl3T2%2FZhoLFy5AgdwnzOOxnOFXHMp%2BxrvOYGoDVv78uLDMPJ%2FiWjsj9MF1afAX1RjySfZbC9drAp8%2B0m0gqzStwAGjBID%2BHdZ%2Fmt72YT88Bea17%2BMp5xlPQJUP9izH7yEK2cCus0Zg0ZiTVf%2FIdRAiQSmvBk4ZkWvvsZwtfbvb3RLdWuFE39YjNLggEQdMnQCZ%2BbABT9g0NfqV5DU1kH7ISd1DhqlmKyzVreNI5hjLmCX793tVPPDlt6c1Tnkg%2FPCXWtHUj4WKGKoO8LhnNOt0m0c1%2BE0GExrjp%2FQi13x%2Bn6koRK1%2FGgjJolnrpKp5h5djDArkAKRV%2B0OKex1XqU%2B6VleGxdV5SiIcLKU4FpvoUeEZyzjpANaK30yjhQACNbNBj1xH0hZiEJaESziLAYKEj5m3xRfPZZYqPv%2B7FK4Wor5RVEzwe%2FiRbaruEPPOebt0rUpjJsBalOu%2FUMvdf0ndOb%2BbHYQ%3D%3D--QbRq6ktWADQ70YhD--MCdg%2FbwYOeis9LKFgf784w%3D%3D; path=/; HttpOnly; secure'
+            Etag: 'W/"5efef001ca8a039f06a8aba2a37b406b"'
+            Cache-Control: 'max-age=0, private, must-revalidate'
+            X-Request-Id: dcd4f991-eb7f-4b67-b3b8-9b32ced0e8d9
+            X-Runtime: '0.179960'
+            Strict-Transport-Security: 'max-age=31536000; includeSubDomains'
+            Transfer-Encoding: chunked
+            Via: '1.1 vegur'
+        body: '[{"id":2,"event":"ride_published","url":"https://www.test.com/ride_webhook","active":true,"api_application_id":1,"created_at":"2020-05-28T10:16:38.263+02:00","updated_at":"2020-05-28T10:16:38.263+02:00"}]'

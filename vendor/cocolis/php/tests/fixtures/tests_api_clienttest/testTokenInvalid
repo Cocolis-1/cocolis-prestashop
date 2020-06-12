@@ -1,0 +1,37 @@
+
+-
+    request:
+        method: GET
+        url: 'https://sandbox-api.cocolis.fr/api/v1/app_auth/validate_token'
+        headers:
+            Host: sandbox-api.cocolis.fr
+            Expect: null
+            Accept-Encoding: null
+            User-Agent: 'GuzzleHttp/Guzzle curl/7.57.0 PHP/7.3.7'
+            Content-Type: application/json
+            Accept: null
+        body: '{"token-type":"Bearer","uid":"e0611906","access-token":"thisisnotavalidtoken","client":"HLSmEW1TIDqsSMiwuKjnQg","expiry":"1590748027"}'
+    response:
+        status:
+            http_version: '1.1'
+            code: '401'
+            message: Unauthorized
+        headers:
+            Server: Cowboy
+            Date: 'Mon, 18 May 2020 10:37:00 GMT'
+            Connection: keep-alive
+            X-Frame-Options: SAMEORIGIN
+            X-Xss-Protection: '1; mode=block'
+            X-Content-Type-Options: nosniff
+            X-Download-Options: noopen
+            X-Permitted-Cross-Domain-Policies: none
+            Referrer-Policy: strict-origin-when-cross-origin
+            Content-Type: 'application/json; charset=utf-8'
+            Set-Cookie: '_session_id=b2RJOJbXkjuAXud%2F5hoM6Mv5WtLQmAI%2F7wDHMWYClR3AacGNMuUSUbriHz6dRj2RJ52QPsKSAdPZeo0LKRytR%2B2Fuy2Qfw%2B4OaSDnv4b6%2B9ikPAP%2FWinRz%2BetO%2FK5tsJD%2FR1peS2H1Xg9GkYW0S6WdYHrlhK9j1%2FbQ1kV8z3fahHSS8%3D--JTN%2B6UEGxz6Plyzm--elWRceyEFzEWMvm3awE%2BQQ%3D%3D; path=/; HttpOnly; secure, _session_id=b2RJOJbXkjuAXud%2F5hoM6Mv5WtLQmAI%2F7wDHMWYClR3AacGNMuUSUbriHz6dRj2RJ52QPsKSAdPZeo0LKRytR%2B2Fuy2Qfw%2B4OaSDnv4b6%2B9ikPAP%2FWinRz%2BetO%2FK5tsJD%2FR1peS2H1Xg9GkYW0S6WdYHrlhK9j1%2FbQ1kV8z3fahHSS8%3D--JTN%2B6UEGxz6Plyzm--elWRceyEFzEWMvm3awE%2BQQ%3D%3D; path=/; HttpOnly; secure, _backend_session=pZ4VLuFcgGyZKl76dPnyxHalHVu5Y7sm%2BYaokYQ27pkyot0o%2Bi6KZTTKVaElzV%2FAbNVLIRMueHab21gRplmnXecee0Z4lWDirBr6mrcuki4j%2Bu0kN%2BX3Zdzq8geU0ddjSRB43D64Lo52gve2GZO55XzpD8PvzmHB6Ts9sQYwhZ5qOqimpP1sig%3D%3D--DswzOrI22i60DAwx--%2B239iM5x1EwtTTHPHG7LvA%3D%3D; path=/; HttpOnly; secure'
+            Cache-Control: no-cache
+            X-Request-Id: 7e918602-f55b-41a4-80b7-4ce6c99abddd
+            X-Runtime: '0.147991'
+            Strict-Transport-Security: 'max-age=31536000; includeSubDomains'
+            Transfer-Encoding: chunked
+            Via: '1.1 vegur'
+        body: '{"success":false,"errors":["Mot de passe ou identifiant invalide."]}'

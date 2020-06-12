@@ -173,7 +173,7 @@ class Cocolis extends CarrierModule
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-terminal"></i>',
                         'desc' => $this->l("Entrez l'app-id qui vous a été fourni"),
-                        'name' => 'COCOLIS_ACCOUNT_EMAIL',
+                        'name' => 'COCOLIS_ACCOUNT_APPID',
                         'label' => $this->l("ID de l'application"),
                     ),
                     array(
@@ -196,7 +196,7 @@ class Cocolis extends CarrierModule
     {
         return array(
             'COCOLIS_LIVE_MODE' => Configuration::get('COCOLIS_LIVE_MODE', true),
-            'COCOLIS_ACCOUNT_EMAIL' => Configuration::get('COCOLIS_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'COCOLIS_ACCOUNT_APPID' => Configuration::get('COCOLIS_ACCOUNT_APPID', 'app_id'),
             'COCOLIS_ACCOUNT_PASSWORD' => Configuration::get('COCOLIS_ACCOUNT_PASSWORD', null),
         );
     }

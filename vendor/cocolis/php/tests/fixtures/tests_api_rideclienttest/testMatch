@@ -1,0 +1,89 @@
+
+-
+    request:
+        method: POST
+        url: 'https://sandbox-api.cocolis.fr/api/v1/app_auth/sign_in'
+        headers:
+            Host: sandbox-api.cocolis.fr
+            Expect: null
+            Accept-Encoding: null
+            User-Agent: 'GuzzleHttp/Guzzle curl/7.70.0 PHP/7.3.18'
+            Content-Type: application/json
+            Accept: null
+        body: '{"app_id":"e0611906","password":"sebfie"}'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Cowboy
+            Date: 'Tue, 02 Jun 2020 19:58:03 GMT'
+            Connection: keep-alive
+            X-Frame-Options: SAMEORIGIN
+            X-Xss-Protection: '1; mode=block'
+            X-Content-Type-Options: nosniff
+            X-Download-Options: noopen
+            X-Permitted-Cross-Domain-Policies: none
+            Referrer-Policy: strict-origin-when-cross-origin
+            Content-Type: 'application/json; charset=utf-8'
+            Access-Token: avyMAbINZN964E-eS3KLaw
+            Token-Type: Bearer
+            Client: iy7L1HAOFi9PbhofiIkWog
+            Expiry: '1592337484'
+            Uid: e0611906
+            Set-Cookie: '_session_id=Vl7%2FZp61C%2BKQ%2B%2BUEF5fgPZqT1SOvVOZgAjQO8sG35c7hE3viMgiuq2nvA49ftO62heiN4GanblUnahKp%2BuBCP2YaJGquHVm2sNbg92XYr%2F0fC21KerKhgeQPImJdM2Fbi89nbQuHGCIqHjBGZQ2nat1FNQA%2BiO8LhImPhd6IgG8624o%3D--SGLVuz6W7GqWphlW--6QLyBdOMWvLgfw02jJwv%2Fw%3D%3D; path=/; HttpOnly; secure, _session_id=Vl7%2FZp61C%2BKQ%2B%2BUEF5fgPZqT1SOvVOZgAjQO8sG35c7hE3viMgiuq2nvA49ftO62heiN4GanblUnahKp%2BuBCP2YaJGquHVm2sNbg92XYr%2F0fC21KerKhgeQPImJdM2Fbi89nbQuHGCIqHjBGZQ2nat1FNQA%2BiO8LhImPhd6IgG8624o%3D--SGLVuz6W7GqWphlW--6QLyBdOMWvLgfw02jJwv%2Fw%3D%3D; path=/; HttpOnly; secure, _backend_session=9SREMreFslP5LGEdk%2BTpnZq9q147GegyZGcS7rU9T%2BGzUY0E%2FsTSmAReBKXRIgCRVYEIsyoRik53EV%2B9LZpwGRoGV%2B%2FGBrbbGX5hDz82rtAQreGpctMnwuEEg3l47mOZ15PMZnhWL8GBXa5YTbnQoOw%2BDJFH5oGEzFYqjlFUQ8DyB2WnMM3nFg%3D%3D--7Pi9wPOLwPXbpzNo--oNhcE2M4swkO%2BKLE6HdCnA%3D%3D; path=/; HttpOnly; secure'
+            Etag: 'W/"9ab502b086bcd859439521a31bc53979"'
+            Cache-Control: 'max-age=0, private, must-revalidate'
+            X-Request-Id: c4e1c53e-217c-43d2-990c-1d2c44f69ee1
+            X-Runtime: '0.325122'
+            Strict-Transport-Security: 'max-age=31536000; includeSubDomains'
+            Transfer-Encoding: chunked
+            Via: '1.1 vegur'
+        body: '{"data":{"id":1,"user_id":2,"app_id":"e0611906","name":"Sebfie","description":null,"created_at":"2020-04-20T18:15:12.542+02:00","updated_at":"2020-06-02T21:58:04.617+02:00","reserve_amount":0,"balance":3000000,"running_balance":1560300,"suffisant_balance?":true}}'
+-
+    request:
+        method: POST
+        url: 'https://sandbox-api.cocolis.fr/api/v1/rides/can_match'
+        headers:
+            Host: sandbox-api.cocolis.fr
+            Expect: null
+            Accept-Encoding: null
+            User-Agent: 'GuzzleHttp/Guzzle curl/7.70.0 PHP/7.3.18'
+            Content-Type: application/json
+            access-token: avyMAbINZN964E-eS3KLaw
+            client: iy7L1HAOFi9PbhofiIkWog
+            expiry: '1592337484'
+            uid: e0611906
+            Accept: null
+        body: '{"from":{"postal_code":"75015"},"to":{"postal_code":"31400"},"volume":10,"content_value":150100}'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Cowboy
+            Date: 'Tue, 02 Jun 2020 19:58:05 GMT'
+            Connection: keep-alive
+            X-Frame-Options: SAMEORIGIN
+            X-Xss-Protection: '1; mode=block'
+            X-Content-Type-Options: nosniff
+            X-Download-Options: noopen
+            X-Permitted-Cross-Domain-Policies: none
+            Referrer-Policy: strict-origin-when-cross-origin
+            Content-Type: 'application/json; charset=utf-8'
+            Access-Token: avyMAbINZN964E-eS3KLaw
+            Token-Type: Bearer
+            Client: iy7L1HAOFi9PbhofiIkWog
+            Expiry: '1592337484'
+            Uid: e0611906
+            Set-Cookie: '_session_id=j7pjPGQPPMDh18bIyNFQrGDegavomPlNMQ08fDnHVPFkDU7AZD2pnGViymHw7hVQHlMG%2F6T%2BQmqWz2GBan5UVE50Fo6xkZ6y%2BL9F933vzHDW36V1QqfFskaDgoTA54AO6EF0oLt6h0IHmLQKanci46OQta9tMS9YsFAXFNrzy1N%2FlfJj0LUcfCmQEtINngku%2FaqSams8yrTUY87FbeKYPeJLItKqsr70BuPuNLW9%2FZ%2FDtgb4RrbNqtFSMPqj9m1l4ICXyrYjlmgWVAA2%2BcJTU2el7rhixzwl%2B6FvTyXkZRrLYcFMZ7yH5X4MwQlsBesnYi29QKqkRrjWoTyiKWttX%2FfpM1vXN3%2BcFnLUdiFsWQPnLhU6g0cgZhPugczP75XT2a4WolVEGaa%2FAtFsvOCQbkjAsitAucLb21avxF5ktp%2BIbRcLgUyORJgcHs3PhdmMLKCv812bKFbilBk2xE6C40GwRhlKuGqiI%2FQt6vNA%2BJ0t6xMCN6zWOaxhnsfWUOdc7aX1JmsdikauOM%2FSou540CVTpKMgq5OH1o%2Fjte3ex21qbfgqqAd%2Fp8KZ54DirVnr2ewp573u0RMweeCUuOKeLKGX2CdaWpbIpP0MibV2xslrwPaN8ylH7nbdHR%2FsVbvo8I%2F0FTVPuxllshGTOw5hBQqrbOYQDeu5FLvFpHtcN19Ike4%3D--JbQqbIO3E381bi%2Fg--8meLb%2FbxCkAFpysy%2FT4dSQ%3D%3D; path=/; HttpOnly; secure, _session_id=j7pjPGQPPMDh18bIyNFQrGDegavomPlNMQ08fDnHVPFkDU7AZD2pnGViymHw7hVQHlMG%2F6T%2BQmqWz2GBan5UVE50Fo6xkZ6y%2BL9F933vzHDW36V1QqfFskaDgoTA54AO6EF0oLt6h0IHmLQKanci46OQta9tMS9YsFAXFNrzy1N%2FlfJj0LUcfCmQEtINngku%2FaqSams8yrTUY87FbeKYPeJLItKqsr70BuPuNLW9%2FZ%2FDtgb4RrbNqtFSMPqj9m1l4ICXyrYjlmgWVAA2%2BcJTU2el7rhixzwl%2B6FvTyXkZRrLYcFMZ7yH5X4MwQlsBesnYi29QKqkRrjWoTyiKWttX%2FfpM1vXN3%2BcFnLUdiFsWQPnLhU6g0cgZhPugczP75XT2a4WolVEGaa%2FAtFsvOCQbkjAsitAucLb21avxF5ktp%2BIbRcLgUyORJgcHs3PhdmMLKCv812bKFbilBk2xE6C40GwRhlKuGqiI%2FQt6vNA%2BJ0t6xMCN6zWOaxhnsfWUOdc7aX1JmsdikauOM%2FSou540CVTpKMgq5OH1o%2Fjte3ex21qbfgqqAd%2Fp8KZ54DirVnr2ewp573u0RMweeCUuOKeLKGX2CdaWpbIpP0MibV2xslrwPaN8ylH7nbdHR%2FsVbvo8I%2F0FTVPuxllshGTOw5hBQqrbOYQDeu5FLvFpHtcN19Ike4%3D--JbQqbIO3E381bi%2Fg--8meLb%2FbxCkAFpysy%2FT4dSQ%3D%3D; path=/; HttpOnly; secure, _backend_session=fdhjSbMvMwU802PpO6fYgFPFG0nntQvLtRbhwHONVd6U5HkvZtt40MUxj3nUzHjJIw1Or9XlWlMcC%2BSza7SKzJGezJkZVXDblLrgf06hbLVVye8C4CHcs1Iy6P04yRFy%2F%2FhSxLZToZTSzsfWOODoE85CsJ7XC9tUXAO2s58LmDi6XNMnvtYT1Y3Hf60q7DgcEg5x98et82SMdR856JQK8Ihd2NpXBUPUsyzHvq%2B4bm2JOU%2FeEKQo1k4A%2BHi3RY3QOQ9DM%2FygsGt6AKP82jgQ60WV8oG66rFW2TVVKfomfI9FaYCNo3fU%2FKZr2VdvSstMRubqOAWzDWyn5q6CXS7693uv9N8Q3Ltm4XkKUNNg7%2B%2FeTZSnEPogeHgKesoff3xxCgrsSDzTud1Wihj9iCuGJRLzYZ54UFdZlGN1b05ekvEqIHgkuv%2BJnnnPFu5R1Jg1AJZc5El5YyP7pBljUWNortGbdvyqjP7jz0UPsnrdHpqpxt%2FKKl5LzMoAQZsbYO85YB%2BrglhpSlrld29glKSK1fuk34pwWWQvAKBOAZZnEnMxnOuFaPsYdksmfh8YNwACaoA2mAtAF7ri1rNu706qR5O5cAcIETZWcRBdVb%2ByGlSGgNvi7%2FH695ZGKTIJ1Aw%2FWZZBp67B%2FLbovFH1lgcEXU1ta8rPuYjIvnz0XbHfMPw880Vk4PInTA%3D%3D--1%2BHRbx%2BVNKY1vqpu--QkkRNJFdIgfkm4fr%2B1IfuA%3D%3D; path=/; HttpOnly; secure'
+            Etag: 'W/"d48846047840d1551c42ca0ea92e20fa"'
+            Cache-Control: 'max-age=0, private, must-revalidate'
+            X-Request-Id: fc4af32e-5308-4a44-b12a-ca85d46726fe
+            X-Runtime: '0.512647'
+            Strict-Transport-Security: 'max-age=31536000; includeSubDomains'
+            Transfer-Encoding: chunked
+            Via: '1.1 vegur'
+        body: '{"result":true,"estimated_prices":{"regular":95500,"with_insurance":96728},"insurance_detail":{"amount":150100,"conditions_url":"https://sandbox.cocolis.fr/assurance/conditions-assurance-optionnelle-jusqu-a-3000.pdf"},"rider_count":0}'

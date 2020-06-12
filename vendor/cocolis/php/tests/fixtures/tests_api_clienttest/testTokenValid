@@ -1,0 +1,43 @@
+
+-
+    request:
+        method: GET
+        url: 'https://sandbox-api.cocolis.fr/api/v1/app_auth/validate_token'
+        headers:
+            Host: sandbox-api.cocolis.fr
+            Expect: null
+            Accept-Encoding: null
+            User-Agent: 'GuzzleHttp/Guzzle curl/7.57.0 PHP/7.3.7'
+            Content-Type: application/json
+            Accept: null
+        body: '{"token-type":"Bearer","uid":"e0611906","access-token":"Jy64iEiJ4vUgtp8TqhkTkQ","client":"HLSmEW1TIDqsSMiwuKjnQg","expiry":"1590748027"}'
+    response:
+        status:
+            http_version: '1.1'
+            code: '200'
+            message: OK
+        headers:
+            Server: Cowboy
+            Date: 'Mon, 18 May 2020 09:01:23 GMT'
+            Connection: keep-alive
+            X-Frame-Options: SAMEORIGIN
+            X-Xss-Protection: '1; mode=block'
+            X-Content-Type-Options: nosniff
+            X-Download-Options: noopen
+            X-Permitted-Cross-Domain-Policies: none
+            Referrer-Policy: strict-origin-when-cross-origin
+            Content-Type: 'application/json; charset=utf-8'
+            Access-Token: Jy64iEiJ4vUgtp8TqhkTkQ
+            Token-Type: Bearer
+            Client: HLSmEW1TIDqsSMiwuKjnQg
+            Expiry: '1590748027'
+            Uid: e0611906
+            Set-Cookie: '_session_id=wqGjUwXqQDv2RTjnk08zVMaS2ZRZqOPond8X4c%2F%2BH0dGOuRBxCwI2R4em1XaDWlauYQLbqUyq55fNNEnzcyzRZZOQ1FWEXW0pk%2BJ9B9xnXMNrYHLGyF%2BZR4gLxljBRfadccQAGJNZXvZsMbYNDoe2WYkNEhuMVXFvAyyKyxZ%2BI2To3S42pE1d1PJIqkNOXaoXsBj1hrqA61tq92uzPtfCctgud%2FbIbBugeVG7BHBFpR%2BeQTWK87AEsazSglbBk0mZDTo1lk%2F%2BeduXa8XyqW3%2FaQ%2BMcILUlmmujNow%2B2oCa7%2BOyLxc7sUCwn7D7r3zkI5KD%2BMEVM2f1akqXPc78F5cJ5Y5JEteTmcX2vHvzNdLLBRFJzzwgp0F3F40oRIyjjfSR4vjRGpIn2vyGU9kv8vrPk5sLza039jbuZh0xugVDN6Al1%2BDujGjzIsQ7MFZDXA9YesKO6CH3Z4JqEbQrZq9MTAEIg6VVQEH91%2BV7YCh4f8mxvXiu70Bf%2B5rDpqm5a2LF3qwV41CKIA6Ov2nAUAQ95RyZ2IGup9htlF7rhuVZmYik%2FtmNHBlZuxgSVHsyS0xbdse63kddYEm6wjttKCw6mAluTduZBCBw951MEyJZ0MLMoNu5aaKEnD0FbL1AJi42Ouno9d7T5rsh1LmQb8GxgPfJ8sn38jzOvPsXiGV51qCGI%3D--BMf57e6xQy7%2FZGaR--eryWvWTZTfN0tUNWS%2BOJ1w%3D%3D; path=/; HttpOnly; secure, _session_id=wqGjUwXqQDv2RTjnk08zVMaS2ZRZqOPond8X4c%2F%2BH0dGOuRBxCwI2R4em1XaDWlauYQLbqUyq55fNNEnzcyzRZZOQ1FWEXW0pk%2BJ9B9xnXMNrYHLGyF%2BZR4gLxljBRfadccQAGJNZXvZsMbYNDoe2WYkNEhuMVXFvAyyKyxZ%2BI2To3S42pE1d1PJIqkNOXaoXsBj1hrqA61tq92uzPtfCctgud%2FbIbBugeVG7BHBFpR%2BeQTWK87AEsazSglbBk0mZDTo1lk%2F%2BeduXa8XyqW3%2FaQ%2BMcILUlmmujNow%2B2oCa7%2BOyLxc7sUCwn7D7r3zkI5KD%2BMEVM2f1akqXPc78F5cJ5Y5JEteTmcX2vHvzNdLLBRFJzzwgp0F3F40oRIyjjfSR4vjRGpIn2vyGU9kv8vrPk5sLza039jbuZh0xugVDN6Al1%2BDujGjzIsQ7MFZDXA9YesKO6CH3Z4JqEbQrZq9MTAEIg6VVQEH91%2BV7YCh4f8mxvXiu70Bf%2B5rDpqm5a2LF3qwV41CKIA6Ov2nAUAQ95RyZ2IGup9htlF7rhuVZmYik%2FtmNHBlZuxgSVHsyS0xbdse63kddYEm6wjttKCw6mAluTduZBCBw951MEyJZ0MLMoNu5aaKEnD0FbL1AJi42Ouno9d7T5rsh1LmQb8GxgPfJ8sn38jzOvPsXiGV51qCGI%3D--BMf57e6xQy7%2FZGaR--eryWvWTZTfN0tUNWS%2BOJ1w%3D%3D; path=/; HttpOnly; secure, _backend_session=h%2BkWBNpyP4M0Dnoy5pmqCKBs83i6%2FEYSsm8mL5l9ZpDu%2FyBjlMF0tjGy1aGneerqyWO7vDeh33g0Znr5tsoRpg7MNZPS29HgW7DuBFGcAvJ9MTc2asSnU%2FQ%2FfpPdt0nOoBm5ajwFerZvjs1p3QCW9QVP8MvP0pIQbLeW2ulaHHV4Zeso4uHtJm%2Fv5s5TW676RgAjxpiVWfDS%2BZlWtfidZ58jvuvJx6jmyLkbsitf9g%2FhV9GrrP%2B%2FyXwCXV60XOOuLPBtFL0Y8rVyDMMyJLfwmWLkhiTDR2IQydPDh29EzqBJQbMIhs3CfhDTnDMZP%2B88QlqVMW%2B%2FA6FR%2FuNj2kzmE0kK4ezX6XLPcdOjid9FmDOpu0k4qmmvthCvvwjwpO28fN4O5IJULrtSSaOwYNE8j3EC8w5Fv8JQPN%2FsScme27C%2F2goQFldZib4am8cfh2feI5DkhpWB%2BJJyWFWD52mFVeEYvo8WtXcqUGv9cg8GGQMsKj%2BvB6%2FSHCw1f3pnAPHEjoGRUUwkZDCXc%2BOim2bEVg2fD5OP72cPBYrPa21sCwNuSyoo8FmNGQnDMi8SWa2rBLlw0oNpmhN4bplhILX89nMvx9wzeEq4SKDbnzUbisP4pIL7q1%2BsQFZup4BF%2FSkb4ZXZVX4NqaPgSm1QliqMSEdpzyll0mg91NRqrZSfANnH1hWGG7BKBA%3D%3D--Vseoyga7Vxp0puxD--OJ1Gd2Rxlz1u0%2FE7C24OFg%3D%3D; path=/; HttpOnly; secure'
+            Etag: 'W/"4e4a79a537368d57050ecb3bad94500c"'
+            Cache-Control: 'max-age=0, private, must-revalidate'
+            X-Request-Id: 9873191b-0cf8-4f17-8aa5-12f5c97fb214
+            X-Runtime: '0.464029'
+            Strict-Transport-Security: 'max-age=31536000; includeSubDomains'
+            Transfer-Encoding: chunked
+            Via: '1.1 vegur'
+        body: '{"success":true,"data":{"id":1,"app_id":"e0611906","name":"Sebfie","description":null,"user_id":2,"created_at":"2020-04-20T18:15:12.542+02:00","updated_at":"2020-05-18T11:01:22.578+02:00","reserve_amount":0,"balance":3000000,"running_balance":884600,"suffisant_balance?":true}}'

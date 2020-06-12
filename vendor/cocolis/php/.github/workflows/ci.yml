@@ -1,0 +1,44 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.3'
+        coverage: xdebug
+
+    - name: Install dependent libraries
+      run: |
+        sudo apt-get update
+        npm install
+
+    - name: Doc Production
+      run: |
+        node ./node_modules/.bin/stoplight  push --ci-token $STOPLIGHT_TOKEN --url http://doc.cocolis.fr
+      if: github.ref == 'refs/heads/master'
+      env:
+        STOPLIGHT_TOKEN: ${{ secrets.STOPLIGHT_TOKEN }}
+
+    - name: Cache Packages
+      uses: actions/cache@v1
+      with:
+        path: vendor
+        key: v2-dependencies-${{ hashFiles('composer.lock') }}
+        restore-keys: |
+          v2-dependencies-${{ hashFiles('composer.lock') }}
+    - uses: php-actions/composer@v1 # or alternative dependency management
+    - name: Run php-cs-fixer
+      run: ./vendor/bin/php-cs-fixer fix ./ --diff --dry-run
+    - name: Run phpunit
+      run: ./vendor/bin/phpunit
+    - name: Upload Coverage report
+      run: |
+        bash <(curl -s https://codecov.io/bash)
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
