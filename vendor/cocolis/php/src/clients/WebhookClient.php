@@ -8,7 +8,7 @@
  * @author Cocolis
  */
 
-namespace Cocolis\Api;
+namespace Cocolis\Api\Clients;
 
 use Cocolis\Api\Clients\AbstractClient;
 

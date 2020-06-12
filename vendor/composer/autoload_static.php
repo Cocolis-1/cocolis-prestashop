@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitc2f75e6718881255dec1c2582a7957fb
+class ComposerStaticInit0f4e9ed69e9f81f86e1ab003accaa8ae
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -17,7 +17,7 @@ class ComposerStaticInitc2f75e6718881255dec1c2582a7957fb
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
-            'Psr\\Http\\Client\\' => 16,
+            'PrestaShop\\Module\\Cocolis\\' => 26,
         ),
         'G' => 
         array (
@@ -36,9 +36,9 @@ class ComposerStaticInitc2f75e6718881255dec1c2582a7957fb
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'Psr\\Http\\Client\\' => 
+        'PrestaShop\\Module\\Cocolis\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-client/src',
+            0 => __DIR__ . '/../..' . '/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -54,16 +54,15 @@ class ComposerStaticInitc2f75e6718881255dec1c2582a7957fb
         ),
         'Cocolis\\Api\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src',
-            1 => __DIR__ . '/..' . '/cocolis/php/src',
+            0 => __DIR__ . '/..' . '/cocolis/php/src',
         ),
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitc2f75e6718881255dec1c2582a7957fb::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitc2f75e6718881255dec1c2582a7957fb::$prefixDirsPsr4;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0f4e9ed69e9f81f86e1ab003accaa8ae::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0f4e9ed69e9f81f86e1ab003accaa8ae::$prefixDirsPsr4;
 
         }, null, ClassLoader::class);
     }

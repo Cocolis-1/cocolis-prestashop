@@ -24,9 +24,13 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+require_once('vendor/autoload.php');
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
+
+use Cocolis\Api\Client;
 
 class Cocolis extends CarrierModule
 {
@@ -50,7 +54,7 @@ class Cocolis extends CarrierModule
         $this->displayName = $this->l('Cocolis');
         $this->description = $this->l('Utilisez cocolis.fr comme mode de livraison. Spécialisé dans la livraison communautaire, cocolis vous permettra d\'envoyer des colis hors format.');
 
-        $this->confirmUninstall = $this->l('Voulez-vous vraiment désinstaller notre module ?');
+        $this->confirmUninstall = $this->l('Notre service de livraison ne sera plus disponible sur votre site.');
 
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
     }
@@ -74,6 +78,8 @@ class Cocolis extends CarrierModule
         Configuration::updateValue('COCOLIS_LIVE_MODE', false);
 
         include(dirname(__FILE__).'/sql/install.php');
+
+        $client = new Client();
 
         return parent::install() &&
             $this->registerHook('header') &&

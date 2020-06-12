@@ -1,7 +1,7 @@
 <?php
 namespace GuzzleHttp\Handler;
 
-use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Psr7;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -30,15 +30,15 @@ class CurlHandler
             : new CurlFactory(3);
     }
 
-    public function __invoke(RequestInterface $request, array $options): PromiseInterface
+    public function __invoke(RequestInterface $request, array $options)
     {
         if (isset($options['delay'])) {
-            \usleep($options['delay'] * 1000);
+            usleep($options['delay'] * 1000);
         }
 
         $easy = $this->factory->create($request, $options);
-        \curl_exec($easy->handle);
-        $easy->errno = \curl_errno($easy->handle);
+        curl_exec($easy->handle);
+        $easy->errno = curl_errno($easy->handle);
 
         return CurlFactory::finish($this, $easy, $this->factory);
     }

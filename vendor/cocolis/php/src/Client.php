@@ -11,7 +11,7 @@
 namespace Cocolis\Api;
 
 use Cocolis\Api\Clients\RideClient;
-
+use Cocolis\Api\Clients\WebhookClient;
 class Client
 {
   // Local informations
