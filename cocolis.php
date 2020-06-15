@@ -65,8 +65,7 @@ class Cocolis extends CarrierModule
      */
     public function install()
     {
-        if (extension_loaded('curl') == false)
-        {
+        if (extension_loaded('curl') == false) {
             $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
             return false;
         }
@@ -221,8 +220,7 @@ class Cocolis extends CarrierModule
 
     public function getOrderShippingCost($params, $shipping_cost)
     {
-        if (Context::getContext()->customer->logged == true)
-        {
+        if (Context::getContext()->customer->logged == true) {
             $id_address_delivery = Context::getContext()->cart->id_address_delivery;
             $address = new Address($id_address_delivery);
 
@@ -255,11 +253,11 @@ class Cocolis extends CarrierModule
         $carrier->external_module_name = $this->name;
         $carrier->shipping_method = 2;
 
-        foreach (Language::getLanguages() as $lang)
+        foreach (Language::getLanguages() as $lang) {
             $carrier->delay[$lang['id_lang']] = $this->l('Super fast delivery');
+        }
 
-        if ($carrier->add() == true)
-        {
+        if ($carrier->add() == true) {
             @copy(dirname(__FILE__).'/views/img/carrier_image.jpg', _PS_SHIP_IMG_DIR_.'/'.(int)$carrier->id.'.jpg');
             Configuration::updateValue('MYSHIPPINGMODULE_CARRIER_ID', (int)$carrier->id);
             return $carrier;
@@ -272,8 +270,9 @@ class Cocolis extends CarrierModule
     {
         $groups_ids = array();
         $groups = Group::getGroups(Context::getContext()->language->id);
-        foreach ($groups as $group)
+        foreach ($groups as $group) {
             $groups_ids[] = $group['id_group'];
+        }
 
         $carrier->setGroups($groups_ids);
     }
@@ -297,8 +296,9 @@ class Cocolis extends CarrierModule
     {
         $zones = Zone::getZones();
 
-        foreach ($zones as $zone)
+        foreach ($zones as $zone) {
             $carrier->addZone($zone['id_zone']);
+        }
     }
 
     /**
