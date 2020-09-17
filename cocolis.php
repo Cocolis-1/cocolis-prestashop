@@ -260,32 +260,33 @@ class Cocolis extends CarrierModule
                  */
 
                 
-                $client = Client::getClient(); 
+                $client = Client::getClient();
 
                 $products = Context::getContext()->cart->getProducts();
-                foreach($products as $product){
+                foreach ($products as $product) {
                     $width = (int) $product['width'];
                     $depth = (int) $product['depth'];
                     $height = (int) $product['height'];
 
-                    if($width == 0 || $depth == 0 || $height == 0)
-                        $dimensions += Configuration::get('COCOLIS_VOLUME') * (int) $product['quantity']; // Use the default value of volume for delivery fees
-                    else
-                        $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];  
+                    if ($width == 0 || $depth == 0 || $height == 0) {
+                        $dimensions += Configuration::get('COCOLIS_VOLUME') * (int) $product['quantity'];
+                    } // Use the default value of volume for delivery fees
+                    else {
+                        $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
+                    }
                       
                     $total += $product['price'] * (int) $product['quantity'];
                 }
                 
-                if($dimensions < 0.01){
+                if ($dimensions < 0.01) {
                     $dimensions += 0.01;
                     $dimensions = round($dimensions, 2);
-                }else{
+                } else {
                     $dimensions = round($dimensions, 2);
                 }
                                     
                 $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
                 $shipping_cost = ($match->estimated_prices->regular)/100;
-
             }
         }
 
@@ -322,8 +323,9 @@ class Cocolis extends CarrierModule
         $carrier->external_module_name = $this->name;
         $carrier->shipping_method = 2;
 
-        foreach (Language::getLanguages() as $lang)
+        foreach (Language::getLanguages() as $lang) {
             $carrier->delay[$lang['id_lang']] = $this->l('Délai variable');
+        }
 
         if ($carrier->add() == true) {
             @copy(dirname(__FILE__) . '/views/img/carrier_image.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int)$carrier->id . '.jpg');
