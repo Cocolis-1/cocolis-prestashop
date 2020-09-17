@@ -1,8 +1,0 @@
-.vscode
-composer.phar
-/vendor/
-.php*
-!.php_cs
-build/
-clover.xml
-node_modules
