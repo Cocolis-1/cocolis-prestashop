@@ -26,7 +26,7 @@
  */
 
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 use Cocolis\Api\Client;
 
@@ -40,7 +40,6 @@ class Cocolis extends CarrierModule
 
     public function __construct()
     {
-        global $client;
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
         $this->version = '1.0.0';
@@ -59,7 +58,6 @@ class Cocolis extends CarrierModule
         $this->confirmUninstall = $this->l('Notre service de livraison ne sera plus disponible sur votre site.');
 
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
-        $client = $this->authenticatedClient();
     }
 
     /**
@@ -87,7 +85,8 @@ class Cocolis extends CarrierModule
         return parent::install() &&
             $this->registerHook('header') &&
             $this->registerHook('backOfficeHeader') &&
-            $this->registerHook('updateCarrier');
+            $this->registerHook('updateCarrier') &&
+            $this->registerHook('actionPaymentConfirmation');
     }
 
     public function uninstall()
@@ -259,8 +258,7 @@ class Cocolis extends CarrierModule
                  * Return the price sent by the API
                  */
 
-                
-                $client = Client::getClient();
+                $client = $this->authenticatedClient();
 
                 $products = Context::getContext()->cart->getProducts();
                 foreach ($products as $product) {
@@ -274,19 +272,18 @@ class Cocolis extends CarrierModule
                     else {
                         $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
                     }
-                      
+
                     $total += $product['price'] * (int) $product['quantity'];
                 }
-                
+
                 if ($dimensions < 0.01) {
                     $dimensions += 0.01;
-                    $dimensions = round($dimensions, 2);
-                } else {
-                    $dimensions = round($dimensions, 2);
                 }
-                                    
+
+                $dimensions = round($dimensions, 2);
+
                 $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
-                $shipping_cost = ($match->estimated_prices->regular)/100;
+                $shipping_cost = ($match->estimated_prices->regular) / 100;
             }
         }
 
@@ -296,9 +293,9 @@ class Cocolis extends CarrierModule
     public function authenticatedClient()
     {
         $client = Client::create(array(
-        'app_id' => Configuration::get('COCOLIS_ACCOUNT_APPID'),
-        'password' => Configuration::get('COCOLIS_ACCOUNT_PASSWORD'),
-        'live' => Configuration::get('COCOLIS_LIVE_MODE')
+            'app_id' => Configuration::get('COCOLIS_ACCOUNT_APPID'),
+            'password' => Configuration::get('COCOLIS_ACCOUNT_PASSWORD'),
+            'live' => Configuration::get('COCOLIS_LIVE_MODE')
         ));
         $client->signIn();
         return $client;
@@ -307,6 +304,19 @@ class Cocolis extends CarrierModule
     public function getOrderShippingCostExternal($params)
     {
         return true;
+    }
+
+    public function hookActionPaymentConfirmation($params)
+    {
+        $id_order = (int) $params['id_order'];
+        $order = new Order($id_order);
+        $orderCarrier = new OrderCarrier($order->getIdOrderCarrier());
+        $carrier = new Carrier($orderCarrier->id_carrier);
+
+        if ($carrier->external_module_name == "cocolis") {
+            $address = new Address($order->id_address_delivery);
+            //TODO add Ride with 30 minutes delay
+        }
     }
 
     protected function addCarrier()
