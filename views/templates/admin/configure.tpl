@@ -23,7 +23,29 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
+<style>
+.myButton {
+	background-color: #ffffff;
+	border:1px solid #00aff0;
+	border-radius:11px;
+	display:inline-block;
+	color:#00aff0;
+	font-family:Arial;
+	font-size:16px;
+	font-weight:bold;
+	padding:13px 40px;
+	text-decoration:none;
+}
+
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+</style>
+
+
 <div class="panel">
+
 	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
 	<h2><strong>{l s="🥳 Merci d'avoir installé Cocolis - Votre module de livraison collaborative !" mod='cocolis'}</strong><br /></h2>
 	<h2>
@@ -35,4 +57,8 @@
 		<i class="icon icon-angle-right"></i> 
 		{l s='Vous pouvez en savoir plus sur la configuration de ce module' mod='cocolis'} <a href="https://doc.cocolis.fr/">ici.</a>
 	</h2>
+	<br />
+	<div style="margin:0 auto;">
+		<button type='submit' name='webhooks' class='myButton' form='module_form'>Configurer automatiquement les Webhooks</button>
+	</div>
 </div>
