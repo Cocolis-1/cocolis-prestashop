@@ -345,7 +345,14 @@ class Cocolis extends CarrierModule
 
                 $dimensions = round($dimensions, 2);
 
-                $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
+                try {
+                    $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
+                } catch (GuzzleHttp\Exception\ClientException $e) {
+                    $response = $e->getResponse();
+                    $responseBodyAsString = $response->getBody()->getContents();
+                    var_dump($responseBodyAsString);
+                    exit;
+                }
                 $shipping_cost = ($match->estimated_prices->regular) / 100;
             }
         }
