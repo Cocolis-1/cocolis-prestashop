@@ -7,10 +7,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Remove vendor
+      run: rm -rf vendor
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '7.3'
         coverage: xdebug
+    - name: Cache Packages
+      uses: actions/cache@v1
+      with:
+        path: vendor
+        key: v2-dependencies-${{ hashFiles('composer.lock') }}
+        restore-keys: |
+          v2-dependencies-${{ hashFiles('composer.lock') }}
+    - uses: php-actions/composer@v1 # or alternative dependency management
     - name: Run php-cs-fixer
       run: ./vendor/bin/php-cs-fixer fix ./ --diff --dry-run
