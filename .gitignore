@@ -2,3 +2,4 @@
 .DS_Store
 vendor
 php-cs-fixer-v2.phar
+.history
