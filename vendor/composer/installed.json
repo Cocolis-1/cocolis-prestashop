@@ -27,7 +27,7 @@
         },
         "time": "2020-06-15T12:39:21+00:00",
         "type": "package",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Cocolis\\Api\\": "src/"
@@ -86,7 +86,7 @@
                 "dev-main": "3.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Composer\\Semver\\": "src"
@@ -228,7 +228,7 @@
                 "dev-master": "1.11.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Doctrine\\Common\\Annotations\\": "lib/Doctrine/Common/Annotations"
@@ -302,7 +302,7 @@
                 "dev-master": "1.4.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
@@ -370,7 +370,7 @@
                 "dev-master": "1.3.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Doctrine\\Common\\Lexer\\": "lib/Doctrine/Common/Lexer"
@@ -482,7 +482,7 @@
                 "dev-master": "2.17-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "PhpCsFixer\\": "src/"
@@ -619,7 +619,7 @@
                 "dev-master": "1.3-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "GuzzleHttp\\Promise\\": "src/"
@@ -681,7 +681,7 @@
                 "dev-master": "1.6-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "GuzzleHttp\\Psr7\\": "src/"
@@ -745,7 +745,7 @@
         },
         "time": "2020-10-01T09:35:15+00:00",
         "type": "library",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "DeepCopy\\": "src/DeepCopy/"
@@ -806,7 +806,7 @@
                 "dev-master": "4.9-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "PhpParser\\": "lib/PhpParser"
@@ -851,7 +851,7 @@
         },
         "time": "2018-08-07T13:07:48+00:00",
         "type": "library",
-        "installation-source": "source",
+        "installation-source": "dist",
         "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
@@ -900,7 +900,7 @@
                 "dev-master": "2.0.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1056,7 +1056,7 @@
                 "dev-master": "2.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "phpDocumentor\\Reflection\\": "src/"
@@ -1114,7 +1114,7 @@
                 "dev-master": "5.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "phpDocumentor\\Reflection\\": "src"
@@ -1165,7 +1165,7 @@
                 "dev-1.x": "1.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "phpDocumentor\\Reflection\\": "src"
@@ -1216,7 +1216,7 @@
                 "dev-master": "1.11.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Prophecy\\": "src/Prophecy"
@@ -1292,7 +1292,7 @@
                 "dev-master": "9.2-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1351,7 +1351,7 @@
                 "dev-master": "3.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1413,7 +1413,7 @@
                 "dev-master": "3.1-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1470,7 +1470,7 @@
                 "dev-master": "2.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1527,7 +1527,7 @@
                 "dev-master": "5.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1619,7 +1619,7 @@
                 "dev-master": "9.5-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1682,7 +1682,7 @@
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Psr\\Container\\": "src/"
@@ -1733,7 +1733,7 @@
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Psr\\EventDispatcher\\": "src/"
@@ -1781,7 +1781,7 @@
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Psr\\Http\\Message\\": "src/"
@@ -1833,7 +1833,7 @@
                 "dev-master": "1.1.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Psr\\Log\\": "Psr/Log/"
@@ -1927,7 +1927,7 @@
                 "dev-master": "1.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1981,7 +1981,7 @@
                 "dev-master": "1.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2035,7 +2035,7 @@
                 "dev-master": "2.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2090,7 +2090,7 @@
                 "dev-master": "4.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2161,7 +2161,7 @@
                 "dev-master": "2.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2216,7 +2216,7 @@
                 "dev-master": "4.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2282,7 +2282,7 @@
                 "dev-master": "5.1-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2342,7 +2342,7 @@
                 "dev-master": "4.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2421,7 +2421,7 @@
                 "dev-master": "5.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2478,7 +2478,7 @@
                 "dev-master": "1.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2534,7 +2534,7 @@
                 "dev-master": "4.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2587,7 +2587,7 @@
                 "dev-master": "2.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2640,7 +2640,7 @@
                 "dev-master": "4.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2701,7 +2701,7 @@
                 "dev-master": "3.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2754,7 +2754,7 @@
                 "dev-master": "2.3-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2805,7 +2805,7 @@
                 "dev-master": "3.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "classmap": [
                 "src/"
@@ -2886,7 +2886,7 @@
                 "dev-master": "5.2-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Console\\": ""
@@ -2961,7 +2961,7 @@
                 "url": "https://github.com/symfony/contracts"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "files": [
                 "function.php"
@@ -3046,7 +3046,7 @@
                 "dev-master": "5.2-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\EventDispatcher\\": ""
@@ -3119,7 +3119,7 @@
                 "url": "https://github.com/symfony/contracts"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Contracts\\EventDispatcher\\": ""
@@ -3190,7 +3190,7 @@
                 "dev-master": "5.2-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Filesystem\\": ""
@@ -3255,7 +3255,7 @@
                 "dev-master": "5.2-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Finder\\": ""
@@ -3323,7 +3323,7 @@
                 "dev-master": "5.2-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\OptionsResolver\\": ""
@@ -3400,7 +3400,7 @@
                 "url": "https://github.com/symfony/polyfill"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Polyfill\\Ctype\\": ""
@@ -4028,7 +4028,7 @@
                 "dev-master": "5.2-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Process\\": ""
@@ -4101,7 +4101,7 @@
                 "url": "https://github.com/symfony/contracts"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Contracts\\Service\\": ""
@@ -4172,7 +4172,7 @@
                 "dev-master": "5.2-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Stopwatch\\": ""
@@ -4248,7 +4248,7 @@
                 "dev-master": "5.2-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\String\\": ""
