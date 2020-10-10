@@ -14,6 +14,6 @@ jobs:
         coverage: xdebug
     - name: Run php-cs-fixer
       run: |
-        ls -la
+        ls -la vendor/bin
         pwd
         ./vendor/bin/php-cs-fixer fix ./ --diff --dry-run
