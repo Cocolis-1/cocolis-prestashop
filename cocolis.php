@@ -115,6 +115,23 @@ class Cocolis extends CarrierModule
     }
 
     /**
+    * Redirects to redirect_after link.
+    *
+    * @see $redirect_after
+    */
+    protected function redirect()
+    {
+        Tools::redirectLink($this->redirect_after);
+    }
+
+    public function redirectWithNotifications($type)
+    {
+        $this->context->smarty->assign(array('notifications' => 'webhook_' . $type));
+        return $this->display(__FILE__, "views/templates/admin/configure.tpl");
+    }
+
+
+    /**
      * Load the configuration form
      */
     public function getContent()
@@ -122,16 +139,36 @@ class Cocolis extends CarrierModule
         /**
          * If values have been submitted in the form, process.
          */
-        if (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
-            $this->postProcess();
-        }
 
         if (((bool)Tools::isSubmit('webhooks')) == true) {
-            if (Configuration::get('COCOLIS_WEBHOOK_ID') == false) {
-                //TODO
-                $this->success[] = $this->l('Les webhooks ont été mis à jour.');
-                //$webhook = $client->getWebhookClient()->create(['event' => 'ride_published', 'url' => 'https://www.test.com/cocolis/webhooks', 'active' => true]);
+            $client = $this->authenticatedClient();
+            if (!Configuration::get('COCOLIS_WEBHOOK_ID')) {
+                $id_webhooks = [];
+                $webhook = $client->getWebhookClient()->create(['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published', 'active' => true]);
+                array_push($id_webhooks, $webhook->id);
+                $webhook = $client->getWebhookClient()->create(['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_expired', 'active' => true]);
+                array_push($id_webhooks, $webhook->id);
+                $webhook = $client->getWebhookClient()->create(['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_accepted', 'active' => true]);
+                array_push($id_webhooks, $webhook->id);
+                $webhook = $client->getWebhookClient()->create(['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_cancelled', 'active' => true]);
+                array_push($id_webhooks, $webhook->id);
+                $webhook = $client->getWebhookClient()->create(['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_completed', 'active' => true]);
+                array_push($id_webhooks, $webhook->id);
+                Configuration::updateValue('COCOLIS_WEBHOOK_ID', serialize($id_webhooks));
+                $this->redirectWithNotifications('success');
+            } elseif ($client->getWebhookClient()->get(unserialize(Configuration::get('COCOLIS_WEBHOOK_ID'))[0])->url != Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published') {
+                $config = unserialize(Configuration::get('COCOLIS_WEBHOOK_ID'));
+                $client->getWebhookClient()->update(['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published', 'active' => true], $config[0]);
+                $client->getWebhookClient()->update(['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_expired', 'active' => true], $config[1]);
+                $client->getWebhookClient()->update(['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_accepted', 'active' => true], $config[2]);
+                $client->getWebhookClient()->update(['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_cancelled', 'active' => true], $config[3]);
+                $client->getWebhookClient()->update(['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_completed', 'active' => true], $config[4]);
+                $this->redirectWithNotifications('updated');
+            } else {
+                $this->redirectWithNotifications('already');
             }
+        } elseif (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
+            $this->postProcess();
         }
 
         $this->context->smarty->assign('module_dir', $this->_path);
@@ -514,37 +551,6 @@ class Cocolis extends CarrierModule
             //TODO add Ride with 30 minutes delay
         }
     }
-
-    protected function getCurrentURL()
-    {
-        return Tools::getCurrentUrlProtocolPrefix() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    }
-
-    protected function prepareNotifications()
-    {
-        $notifications = [
-            'error' => $this->errors,
-            'warning' => $this->warning,
-            'success' => $this->success,
-            'info' => $this->info,
-        ];
-
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (session_status() == PHP_SESSION_ACTIVE && isset($_SESSION['notifications'])) {
-            $notifications = array_merge($notifications, json_decode($_SESSION['notifications'], true));
-            unset($_SESSION['notifications']);
-        } elseif (isset($_COOKIE['notifications'])) {
-            $notifications = array_merge($notifications, json_decode($_COOKIE['notifications'], true));
-            unset($_COOKIE['notifications']);
-        }
-
-        return $notifications;
-    }
-
-
     public function hookModuleRoutes($params)
     {
         //URL without Rewrite : http://localhost:8084/index.php?fc=module&module=cocolis&controller=webhooks&id_lang=1
@@ -584,7 +590,7 @@ class Cocolis extends CarrierModule
 
         if ($carrier->add() == true) {
             @copy(dirname(__FILE__) . '/views/img/carrier_image.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int)$carrier->id . '.jpg');
-            Configuration::updateValue('MYSHIPPINGMODULE_CARRIER_ID', (int)$carrier->id);
+            Configuration::updateValue('COCOLIS_CARRIER_ID', (int)$carrier->id);
             return $carrier;
         }
 
@@ -626,25 +632,6 @@ class Cocolis extends CarrierModule
         }
     }
 
-    /**
-     * Add the CSS & JavaScript files you want to be loaded in the BO.
-     */
-    public function hookBackOfficeHeader()
-    {
-        if (Tools::getValue('module_name') == $this->name) {
-            $this->context->controller->addJS($this->_path . 'views/js/back.js');
-            $this->context->controller->addCSS($this->_path . 'views/css/back.css');
-        }
-    }
-
-    /**
-     * Add the CSS & JavaScript files you want to be added on the FO.
-     */
-    public function hookHeader()
-    {
-        $this->context->controller->addJS($this->_path . '/views/js/front.js');
-        $this->context->controller->addCSS($this->_path . '/views/css/front.css');
-    }
 
     public function hookUpdateCarrier($params)
     {

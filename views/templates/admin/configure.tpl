@@ -41,11 +41,105 @@
 	position:relative;
 	top:1px;
 }
+
+/* The alert message box */
+.alert {
+  padding: 15px;
+	padding-top: 20px;
+	border-radius: 10px;
+  background-color: #4caf50;
+  color: white;
+  margin-bottom: 15px;
+	opacity: 1;
+  transition: opacity 0.6s; /* 600ms to fade out */
+}
+
+.alert-red {
+  padding: 15px;
+	padding-top: 20px;
+	border-radius: 10px;
+  background-color: #f44336;
+  color: white;
+  margin-bottom: 15px;
+	opacity: 1;
+  transition: opacity 0.6s; /* 600ms to fade out */
+}
+
+.alert-orange {
+  padding: 15px;
+	padding-top: 20px;
+	border-radius: 10px;
+  background-color: #ff9800;
+  color: white;
+  margin-bottom: 15px;
+	opacity: 1;
+  transition: opacity 0.6s; /* 600ms to fade out */
+}
+
+/* The close button */
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+  color: black;
+}
 </style>
 
+<script>
+// Get all elements with class="closebtn"
+var close = document.getElementsByClassName("closebtn");
+var i;
+
+// Loop through all close buttons
+for (i = 0; i < close.length; i++) {
+  // When someone clicks on a close button
+  close[i].onclick = function(){
+
+    // Get the parent of <span class="closebtn"> (<div class="alert">)
+    var div = this.parentElement;
+
+    // Set the opacity of div to 0 (transparent)
+    div.style.opacity = "0";
+
+    // Hide the div after 600ms (the same amount of milliseconds it takes to fade out)
+    setTimeout(function(){ div.style.display = "none"; }, 600);
+  }
+}
+</script>
 
 <div class="panel">
+	<aside id="notifications">
+  {if isset($notifications)}
+    {block name='notifications_info'}
+		{if ($notifications == 'webhook_success')}
+    <div class="alert">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p><b>Webhooks configurés !</b> Tous les changements de status seront envoyés directement sur votre marketplace !</p>
+		</div>
+		{/if}
+		{if ($notifications == 'webhook_already')}
+    <div class="alert-red">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p><b>Webhooks déjà configurés !</b> Aucun changement de domaine n'a été détecté, la configuration reste similaire.</p>
+		{/if}
+		{if ($notifications == 'webhook_updated')}
+    <div class="alert-orange">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p><b>Webhooks mis à jour !</b> Un changement de domaine a été détecté, la configuration a été mis à jour chez Cocolis.</p>
+		{/if}
+    {/block}
+  {/if}
 
+	</aside>
 	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
 	<h2><strong>{l s="🥳 Merci d'avoir installé Cocolis - Votre module de livraison collaborative !" mod='cocolis'}</strong><br /></h2>
 	<h2>
