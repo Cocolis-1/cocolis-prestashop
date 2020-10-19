@@ -24,6 +24,37 @@
 *}
 
 <div class="panel">
+<<<<<<< Updated upstream
+=======
+	<aside id="notifications">
+  {if isset($notifications)}
+    {block name='notifications_info'}
+		{if ($notifications == 'webhook_success')}
+    <div class="alert">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p><b>Webhooks configurés !</b> Tous les changements de status seront envoyés directement sur votre marketplace !</p>
+		</div>
+		{/if}
+		{if ($notifications == 'webhook_already')}
+    <div class="alert-red">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p><b>Webhooks déjà configurés !</b> Aucun changement de domaine n'a été détecté, la configuration reste similaire.</p>
+		{/if}
+		{if ($notifications == 'nophone')}
+    <div class="alert-red">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p><b>Numéro de téléphone portable manquant !</b> Vous devez configurer votre boutique afin de fournir un numéro de téléphone valide. </br>Rendez vous dans <b>Paramètres de la boutique > Contact > Magasins</b> et fournissez un numéro de téléphone <b>portable</b>. La commande reste inchangée.</p>
+		{/if}
+		{if ($notifications == 'webhook_updated')}
+    <div class="alert-orange">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p><b>Webhooks mis à jour !</b> Un changement de domaine a été détecté, la configuration a été mis à jour chez Cocolis.</p>
+		{/if}
+    {/block}
+  {/if}
+
+	</aside>
+>>>>>>> Stashed changes
 	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
 	<h2><strong>{l s="🥳 Merci d'avoir installé Cocolis - Votre module de livraison collaborative !" mod='cocolis'}</strong><br /></h2>
 	<h2>
