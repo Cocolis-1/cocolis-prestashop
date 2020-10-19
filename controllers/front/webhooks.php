@@ -9,7 +9,7 @@ class CocolisWebhooksModuleFrontController extends ModuleFrontController
 
     public function postProcess()
     {
-        switch (Tools::getValue('event')) {
+    switch (Tools::getValue('event')) {
       case 'ride_published':
         echo('Status changé !');
     }

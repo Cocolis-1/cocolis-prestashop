@@ -6,12 +6,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/Cocolis-1/cocolis-php.git",
-            "reference": "70d40f4e1472dac95c0c6a239f6b98c6193d64b3"
+            "reference": "d96e52c7cac667f44ce416e7468edb87bdf1c451"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Cocolis-1/cocolis-php/zipball/70d40f4e1472dac95c0c6a239f6b98c6193d64b3",
-            "reference": "70d40f4e1472dac95c0c6a239f6b98c6193d64b3",
+            "url": "https://api.github.com/repos/Cocolis-1/cocolis-php/zipball/d96e52c7cac667f44ce416e7468edb87bdf1c451",
+            "reference": "d96e52c7cac667f44ce416e7468edb87bdf1c451",
             "shasum": ""
         },
         "require": {
@@ -24,7 +24,7 @@
             "phpunit/php-code-coverage": "^9.2",
             "phpunit/phpunit": "^9.4"
         },
-        "time": "2020-10-19T12:59:29+00:00",
+        "time": "2020-10-19T14:29:26+00:00",
         "type": "package",
         "installation-source": "dist",
         "autoload": {
@@ -352,12 +352,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-            "reference": "6d7da91e69600aeb639d6ec2b443cc25bc0a147b"
+            "reference": "7a4f113680068d7cf7f1a41a31ad44433e2d2b67"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/6d7da91e69600aeb639d6ec2b443cc25bc0a147b",
-            "reference": "6d7da91e69600aeb639d6ec2b443cc25bc0a147b",
+            "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/7a4f113680068d7cf7f1a41a31ad44433e2d2b67",
+            "reference": "7a4f113680068d7cf7f1a41a31ad44433e2d2b67",
             "shasum": ""
         },
         "require": {
@@ -399,7 +399,7 @@
             "php-cs-fixer/phpunit-constraint-xmlmatchesxsd": "For XmlMatchesXsd constraint.",
             "symfony/polyfill-mbstring": "When enabling `ext-mbstring` is not possible."
         },
-        "time": "2020-10-19T09:44:25+00:00",
+        "time": "2020-10-19T14:26:02+00:00",
         "bin": [
             "php-cs-fixer"
         ],
