@@ -117,6 +117,11 @@ for (i = 0; i < close.length; i++) {
 </script>
 
 <div class="panel">
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 1d42f34... hookPaymentConfirmation & fix guzzle & fix bugs
 	<aside id="notifications">
   {if isset($notifications)}
     {block name='notifications_info'}
@@ -131,6 +136,14 @@ for (i = 0; i < close.length; i++) {
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 			<p><b>Webhooks déjà configurés !</b> Aucun changement de domaine n'a été détecté, la configuration reste similaire.</p>
 		{/if}
+<<<<<<< HEAD
+=======
+		{if ($notifications == 'nophone')}
+    <div class="alert-red">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p><b>Numéro de téléphone portable manquant !</b> Vous devez configurer votre boutique afin de fournir un numéro de téléphone valide. </br>Rendez vous dans <b>Paramètres de la boutique > Contact > Magasins</b> et fournissez un numéro de téléphone <b>portable</b>. La commande reste inchangée.</p>
+		{/if}
+>>>>>>> 1d42f34... hookPaymentConfirmation & fix guzzle & fix bugs
 		{if ($notifications == 'webhook_updated')}
     <div class="alert-orange">
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -140,6 +153,10 @@ for (i = 0; i < close.length; i++) {
   {/if}
 
 	</aside>
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 1d42f34... hookPaymentConfirmation & fix guzzle & fix bugs
 	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
 	<h2><strong>{l s="🥳 Merci d'avoir installé Cocolis - Votre module de livraison collaborative !" mod='cocolis'}</strong><br /></h2>
 	<h2>

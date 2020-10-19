@@ -26,7 +26,7 @@
  */
 
 
-require_once __DIR__ . '/vendor/autoload.php';
+require("vendor/autoload.php");
 
 use Cocolis\Api\Client;
 
@@ -108,6 +108,7 @@ class Cocolis extends CarrierModule
     {
         Configuration::deleteByName('COCOLIS_LIVE_MODE');
         Configuration::deleteByName('COCOLIS_CARRIER_ID');
+        Configuration::deleteByName('COCOLIS_WEBHOOK_ID');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -144,6 +145,7 @@ class Cocolis extends CarrierModule
             $client = $this->authenticatedClient();
             if (!Configuration::get('COCOLIS_WEBHOOK_ID')) {
                 $id_webhooks = [];
+<<<<<<< HEAD
                 $webhook = $client->getWebhookClient()->create(['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published', 'active' => true]);
                 array_push($id_webhooks, $webhook->id);
                 $webhook = $client->getWebhookClient()->create(['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_expired', 'active' => true]);
@@ -153,16 +155,35 @@ class Cocolis extends CarrierModule
                 $webhook = $client->getWebhookClient()->create(['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_cancelled', 'active' => true]);
                 array_push($id_webhooks, $webhook->id);
                 $webhook = $client->getWebhookClient()->create(['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_completed', 'active' => true]);
+=======
+                $webhook = $client->getWebhookClient()->create(['webhook' => ['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published', 'active' => true]]);
+                array_push($id_webhooks, $webhook->id);
+                $webhook = $client->getWebhookClient()->create(['webhook' => ['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_expired', 'active' => true]]);
+                array_push($id_webhooks, $webhook->id);
+                $webhook = $client->getWebhookClient()->create(['webhook' => ['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_accepted', 'active' => true]]);
+                array_push($id_webhooks, $webhook->id);
+                $webhook = $client->getWebhookClient()->create(['webhook' => ['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_cancelled', 'active' => true]]);
+                array_push($id_webhooks, $webhook->id);
+                $webhook = $client->getWebhookClient()->create(['webhook' => ['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_completed', 'active' => true]]);
+>>>>>>> 1d42f34... hookPaymentConfirmation & fix guzzle & fix bugs
                 array_push($id_webhooks, $webhook->id);
                 Configuration::updateValue('COCOLIS_WEBHOOK_ID', serialize($id_webhooks));
                 $this->redirectWithNotifications('success');
             } elseif ($client->getWebhookClient()->get(unserialize(Configuration::get('COCOLIS_WEBHOOK_ID'))[0])->url != Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published') {
                 $config = unserialize(Configuration::get('COCOLIS_WEBHOOK_ID'));
+<<<<<<< HEAD
                 $client->getWebhookClient()->update(['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published', 'active' => true], $config[0]);
                 $client->getWebhookClient()->update(['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_expired', 'active' => true], $config[1]);
                 $client->getWebhookClient()->update(['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_accepted', 'active' => true], $config[2]);
                 $client->getWebhookClient()->update(['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_cancelled', 'active' => true], $config[3]);
                 $client->getWebhookClient()->update(['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_completed', 'active' => true], $config[4]);
+=======
+                $client->getWebhookClient()->update(['webhook' => ['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published', 'active' => true]], $config[0]);
+                $client->getWebhookClient()->update(['webhook' => ['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_expired', 'active' => true]], $config[1]);
+                $client->getWebhookClient()->update(['webhook' => ['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_accepted', 'active' => true]], $config[2]);
+                $client->getWebhookClient()->update(['webhook' => ['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_cancelled', 'active' => true]], $config[3]);
+                $client->getWebhookClient()->update(['webhook' => ['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_completed', 'active' => true]], $config[4]);
+>>>>>>> 1d42f34... hookPaymentConfirmation & fix guzzle & fix bugs
                 $this->redirectWithNotifications('updated');
             } else {
                 $this->redirectWithNotifications('already');
@@ -472,8 +493,14 @@ class Cocolis extends CarrierModule
             $arrayname = [];
 
             $phone = Configuration::get('PS_SHOP_PHONE');
+<<<<<<< HEAD
             if ($phone == false) {
                 $phone = '0141234567';
+=======
+            if ($phone == null) {
+                echo('<p style="color:red;">[Module Cocolis] <b>Numéro de téléphone portable manquant !</b> Vous devez configurer votre boutique afin de fournir un numéro de téléphone valide. </br>Rendez vous dans <b>Paramètres de la boutique > Contact > Magasins</b> et fournissez un numéro de téléphone <b>portable</b>. La commande reste inchangée.</p>');
+                exit;
+>>>>>>> 1d42f34... hookPaymentConfirmation & fix guzzle & fix bugs
             }
 
             foreach ($products as $product) {
@@ -492,7 +519,10 @@ class Cocolis extends CarrierModule
                 array_push($arrayproducts, [
                     "title" => $product['name'],
                     "qty" => $product['cart_quantity'],
+<<<<<<< HEAD
                     "weight" => $product['weight'],
+=======
+>>>>>>> 1d42f34... hookPaymentConfirmation & fix guzzle & fix bugs
                     "height" => 50, //TODO  A CHANGER
                     "width" => 100,
                     "length" => 100,
@@ -541,7 +571,11 @@ class Cocolis extends CarrierModule
 
             $client = $client->getRideClient();
             try {
+<<<<<<< HEAD
                 $client->create($params);
+=======
+                $client->create(['ride' => $params]);
+>>>>>>> 1d42f34... hookPaymentConfirmation & fix guzzle & fix bugs
             } catch (GuzzleHttp\Exception\ClientException $e) {
                 $response = $e->getResponse();
                 $responseBodyAsString = $response->getBody()->getContents();
