@@ -51,7 +51,6 @@ class Cocolis extends CarrierModule
         $this->bootstrap = true;
 
         parent::__construct();
-
         $this->displayName = $this->l('Cocolis');
         $this->description = $this->l('Utilisez cocolis.fr comme mode de livraison. Spécialisé dans la livraison communautaire, cocolis vous permettra d\'envoyer des colis hors format.');
 
@@ -72,7 +71,10 @@ class Cocolis extends CarrierModule
             return false;
         }
 
-        $carrier = $this->addCarrier();
+        if(Configuration::get('COCOLIS_CARRIER_ID') == null){
+            $carrier = $this->addCarrier();
+        }
+
         $this->addZones($carrier);
         $this->addGroups($carrier);
         $this->addRanges($carrier);
@@ -107,8 +109,14 @@ class Cocolis extends CarrierModule
     public function uninstall()
     {
         Configuration::deleteByName('COCOLIS_LIVE_MODE');
+<<<<<<< Updated upstream
         Configuration::deleteByName('COCOLIS_CARRIER_ID');
+<<<<<<< HEAD
         Configuration::deleteByName('COCOLIS_WEBHOOK_ID');
+=======
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6b7ab4c... Tracking modifications & improvements
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -140,6 +148,7 @@ class Cocolis extends CarrierModule
         /**
          * If values have been submitted in the form, process.
          */
+<<<<<<< HEAD
 
         if (((bool)Tools::isSubmit('webhooks')) == true) {
             $client = $this->authenticatedClient();
@@ -169,6 +178,37 @@ class Cocolis extends CarrierModule
                 $this->redirectWithNotifications('already');
             }
         } elseif (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
+=======
+<<<<<<< Updated upstream
+        if (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
+=======
+
+        if (((bool)Tools::isSubmit('webhooks')) == true) {
+            $client = $this->authenticatedClient();
+            $webhooks = $client->getWebhookClient()->getAll();
+
+            if(!empty($webhooks)){
+                foreach($webhooks as $webhook){
+                    if(strpos($webhook->url, Tools::getShopDomainSsl(true)) !== false){
+                        $this->redirectWithNotifications('already');
+                        
+                    }else{
+                        $client->getWebhookClient()->update(['event' => $webhook->event, 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=' . $webhook->event, 'active' => true], $webhook->id);
+                        $this->redirectWithNotifications('updated');
+                    }
+                }
+            }else{
+                // Previously /cocolis/webhooks&event=blabla but not working with all versions
+                $client->getWebhookClient()->create(['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis&controller=webhooks&event=ride_published', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=ride_expired', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_accepted', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis&controller=webhooks&event=offer_cancelled', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_completed', 'active' => true]);
+                $this->redirectWithNotifications('success');
+            }
+        } elseif (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
+>>>>>>> Stashed changes
+>>>>>>> 6b7ab4c... Tracking modifications & improvements
             $this->postProcess();
         }
 
@@ -380,6 +420,7 @@ class Cocolis extends CarrierModule
                 if ($dimensions < 0.01) {
                     $dimensions += 0.01;
                 }
+<<<<<<< HEAD
 
                 $dimensions = round($dimensions, 2);
 
@@ -392,6 +433,19 @@ class Cocolis extends CarrierModule
                     exit;
                 }
                 $shipping_cost = ($match->estimated_prices->regular) / 100;
+=======
+<<<<<<< Updated upstream
+                                    
+                $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
+                $shipping_cost = ($match->estimated_prices->regular)/100;
+=======
+
+                $dimensions = round($dimensions, 2);
+
+                $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
+                $shipping_cost = ($match->estimated_prices->regular) / 100;
+>>>>>>> Stashed changes
+>>>>>>> 6b7ab4c... Tracking modifications & improvements
             }
         }
 
@@ -414,6 +468,11 @@ class Cocolis extends CarrierModule
         return true;
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6b7ab4c... Tracking modifications & improvements
     /**
      * Onglet de suivi Cocolis
      */
@@ -503,6 +562,10 @@ class Cocolis extends CarrierModule
 
             $params = [
                 "description" => "Commande envoyée via module PrestaShop du partenaire",
+<<<<<<< HEAD
+=======
+                "external_id" => $id_order,
+>>>>>>> 6b7ab4c... Tracking modifications & improvements
                 "from_address" => "Carcassonne",
                 "to_address" => $composed_address,
                 "from_lat" => 43.212498, //TODO
@@ -541,6 +604,7 @@ class Cocolis extends CarrierModule
             ];
 
             $client = $client->getRideClient();
+<<<<<<< HEAD
             try {
                 $client->create($params);
             } catch (GuzzleHttp\Exception\ClientException $e) {
@@ -549,12 +613,19 @@ class Cocolis extends CarrierModule
                 var_dump($responseBodyAsString);
                 exit;
             }
+=======
+            $client->create($params);
+>>>>>>> 6b7ab4c... Tracking modifications & improvements
             //TODO add Ride with 30 minutes delay
         }
     }
     public function hookModuleRoutes($params)
     {
         //URL without Rewrite : http://localhost:8084/index.php?fc=module&module=cocolis&controller=webhooks&id_lang=1
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6b7ab4c... Tracking modifications & improvements
         return array(
             'module-cocolis-webhooks' => array(
                 'rule' => 'cocolis/webhooks{/:event}',
@@ -571,6 +642,10 @@ class Cocolis extends CarrierModule
         );
     }
 
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6b7ab4c... Tracking modifications & improvements
     protected function addCarrier()
     {
         $carrier = new Carrier();
