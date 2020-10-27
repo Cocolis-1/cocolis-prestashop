@@ -52,7 +52,6 @@ class Cocolis extends CarrierModule
         $this->bootstrap = true;
 
         parent::__construct();
-
         $this->displayName = $this->l('Cocolis');
         $this->description = $this->l('Utilisez cocolis.fr comme mode de livraison. Spécialisé dans la livraison communautaire, cocolis vous permettra d\'envoyer des colis hors format.');
 
@@ -74,7 +73,10 @@ class Cocolis extends CarrierModule
             return false;
         }
 
-        $carrier = $this->addCarrier();
+        if(Configuration::get('COCOLIS_CARRIER_ID') == null){
+            $carrier = $this->addCarrier();
+        }
+
         $this->addZones($carrier);
         $this->addGroups($carrier);
         $this->addRanges($carrier);
@@ -93,7 +95,10 @@ class Cocolis extends CarrierModule
     public function uninstall()
     {
         Configuration::deleteByName('COCOLIS_LIVE_MODE');
+<<<<<<< Updated upstream
         Configuration::deleteByName('COCOLIS_CARRIER_ID');
+=======
+>>>>>>> Stashed changes
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -108,7 +113,35 @@ class Cocolis extends CarrierModule
         /**
          * If values have been submitted in the form, process.
          */
+<<<<<<< Updated upstream
         if (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
+=======
+
+        if (((bool)Tools::isSubmit('webhooks')) == true) {
+            $client = $this->authenticatedClient();
+            $webhooks = $client->getWebhookClient()->getAll();
+
+            if(!empty($webhooks)){
+                foreach($webhooks as $webhook){
+                    if(strpos($webhook->url, Tools::getShopDomainSsl(true)) !== false){
+                        $this->redirectWithNotifications('already');
+                        
+                    }else{
+                        $client->getWebhookClient()->update(['event' => $webhook->event, 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=' . $webhook->event, 'active' => true], $webhook->id);
+                        $this->redirectWithNotifications('updated');
+                    }
+                }
+            }else{
+                // Previously /cocolis/webhooks&event=blabla but not working with all versions
+                $client->getWebhookClient()->create(['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis&controller=webhooks&event=ride_published', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=ride_expired', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_accepted', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis&controller=webhooks&event=offer_cancelled', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_completed', 'active' => true]);
+                $this->redirectWithNotifications('success');
+            }
+        } elseif (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
+>>>>>>> Stashed changes
             $this->postProcess();
         }
 
@@ -284,9 +317,17 @@ class Cocolis extends CarrierModule
                 } else {
                     $dimensions = round($dimensions, 2);
                 }
+<<<<<<< Updated upstream
                                     
                 $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
                 $shipping_cost = ($match->estimated_prices->regular)/100;
+=======
+
+                $dimensions = round($dimensions, 2);
+
+                $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
+                $shipping_cost = ($match->estimated_prices->regular) / 100;
+>>>>>>> Stashed changes
             }
         }
 
@@ -309,6 +350,161 @@ class Cocolis extends CarrierModule
         return true;
     }
 
+<<<<<<< Updated upstream
+=======
+    /**
+     * Onglet de suivi Cocolis
+     */
+
+    public function hookDisplayAdminOrderTabShip($params)
+    {
+        $order = $params['order'];
+        $orderCarrier = new OrderCarrier($order->getIdOrderCarrier());
+        $carrier = new Carrier($orderCarrier->id_carrier);
+
+        if ($carrier->external_module_name == "cocolis") {
+            return $this->display(__FILE__, '/views/templates/hook/tab_ship.tpl');
+        }
+    }
+    public function hookDisplayAdminOrderContentShip($params)
+    {
+        $order = $params['order'];
+        $orderCarrier = new OrderCarrier($order->getIdOrderCarrier());
+        $carrier = new Carrier($orderCarrier->id_carrier);
+
+        if ($carrier->external_module_name == "cocolis") {
+            return $this->display(__FILE__, '/views/templates/hook/content_ship.tpl');
+        }
+    }
+
+    public function hookActionPaymentConfirmation($params)
+    {
+        $id_order = (int) $params['id_order'];
+        $order = new Order($id_order);
+        $orderCarrier = new OrderCarrier($order->getIdOrderCarrier());
+        $carrier = new Carrier($orderCarrier->id_carrier);
+
+        $client = $this->authenticatedClient();
+
+        if ($carrier->external_module_name == "cocolis") {
+            $address = new Address($order->id_address_delivery);
+            $composed_address = $address->address1 . ', ' . $address->postcode . ' ' . $address->city;
+
+            $from_date = new DateTime('NOW');
+            $from_date->setTimeZone(new DateTimeZone("Europe/Paris"));
+
+            $to_date = new DateTime('NOW');
+            $to_date  = $to_date->add(new DateInterval('P21D'));
+            $to_date->setTimeZone(new DateTimeZone("Europe/Paris"));
+
+            $from_date = $from_date->format('c');
+            $to_date = $to_date->format('c');
+
+            $cart = new Cart($params['cart']->id);
+            $products = $cart->getProducts();
+            $dimensions = 0;
+
+            $customer = new Customer($cart->id_customer);
+
+            $arrayproducts = [];
+
+            $arrayname = [];
+
+            $phone = Configuration::get('PS_SHOP_PHONE');
+            if ($phone == null) {
+                echo('<p style="color:red;">[Module Cocolis] <b>Numéro de téléphone portable manquant !</b> Vous devez configurer votre boutique afin de fournir un numéro de téléphone valide. </br>Rendez vous dans <b>Paramètres de la boutique > Contact > Magasins</b> et fournissez un numéro de téléphone <b>portable</b>. La commande reste inchangée.</p>');
+                exit;
+            }
+
+            foreach ($products as $product) {
+                $width = (int) $product['width'];
+                $depth = (int) $product['depth'];
+                $height = (int) $product['height'];
+
+                if ($width == 0 || $depth == 0 || $height == 0) {
+                    $dimensions += Configuration::get('COCOLIS_VOLUME') * (int) $product['quantity'];
+                } // Use the default value of volume for delivery fees
+                else {
+                    $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
+                }
+
+                array_push($arrayname, $product['name']);
+                array_push($arrayproducts, [
+                    "title" => $product['name'],
+                    "qty" => $product['cart_quantity'],
+                    "height" => 50, //TODO  A CHANGER
+                    "width" => 100,
+                    "length" => 100,
+                ]);
+            }
+
+
+            $params = [
+                "description" => "Commande envoyée via module PrestaShop du partenaire",
+                "external_id" => $id_order,
+                "from_address" => "Carcassonne",
+                "to_address" => $composed_address,
+                "from_lat" => 43.212498, //TODO
+                "to_lat" => 43.599120, //TODO
+                "from_lng" => 2.350351, //TODO
+                "to_lng" => 1.444391, //TODO
+                "from_is_flexible" => true,
+                "from_pickup_date" => $from_date,
+                "to_is_flexible" => true,
+                "to_pickup_date" => $to_date,
+                "is_passenger" => false,
+                "is_packaged" => true,
+                "price" => (int) $order->total_shipping_tax_incl * 100,
+                "volume" => $dimensions,
+                "environment" => "objects",
+                "rider_extra_information" => "Bonjour, Je souhaite envoyer les objets suivants : " . implode(", ", $arrayname) . '. Merci !' . " Achat effectué sur une marketplace",
+                "photos" => [],
+                "ride_objects_attributes" => $arrayproducts,
+                "ride_delivery_information_attributes" => [
+                    "from_address" => Configuration::get('COCOLIS_ADDRESS'),
+                    "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
+                    "from_city" => Configuration::get('COCOLIS_CITY'),
+                    "from_country" => 'FR', //TODO
+                    "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
+                    "from_contact_phone" => $phone,
+                    "from_contact_name" => Configuration::get('PS_SHOP_NAME'),
+                    "from_extra_information" => 'Vendeur MarketPlace',
+                    "to_address" => $address->address1,
+                    "to_postal_code" => $address->postcode,
+                    "to_city" => $address->city,
+                    "to_country" => 'FR',
+                    "to_contact_name" => $customer->firstname . ' ' . $customer->lastname,
+                    "to_contact_email" => $customer->email,
+                    "to_contact_phone" => $address->phone
+                ]
+            ];
+
+            $client = $client->getRideClient();
+            $client->create($params);
+            //TODO add Ride with 30 minutes delay
+        }
+    }
+    public function hookModuleRoutes($params)
+    {
+        //URL without Rewrite : http://localhost:8084/index.php?fc=module&module=cocolis&controller=webhooks&id_lang=1
+
+        return array(
+            'module-cocolis-webhooks' => array(
+                'rule' => 'cocolis/webhooks{/:event}',
+                'controller' => 'webhooks',
+                'keywords' => array(
+                    'event' =>   array('regexp' => '[_a-zA-Z0-9-\pL]*', 'param' => 'event'),
+                ),
+                'params' => array(
+                    'fc' => 'module',
+                    'module' => 'cocolis',
+                    'controller' => 'webhooks',
+                )
+            )
+        );
+    }
+
+>>>>>>> Stashed changes
     protected function addCarrier()
     {
         $carrier = new Carrier();

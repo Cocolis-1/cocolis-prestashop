@@ -30,6 +30,11 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'cocolis` (
     PRIMARY KEY  (`id_cocolis`)
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'cocolis_order_history` (
+    `id` int(11) NOT NULL AUTO_INCREMENT, `order_id` INT NOT NULL, `comment` VARCHAR(255) NOT NULL, `created_at` DATE NOT NULL, `webhook_params` VARCHAR(255),
+    PRIMARY KEY  (`id`)
+) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
         return false;
