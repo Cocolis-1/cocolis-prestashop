@@ -12,7 +12,7 @@ class CocolisWebhooksModuleFrontController extends ModuleFrontController
         $orderid = Tools::getValue('external_id');
         $event = Tools::getValue('event');
 
-        if(empty($event) || empty($orderid)){
+        if (empty($event) || empty($orderid)) {
             echo('Event or order ID missing from Webhook');
             exit;
         }

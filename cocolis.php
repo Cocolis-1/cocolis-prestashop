@@ -166,14 +166,13 @@ class Cocolis extends CarrierModule
                 $status = 'success';
             }
 
-            if($status == 'already'){
+            if ($status == 'already') {
                 $this->redirectWithNotifications('already');
-            }else if ($status == 'updated'){
+            } elseif ($status == 'updated') {
                 $this->redirectWithNotifications('updated');
-            }else if($status == 'success'){
+            } elseif ($status == 'success') {
                 $this->redirectWithNotifications('success');
             }
-
         } elseif (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
             $this->postProcess();
         }
@@ -366,24 +365,26 @@ class Cocolis extends CarrierModule
             $sql->where('hash_cart= "' . $cart_hash . '"');
             $products = Db::getInstance()->getValue($sql);
 
-            if(!empty($products)){
+            if (!empty($products)) {
                 $product_ids = unserialize($products);
 
                 $product_ids_2 = array();
-                foreach (Context::getContext()->cart->getProducts() as $product) 
+                foreach (Context::getContext()->cart->getProducts() as $product) {
                     $product_ids_2[] = (int)$product['id_product'] . (int)$product['quantity'];
+                }
             }
 
-            if(empty($products)){
+            if (empty($products)) {
                 $products = Context::getContext()->cart->getProducts();
                 $product_ids = array();
-                foreach ($products as $product) 
+                foreach ($products as $product) {
                     $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
+                }
                 $product_ids = serialize($product_ids);
                 Db::getInstance()->execute("INSERT INTO `"._DB_PREFIX_."cocolis_cart` (`hash_cart`, `products`, `cost`) VALUES ('". $cart_hash ."', '" . $product_ids .  "', 0)");
-            }else if(!empty(array_diff($product_ids_2, $product_ids)) || !empty(array_diff($product_ids, $product_ids_2))){
+            } elseif (!empty(array_diff($product_ids_2, $product_ids)) || !empty(array_diff($product_ids, $product_ids_2))) {
                 $cache = false;
-            }else{
+            } else {
                 $cache = true;
             }
 
@@ -424,8 +425,9 @@ class Cocolis extends CarrierModule
                 $shipping_cost = ($match->estimated_prices->regular) / 100;
                 $products = Context::getContext()->cart->getProducts();
                 $product_ids = array();
-                foreach ($products as $product) 
+                foreach ($products as $product) {
                     $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
+                }
                 $product_ids = serialize($product_ids);
                 Db::getInstance()->execute("UPDATE `"._DB_PREFIX_."cocolis_cart` SET products = '". $product_ids ."', cost = '" . $shipping_cost . "' WHERE hash_cart = '". $cart_hash ."'");
             }
@@ -467,7 +469,8 @@ class Cocolis extends CarrierModule
         }
     }
 
-    public function hookDisplayOrderDetails($params){
+    public function hookDisplayOrderDetails($params)
+    {
         $order = $params['order'];
         $orderCarrier = new OrderCarrier($order->getIdOrderCarrier());
         $carrier = new Carrier($orderCarrier->id_carrier);
@@ -509,8 +512,8 @@ class Cocolis extends CarrierModule
                     'ridelink' => $link, 'order_cocolis' => $results, 'actual_state' => $state,
                     'tracking' => $ride->seller_tracking, 'buyerURL' => $ride->getBuyerURL(), 'sellerURL' => $ride->getSellerURL()
                 ));
-            }else{
-                $this->context->smarty->assign(array('ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state, 
+            } else {
+                $this->context->smarty->assign(array('ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state,
                 'tracking' => '#', 'buyerURL' => '#', 'sellerURL' => '#'));
             }
             return $this->display(__FILE__, '/views/templates/hook/content_ship.tpl');
@@ -560,8 +563,8 @@ class Cocolis extends CarrierModule
                     'ridelink' => $link, 'order_cocolis' => $results, 'actual_state' => $state,
                     'tracking' => $ride->seller_tracking, 'buyerURL' => $ride->getBuyerURL(), 'sellerURL' => $ride->getSellerURL()
                 ));
-            }else{
-                $this->context->smarty->assign(array('ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state, 
+            } else {
+                $this->context->smarty->assign(array('ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state,
                 'tracking' => '#', 'buyerURL' => '#', 'sellerURL' => '#'));
             }
             return $this->display(__FILE__, '/views/templates/hook/content_ship.tpl');
@@ -603,7 +606,7 @@ class Cocolis extends CarrierModule
 
             $phone = Configuration::get('PS_SHOP_PHONE');
             if ($phone == null) {
-                echo ('<p style="color:red;">[Module Cocolis] <b>Numéro de téléphone portable manquant !</b> Vous devez configurer votre boutique afin de fournir un numéro de téléphone valide. </br>Rendez vous dans <b>Paramètres de la boutique > Contact > Magasins</b> et fournissez un numéro de téléphone <b>portable</b>. La commande reste inchangée.</p>');
+                echo('<p style="color:red;">[Module Cocolis] <b>Numéro de téléphone portable manquant !</b> Vous devez configurer votre boutique afin de fournir un numéro de téléphone valide. </br>Rendez vous dans <b>Paramètres de la boutique > Contact > Magasins</b> et fournissez un numéro de téléphone <b>portable</b>. La commande reste inchangée.</p>');
                 exit;
             }
 
