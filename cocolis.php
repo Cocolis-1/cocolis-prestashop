@@ -104,7 +104,7 @@ class Cocolis extends CarrierModule
             $this->registerHook('displayAdminOrderTabShip') &&
             $this->registerHook('displayAdminOrderTabOrder') &&
             $this->registerHook('displayAdminOrder') &&
-            $this->registerHook('displayOrderDetails');
+            $this->registerHook('displayOrderDetail');
     }
 
     public function uninstall()
@@ -469,7 +469,7 @@ class Cocolis extends CarrierModule
         }
     }
 
-    public function hookDisplayOrderDetails($params)
+    public function hookDisplayOrderDetail($params)
     {
         $order = $params['order'];
         $orderCarrier = new OrderCarrier($order->getIdOrderCarrier());
@@ -510,13 +510,13 @@ class Cocolis extends CarrierModule
 
                 $this->context->smarty->assign(array(
                     'ridelink' => $link, 'order_cocolis' => $results, 'actual_state' => $state,
-                    'tracking' => $ride->seller_tracking, 'buyerURL' => $ride->getBuyerURL(), 'sellerURL' => $ride->getSellerURL()
+                    'tracking' => $ride->buyer_tracking, 'buyerURL' => $ride->getBuyerURL(), 'sellerURL' => $ride->getSellerURL()
                 ));
             } else {
                 $this->context->smarty->assign(array('ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state,
                 'tracking' => '#', 'buyerURL' => '#', 'sellerURL' => '#'));
             }
-            return $this->display(__FILE__, '/views/templates/hook/content_ship.tpl');
+            return $this->display(__FILE__, '/views/templates/hook/content_ship_front.tpl');
         }
     }
 

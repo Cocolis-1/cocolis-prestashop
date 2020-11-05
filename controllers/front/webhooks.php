@@ -32,7 +32,7 @@ class CocolisWebhooksModuleFrontController extends ModuleFrontController
             break;
         }
 
-        Logger::addLog('Webhook' . $event . ' intercepté par le module Cocolis pour la commande ' . $orderid);
+        Logger::addLog('Webhook ' . $event . ' intercepté par le module Cocolis pour la commande ' . $orderid);
         Db::getInstance()->execute("INSERT INTO `"._DB_PREFIX_."cocolis_order_history` (`order_id`, `comment`, `created_at`, `webhook_params`) VALUES (". (int) $orderid .", '" . $event .  "', NOW(), '" . json_encode(Tools::getAllValues()) . "')");
         exit;
     }
