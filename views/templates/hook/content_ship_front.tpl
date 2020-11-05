@@ -21,10 +21,11 @@
 
 .card-cocolis{
   display: block;
-  background_color: #ffffff;
+  box-shadow: 2px 2px 8px 0 rgba(0,0,0,.2);
+  background-color: #ffffff;
   border-radius: 5px;
-  padding: 40px;
-  margin-top: 2%;
+  padding: 30px;
+  margin-top: 1%;
   margin-bottom: 2%;
 }
 </style>
@@ -32,7 +33,6 @@
 <script src="https://kit.fontawesome.com/c73bb87b99.js" crossorigin="anonymous"></script>
 
 <div class="card-cocolis" id="cocolis">
-  <img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-left" />
   <h2 style="text-align:center; padding-right: 32px;"><b>Suivi de votre  livraison</b> <b class="font-weight-bold" style="color:#0069d8;">Cocolis</b><h2>
   <div class="d-flex">
     <h4 style="text-align:center;">Référence : <b class="font-weight-bold" style="color:#0069d8;">{$tracking}</b></h4>
