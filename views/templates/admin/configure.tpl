@@ -146,7 +146,7 @@ for (i = 0; i < close.length; i++) {
 
 	</aside>
 	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
-	<h2><strong>{l s="🥳 Merci d'avoir installé Cocolis - Votre module de livraison collaborative !" mod='cocolis'}</strong><br /></h2>
+	<h2><strong>{l s="👋  Merci d'avoir installé Cocolis - Votre module de livraison collaborative !" mod='cocolis'}</strong><br /></h2>
 	<h2>
 		{l s="Vous proposez maintenant sur votre site une livraison collaborative ❤️, économique 💸 et écologique 🍃" mod='cocolis'}<br />
 		{l s="Vos clients pourront ainsi trouver le meilleur transporteur pour effectuer leur livraison." mod='cocolis'}

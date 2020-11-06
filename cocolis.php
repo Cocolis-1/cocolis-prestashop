@@ -26,7 +26,7 @@
  */
 
 
-require("vendor/autoload.php");
+require_once __DIR__ . '/vendor/autoload.php';
 
 use Cocolis\Api\Client;
 
@@ -51,7 +51,6 @@ class Cocolis extends CarrierModule
         $this->bootstrap = true;
 
         parent::__construct();
-
         $this->displayName = $this->l('Cocolis');
         $this->description = $this->l('Utilisez cocolis.fr comme mode de livraison. Spécialisé dans la livraison communautaire, cocolis vous permettra d\'envoyer des colis hors format.');
 
@@ -72,7 +71,10 @@ class Cocolis extends CarrierModule
             return false;
         }
 
-        $carrier = $this->addCarrier();
+        if (Configuration::get('COCOLIS_CARRIER_ID') == null) {
+            $carrier = $this->addCarrier();
+        }
+
         $this->addZones($carrier);
         $this->addGroups($carrier);
         $this->addRanges($carrier);
@@ -101,14 +103,13 @@ class Cocolis extends CarrierModule
             $this->registerHook('displayAdminOrderContentOrder') &&
             $this->registerHook('displayAdminOrderTabShip') &&
             $this->registerHook('displayAdminOrderTabOrder') &&
-            $this->registerHook('displayAdminOrder');
+            $this->registerHook('displayAdminOrder') &&
+            $this->registerHook('displayOrderDetail');
     }
 
     public function uninstall()
     {
         Configuration::deleteByName('COCOLIS_LIVE_MODE');
-        Configuration::deleteByName('COCOLIS_CARRIER_ID');
-        Configuration::deleteByName('COCOLIS_WEBHOOK_ID');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -116,10 +117,10 @@ class Cocolis extends CarrierModule
     }
 
     /**
-    * Redirects to redirect_after link.
-    *
-    * @see $redirect_after
-    */
+     * Redirects to redirect_after link.
+     *
+     * @see $redirect_after
+     */
     protected function redirect()
     {
         Tools::redirectLink($this->redirect_after);
@@ -143,30 +144,34 @@ class Cocolis extends CarrierModule
 
         if (((bool)Tools::isSubmit('webhooks')) == true) {
             $client = $this->authenticatedClient();
-            if (!Configuration::get('COCOLIS_WEBHOOK_ID')) {
-                $id_webhooks = [];
-                $webhook = $client->getWebhookClient()->create(['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published', 'active' => true]);
-                array_push($id_webhooks, $webhook->id);
-                $webhook = $client->getWebhookClient()->create(['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_expired', 'active' => true]);
-                array_push($id_webhooks, $webhook->id);
-                $webhook = $client->getWebhookClient()->create(['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_accepted', 'active' => true]);
-                array_push($id_webhooks, $webhook->id);
-                $webhook = $client->getWebhookClient()->create(['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_cancelled', 'active' => true]);
-                array_push($id_webhooks, $webhook->id);
-                $webhook = $client->getWebhookClient()->create(['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_completed', 'active' => true]);
-                array_push($id_webhooks, $webhook->id);
-                Configuration::updateValue('COCOLIS_WEBHOOK_ID', serialize($id_webhooks));
-                $this->redirectWithNotifications('success');
-            } elseif ($client->getWebhookClient()->get(unserialize(Configuration::get('COCOLIS_WEBHOOK_ID'))[0])->url != Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published') {
-                $config = unserialize(Configuration::get('COCOLIS_WEBHOOK_ID'));
-                $client->getWebhookClient()->update(['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_published', 'active' => true], $config[0]);
-                $client->getWebhookClient()->update(['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=ride_expired', 'active' => true], $config[1]);
-                $client->getWebhookClient()->update(['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_accepted', 'active' => true], $config[2]);
-                $client->getWebhookClient()->update(['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_cancelled', 'active' => true], $config[3]);
-                $client->getWebhookClient()->update(['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/cocolis/webhooks?event=offer_completed', 'active' => true], $config[4]);
-                $this->redirectWithNotifications('updated');
+            $webhooks = $client->getWebhookClient()->getAll();
+            $status = 'pending';
+
+            if (!empty($webhooks)) {
+                foreach ($webhooks as $webhook) {
+                    if (strpos($webhook->url, Tools::getShopDomainSsl(true)) !== false) {
+                        $status = 'already';
+                    } else {
+                        $client->getWebhookClient()->update(['event' => $webhook->event, 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=' . $webhook->event, 'active' => true], $webhook->id);
+                        $status = 'updated';
+                    }
+                }
             } else {
+                // Previously /cocolis/webhooks&event=blabla but not working with all versions
+                $client->getWebhookClient()->create(['event' => 'ride_published', 'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis&controller=webhooks&event=ride_published', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'ride_expired', 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=ride_expired', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'offer_accepted', 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_accepted', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'offer_cancelled', 'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis&controller=webhooks&event=offer_cancelled', 'active' => true]);
+                $client->getWebhookClient()->create(['event' => 'offer_completed', 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_completed', 'active' => true]);
+                $status = 'success';
+            }
+
+            if ($status == 'already') {
                 $this->redirectWithNotifications('already');
+            } elseif ($status == 'updated') {
+                $this->redirectWithNotifications('updated');
+            } elseif ($status == 'success') {
+                $this->redirectWithNotifications('success');
             }
         } elseif (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
             $this->postProcess();
@@ -345,13 +350,45 @@ class Cocolis extends CarrierModule
     {
         $dimensions = 0;
         $total = 0;
+        $cart_hash = hash('md5', Context::getContext()->cart->id . Context::getContext()->cart->id_address_delivery);
+        $cache = false;
+
         if (Context::getContext()->customer->logged == true) {
             $id_address_delivery = Context::getContext()->cart->id_address_delivery;
             $address = new Address($id_address_delivery);
 
             $from_zip = Configuration::get('COCOLIS_ZIP');
 
-            if (!is_null($address->postcode)) {
+            $sql = new DbQuery();
+            $sql->from("cocolis_cart");
+            $sql->select('products');
+            $sql->where('hash_cart= "' . $cart_hash . '"');
+            $products = Db::getInstance()->getValue($sql);
+
+            if (!empty($products)) {
+                $product_ids = unserialize($products);
+
+                $product_ids_2 = array();
+                foreach (Context::getContext()->cart->getProducts() as $product) {
+                    $product_ids_2[] = (int)$product['id_product'] . (int)$product['quantity'];
+                }
+            }
+
+            if (empty($products)) {
+                $products = Context::getContext()->cart->getProducts();
+                $product_ids = array();
+                foreach ($products as $product) {
+                    $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
+                }
+                $product_ids = serialize($product_ids);
+                Db::getInstance()->execute("INSERT INTO `"._DB_PREFIX_."cocolis_cart` (`hash_cart`, `products`, `cost`) VALUES ('". $cart_hash ."', '" . $product_ids .  "', 0)");
+            } elseif (!empty(array_diff($product_ids_2, $product_ids)) || !empty(array_diff($product_ids, $product_ids_2))) {
+                $cache = false;
+            } else {
+                $cache = true;
+            }
+
+            if (!is_null($address->postcode) && $cache == false) {
                 $to_zip = $address->postcode;
 
                 /**
@@ -359,9 +396,10 @@ class Cocolis extends CarrierModule
                  * Return the price sent by the API
                  */
 
-                $client = $this->authenticatedClient();
 
                 $products = Context::getContext()->cart->getProducts();
+
+                $client = $this->authenticatedClient();
                 foreach ($products as $product) {
                     $width = (int) $product['width'];
                     $depth = (int) $product['depth'];
@@ -383,17 +421,23 @@ class Cocolis extends CarrierModule
 
                 $dimensions = round($dimensions, 2);
 
-                try {
-                    $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
-                } catch (GuzzleHttp\Exception\ClientException $e) {
-                    $response = $e->getResponse();
-                    $responseBodyAsString = $response->getBody()->getContents();
-                    var_dump($responseBodyAsString);
-                    exit;
-                }
+                $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
                 $shipping_cost = ($match->estimated_prices->regular) / 100;
+                $products = Context::getContext()->cart->getProducts();
+                $product_ids = array();
+                foreach ($products as $product) {
+                    $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
+                }
+                $product_ids = serialize($product_ids);
+                Db::getInstance()->execute("UPDATE `"._DB_PREFIX_."cocolis_cart` SET products = '". $product_ids ."', cost = '" . $shipping_cost . "' WHERE hash_cart = '". $cart_hash ."'");
             }
         }
+
+        $sql = new DbQuery();
+        $sql->from("cocolis_cart");
+        $sql->select('cost');
+        $sql->where('hash_cart= "' . $cart_hash . '"');
+        $shipping_cost = Db::getInstance()->getValue($sql);
 
         return $shipping_cost;
     }
@@ -420,14 +464,62 @@ class Cocolis extends CarrierModule
 
     public function hookDisplayAdminOrderTabShip($params)
     {
+        if ($carrier->external_module_name == "cocolis") {
+            return $this->display(__FILE__, '/views/templates/hook/tab_ship.tpl');
+        }
+    }
+
+    public function hookDisplayOrderDetail($params)
+    {
         $order = $params['order'];
         $orderCarrier = new OrderCarrier($order->getIdOrderCarrier());
         $carrier = new Carrier($orderCarrier->id_carrier);
 
         if ($carrier->external_module_name == "cocolis") {
-            return $this->display(__FILE__, '/views/templates/hook/tab_ship.tpl');
+            $sql = new DbQuery();
+            $sql->from("cocolis_order_history");
+            $sql->select('*');
+            $sql->orderby('id');
+            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $results = Db::getInstance()->executes($sql);
+
+            $sql = new DbQuery();
+            $sql->from("cocolis_order_history");
+            $sql->select('comment');
+            $sql->orderby('id DESC');
+            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $state = Db::getInstance()->getValue($sql);
+
+            $sql = new DbQuery();
+            $sql->from("cocolis_order_history");
+            $sql->select('webhook_params');
+            $sql->orderby('id DESC');
+            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $webhook = Db::getInstance()->getValue($sql);
+
+            $array = json_decode($webhook, true);
+
+            $resource_id = $array['resource_id'];
+            if (!empty($resource_id)) {
+                $client = $this->authenticatedClient();
+                $client = $client->getRideClient();
+                $ride = $client->get($resource_id);
+                $slug = $ride->slug;
+
+                $link = Configuration::get('COCOLIS_LIVE_MODE') ? 'https://cocolis.fr/ride-public/' . $slug : 'https://sandbox.cocolis.fr/ride-public/' . $slug;
+
+                $this->context->smarty->assign(array(
+                    'ridelink' => $link, 'order_cocolis' => $results, 'actual_state' => $state,
+                    'tracking' => $ride->buyer_tracking, 'buyerURL' => $ride->getBuyerURL(), 'sellerURL' => $ride->getSellerURL()
+                ));
+            } else {
+                $this->context->smarty->assign(array('ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state,
+                'tracking' => '#', 'buyerURL' => '#', 'sellerURL' => '#'));
+            }
+            return $this->display(__FILE__, '/views/templates/hook/content_ship_front.tpl');
         }
     }
+
     public function hookDisplayAdminOrderContentShip($params)
     {
         $order = $params['order'];
@@ -435,6 +527,46 @@ class Cocolis extends CarrierModule
         $carrier = new Carrier($orderCarrier->id_carrier);
 
         if ($carrier->external_module_name == "cocolis") {
+            $sql = new DbQuery();
+            $sql->from("cocolis_order_history");
+            $sql->select('*');
+            $sql->orderby('id');
+            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $results = Db::getInstance()->executes($sql);
+
+            $sql = new DbQuery();
+            $sql->from("cocolis_order_history");
+            $sql->select('comment');
+            $sql->orderby('id DESC');
+            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $state = Db::getInstance()->getValue($sql);
+
+            $sql = new DbQuery();
+            $sql->from("cocolis_order_history");
+            $sql->select('webhook_params');
+            $sql->orderby('id DESC');
+            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $webhook = Db::getInstance()->getValue($sql);
+
+            $array = json_decode($webhook, true);
+
+            $resource_id = $array['resource_id'];
+            if (!empty($resource_id)) {
+                $client = $this->authenticatedClient();
+                $client = $client->getRideClient();
+                $ride = $client->get($resource_id);
+                $slug = $ride->slug;
+
+                $link = Configuration::get('COCOLIS_LIVE_MODE') ? 'https://cocolis.fr/ride-public/' . $slug : 'https://sandbox.cocolis.fr/ride-public/' . $slug;
+
+                $this->context->smarty->assign(array(
+                    'ridelink' => $link, 'order_cocolis' => $results, 'actual_state' => $state,
+                    'tracking' => $ride->seller_tracking, 'buyerURL' => $ride->getBuyerURL(), 'sellerURL' => $ride->getSellerURL()
+                ));
+            } else {
+                $this->context->smarty->assign(array('ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state,
+                'tracking' => '#', 'buyerURL' => '#', 'sellerURL' => '#'));
+            }
             return $this->display(__FILE__, '/views/templates/hook/content_ship.tpl');
         }
     }
@@ -500,9 +632,24 @@ class Cocolis extends CarrierModule
                 ]);
             }
 
+            $images = [];
+
+            $products = $order->getProducts();
+
+            foreach ($products as $product) {
+                $id_product = $product['product_id'];
+                $id_image = Product::getCover($id_product);
+                if (sizeof($id_image) > 0) {
+                    $image = new Image($id_image['id_image']);
+                    // get image full URL
+                    $image_url = Tools::getShopDomainSsl(true) . _THEME_PROD_DIR_ . $image->getExistingImgPath() . ".jpg";
+                    array_push($images, $image_url);
+                }
+            }
 
             $params = [
                 "description" => "Commande envoyée via module PrestaShop du partenaire",
+                "external_id" => $id_order,
                 "from_address" => "Carcassonne",
                 "to_address" => $composed_address,
                 "from_lat" => 43.212498, //TODO
@@ -518,8 +665,8 @@ class Cocolis extends CarrierModule
                 "price" => (int) $order->total_shipping_tax_incl * 100,
                 "volume" => $dimensions,
                 "environment" => "objects",
+                "photo_urls" => $images,
                 "rider_extra_information" => "Bonjour, Je souhaite envoyer les objets suivants : " . implode(", ", $arrayname) . '. Merci !' . " Achat effectué sur une marketplace",
-                "photos" => [],
                 "ride_objects_attributes" => $arrayproducts,
                 "ride_delivery_information_attributes" => [
                     "from_address" => Configuration::get('COCOLIS_ADDRESS'),
@@ -537,24 +684,18 @@ class Cocolis extends CarrierModule
                     "to_contact_name" => $customer->firstname . ' ' . $customer->lastname,
                     "to_contact_email" => $customer->email,
                     "to_contact_phone" => $address->phone
-                ]
+                ],
             ];
 
             $client = $client->getRideClient();
-            try {
-                $client->create($params);
-            } catch (GuzzleHttp\Exception\ClientException $e) {
-                $response = $e->getResponse();
-                $responseBodyAsString = $response->getBody()->getContents();
-                var_dump($responseBodyAsString);
-                exit;
-            }
+            $client->create($params);
             //TODO add Ride with 30 minutes delay
         }
     }
     public function hookModuleRoutes($params)
     {
         //URL without Rewrite : http://localhost:8084/index.php?fc=module&module=cocolis&controller=webhooks&id_lang=1
+
         return array(
             'module-cocolis-webhooks' => array(
                 'rule' => 'cocolis/webhooks{/:event}',
