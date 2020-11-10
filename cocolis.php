@@ -423,9 +423,9 @@ class Cocolis extends CarrierModule
                 $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
                 $shipping_cost = ($match->estimated_prices->regular) / 100;
 
-                if($total >= 500){
+                if ($total >= 500) {
                     $shipping_cost_insurance = ($match->estimated_prices->with_insurance) / 100;
-                }else{
+                } else {
                     $shipping_cost_insurance = 0;
                 }
 
@@ -451,14 +451,17 @@ class Cocolis extends CarrierModule
         $sql->where('hash_cart= "' . $cart_hash . '"');
         $shipping_cost_insurance = Db::getInstance()->getValue($sql);
 
-        if($shipping_cost_insurance == 0)
+        if ($shipping_cost_insurance == 0) {
             $shipping_cost_insurance = false;
+        }
 
-        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID')))
+        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
             return $shipping_cost_insurance;
+        }
          
-        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ID')))
+        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
             return $shipping_cost;
+        }
     }
 
     public function authenticatedClient()
