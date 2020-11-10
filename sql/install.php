@@ -36,7 +36,7 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'cocolis_order_history` 
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
 $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'cocolis_cart` (
-    `id` int(11) NOT NULL AUTO_INCREMENT, `hash_cart` VARCHAR(255) NOT NULL, `products` VARCHAR(255) NOT NULL, `cost` DOUBLE NULL,
+    `id` int(11) NOT NULL AUTO_INCREMENT, `hash_cart` VARCHAR(255) NOT NULL, `products` VARCHAR(255) NOT NULL, `cost` DOUBLE NULL, `cost_insurance` DOUBLE NULL,
     PRIMARY KEY  (`id`)
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 

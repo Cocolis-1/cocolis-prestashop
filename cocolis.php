@@ -396,7 +396,6 @@ class Cocolis extends CarrierModule
                  * Return the price sent by the API
                  */
 
-
                 $products = Context::getContext()->cart->getProducts();
 
                 $client = $this->authenticatedClient();
@@ -423,13 +422,20 @@ class Cocolis extends CarrierModule
 
                 $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
                 $shipping_cost = ($match->estimated_prices->regular) / 100;
+
+                if($total >= 500){
+                    $shipping_cost_insurance = ($match->estimated_prices->with_insurance) / 100;
+                }else{
+                    $shipping_cost_insurance = 0;
+                }
+
                 $products = Context::getContext()->cart->getProducts();
                 $product_ids = array();
                 foreach ($products as $product) {
                     $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
                 }
                 $product_ids = serialize($product_ids);
-                Db::getInstance()->execute("UPDATE `"._DB_PREFIX_."cocolis_cart` SET products = '". $product_ids ."', cost = '" . $shipping_cost . "' WHERE hash_cart = '". $cart_hash ."'");
+                Db::getInstance()->execute("UPDATE `"._DB_PREFIX_."cocolis_cart` SET products = '". $product_ids ."', cost = '" . $shipping_cost . "', cost_insurance = '" . $shipping_cost_insurance . "' WHERE hash_cart = '". $cart_hash ."'");
             }
         }
 
@@ -439,7 +445,20 @@ class Cocolis extends CarrierModule
         $sql->where('hash_cart= "' . $cart_hash . '"');
         $shipping_cost = Db::getInstance()->getValue($sql);
 
-        return $shipping_cost;
+        $sql = new DbQuery();
+        $sql->from("cocolis_cart");
+        $sql->select('cost_insurance');
+        $sql->where('hash_cart= "' . $cart_hash . '"');
+        $shipping_cost_insurance = Db::getInstance()->getValue($sql);
+
+        if($shipping_cost_insurance == 0)
+            $shipping_cost_insurance = false;
+
+        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID')))
+            return $shipping_cost_insurance;
+         
+        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ID')))
+            return $shipping_cost;
     }
 
     public function authenticatedClient()
@@ -582,6 +601,7 @@ class Cocolis extends CarrierModule
 
         if ($carrier->external_module_name == "cocolis") {
             $address = new Address($order->id_address_delivery);
+            $from_composed_address = Configuration::get('COCOLIS_ADDRESS') . ', ' . Configuration::get('COCOLIS_ZIP') . ' ' . Configuration::get('COCOLIS_CITY');
             $composed_address = $address->address1 . ', ' . $address->postcode . ' ' . $address->city;
 
             $from_date = new DateTime('NOW');
@@ -650,12 +670,8 @@ class Cocolis extends CarrierModule
             $params = [
                 "description" => "Commande envoyée via module PrestaShop du partenaire",
                 "external_id" => $id_order,
-                "from_address" => "Carcassonne",
+                "from_address" => $from_composed_address,
                 "to_address" => $composed_address,
-                "from_lat" => 43.212498, //TODO
-                "to_lat" => 43.599120, //TODO
-                "from_lng" => 2.350351, //TODO
-                "to_lng" => 1.444391, //TODO
                 "from_is_flexible" => true,
                 "from_pickup_date" => $from_date,
                 "to_is_flexible" => true,
