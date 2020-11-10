@@ -494,6 +494,9 @@ class Cocolis extends CarrierModule
 
     public function hookDisplayAdminOrderTabShip($params)
     {
+        $order = $params['order'];
+        $orderCarrier = new OrderCarrier($order->getIdOrderCarrier());
+        $carrier = new Carrier($orderCarrier->id_carrier);
         if ($carrier->external_module_name == "cocolis") {
             return $this->display(__FILE__, '/views/templates/hook/tab_ship.tpl');
         }
