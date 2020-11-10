@@ -37,6 +37,7 @@ if (!defined('_PS_VERSION_')) {
 class Cocolis extends CarrierModule
 {
     protected $config_form = false;
+    public $id_carrier;
 
     public function __construct()
     {
@@ -73,11 +74,18 @@ class Cocolis extends CarrierModule
 
         if (Configuration::get('COCOLIS_CARRIER_ID') == null) {
             $carrier = $this->addCarrier();
+            $this->addZones($carrier);
+            $this->addGroups($carrier);
+            $this->addRanges($carrier);
         }
 
-        $this->addZones($carrier);
-        $this->addGroups($carrier);
-        $this->addRanges($carrier);
+        if (Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID') == null) {
+            $carrier_insurance = $this->addCarrierInsurance();
+            $this->addZones($carrier_insurance);
+            $this->addGroups($carrier_insurance);
+            $this->addRanges($carrier_insurance);
+        }
+
         Configuration::updateValue('COCOLIS_LIVE_MODE', false);
         Configuration::updateValue('COCOLIS_VOLUME', 0.5);
         Configuration::updateValue('COCOLIS_HEIGHT', 50);
@@ -88,8 +96,6 @@ class Cocolis extends CarrierModule
         Configuration::updateValue('COCOLIS_ZIP', 75000);
         Configuration::updateValue('COCOLIS_CITY', "Paris");
         Configuration::updateValue('COCOLIS_COUNTRY', "France");
-
-        Configuration::updateValue('COCOLIS_CARRIER_ID', $carrier->id_reference);
         include(dirname(__FILE__) . '/sql/install.php');
 
 
@@ -110,6 +116,8 @@ class Cocolis extends CarrierModule
     public function uninstall()
     {
         Configuration::deleteByName('COCOLIS_LIVE_MODE');
+        Configuration::deleteByName('COCOLIS_CARRIER_ID');
+        Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -420,7 +428,7 @@ class Cocolis extends CarrierModule
 
                 $dimensions = round($dimensions, 2);
 
-                $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total);
+                $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total * 100);
                 $shipping_cost = ($match->estimated_prices->regular) / 100;
 
                 if ($total >= 500) {
@@ -454,13 +462,13 @@ class Cocolis extends CarrierModule
         if ($shipping_cost_insurance == 0) {
             $shipping_cost_insurance = false;
         }
-
-        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
-            return $shipping_cost_insurance;
-        }
          
         if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
             return $shipping_cost;
+        }
+
+        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
+            return $shipping_cost_insurance;
         }
     }
 
@@ -708,7 +716,6 @@ class Cocolis extends CarrierModule
 
             $client = $client->getRideClient();
             $client->create($params);
-            //TODO add Ride with 30 minutes delay
         }
     }
     public function hookModuleRoutes($params)
@@ -735,7 +742,7 @@ class Cocolis extends CarrierModule
     {
         $carrier = new Carrier();
 
-        $carrier->name = $this->l('Livraison collaborative Cocolis');
+        $carrier->name = $this->l('Livraison Cocolis');
         $carrier->is_module = true;
         $carrier->active = 1;
         $carrier->range_behavior = 1;
@@ -752,6 +759,33 @@ class Cocolis extends CarrierModule
         if ($carrier->add() == true) {
             @copy(dirname(__FILE__) . '/views/img/carrier_image.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int)$carrier->id . '.jpg');
             Configuration::updateValue('COCOLIS_CARRIER_ID', (int)$carrier->id);
+            return $carrier;
+        }
+
+        return false;
+    }
+
+    protected function addCarrierInsurance()
+    {
+        $carrier = new Carrier();
+
+        $carrier->name = $this->l('Livraison Cocolis avec assurance');
+        $carrier->is_module = true;
+        $carrier->active = 1;
+        $carrier->range_behavior = 1;
+        $carrier->need_range = 1;
+        $carrier->shipping_external = true;
+        $carrier->range_behavior = 0;
+        $carrier->external_module_name = $this->name;
+        $carrier->shipping_method = 2;
+
+        foreach (Language::getLanguages() as $lang) {
+            $carrier->delay[$lang['id_lang']] = $this->l('Délai variable');
+        }
+
+        if ($carrier->add() == true) {
+            @copy(dirname(__FILE__) . '/views/img/carrier_image.jpg', _PS_SHIP_IMG_DIR_ . '/' . (int)$carrier->id . '.jpg');
+            Configuration::updateValue('COCOLIS_CARRIER_ASSURANCE_ID', (int)$carrier->id);
             return $carrier;
         }
 
