@@ -35,9 +35,9 @@ Vous pouvez le faire manuellement via un client FTP tel que FileZilla ou en lign
 
 Une fois le module dans le répertoir, il suffit de se connecter au back-office de votre PrestaShop et de vous rendre dans le Catalogue des modules.
 
-Recherchez : **Cocolis** puis cliquer tout simplement sur **Installer**.
+Recherchez : **Cocolis** puis cliquer tout simplement sur **Install**.
 
-[Capture d'écran Catalogue Modules]
+![Capture d'écran Catalogue Modules](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/install-module_cagxy9.png)
 
 ## Documentation API
 

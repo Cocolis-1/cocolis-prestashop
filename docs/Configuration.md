@@ -2,7 +2,7 @@
 
 Une fois le module installé, il est nécessaire d'effectuer quelques réglages.
 
-[Capture d'écran de la page de configuration]
+![Capture d'écran de la page de configuration](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/config-module_u3nv4c.png)
 
 ## Environnements
 
@@ -30,7 +30,7 @@ Pour calculer les frais de livraison, le module doit se baser sur l'adresse de v
 
 L'adresse postale utilisée par le module se trouve dans la configuration du module, **vous devez obligatoirement la configurer**.
 
-[Capture d'écran Expedition]
+![Capture d'écran Expedition](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/from-config-module_klm3ky.png)
 
 ## Numéro de téléphone
 
@@ -50,6 +50,7 @@ Activez l'option "**phone_number**" puis validez.
 
 C'est terminé pour la configuration dans le PrestaShop ! Il manque plus que l'authentification et tout sera bon.
 
+![Téléphone](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/champ-obligatoire_ft802b.png)
 
 ## Authentification
 
@@ -57,5 +58,3 @@ C'est terminé pour la configuration dans le PrestaShop ! Il manque plus que l'a
 > [Demander un compte développeur](https://doc.cocolis.fr/docs/cocolis-api/docs/Tutoriel-impl%C3%A9mentation/Getting-Started.md#2-demander-un-compte-d%C3%A9veloppeur)
 
 Renseignez par la suite les **champs d'authentification** qui se trouvent en bas de page.
-
-[Capture d'écran Authentification]
