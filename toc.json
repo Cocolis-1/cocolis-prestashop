@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "type": "item",
+      "title": "Introduction",
+      "uri": "docs/Introduction.md"
+    },
+    {
+      "type": "divider",
+      "title": "Installation & Configuration"
+    },
+    {
+      "type": "item",
+      "title": "Configurer",
+      "uri": "docs/Configuration.md"
+    }
+  ]
+}
