@@ -98,6 +98,6 @@
           </div>
         {/if}
 
-        <h4 style="padding-top: 30px;">Vous pouvez suivre la progression <b>vendeur</b> : <a href="{$sellerURL}">ici</a></h4>
+        <h4 style="padding-top: 30px;">Lien vers la page de suivi Cocolis : <a href="{$sellerURL}">ici</a></h4>
       </div>
 </div>

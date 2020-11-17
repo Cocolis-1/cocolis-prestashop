@@ -32,7 +32,7 @@ L'adresse postale utilisée par le module se trouve dans la configuration du mod
 
 ![Capture d'écran Expedition](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/from-config-module_klm3ky.png)
 
-## Numéro de téléphone
+## Numéro de téléphonee
 
 Le numéro de téléphone du client et du vendeur est **obligatoire** pour le bon déroulé des livraisons.
 
@@ -46,7 +46,7 @@ Vous devez aussi rendre obligatoire la saisie du numéro de téléphone pour tou
 
 - Clients > Adresses >  Définir les champs requis pour cette section
 
-Activez l'option "**phone_number**" puis validez.
+Activez l'option "**phone**", "**phone_mobile**" puis validez.
 
 C'est terminé pour la configuration dans le PrestaShop ! Il manque plus que l'authentification et tout sera bon.
 

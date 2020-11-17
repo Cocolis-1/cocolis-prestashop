@@ -590,7 +590,7 @@ class Cocolis extends CarrierModule
                 $ride = $client->get($resource_id);
                 $slug = $ride->slug;
 
-                $link = Configuration::get('COCOLIS_LIVE_MODE') ? 'https://cocolis.fr/ride-public/' . $slug : 'https://sandbox.cocolis.fr/ride-public/' . $slug;
+                $link = Configuration::get('COCOLIS_LIVE_MODE') ? 'https://cocolis.fr/ride-public/' . $slug . '-' . $resource_id : 'https://sandbox.cocolis.fr/ride-public/' . $slug . '-' . $resource_id;
 
                 $this->context->smarty->assign(array(
                     'ridelink' => $link, 'order_cocolis' => $results, 'actual_state' => $state,
@@ -681,6 +681,12 @@ class Cocolis extends CarrierModule
                 }
             }
 
+            if ($orderCarrier->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
+                $insurance = true;
+            }else{
+                $insurance = false;
+            }
+
             $params = [
                 "description" => "Commande envoyée via module PrestaShop du partenaire",
                 "external_id" => $id_order,
@@ -690,7 +696,10 @@ class Cocolis extends CarrierModule
                 "to_postal_code" => $address->postcode,
                 "from_is_flexible" => true,
                 "from_pickup_date" => $from_date,
+                "from_need_help" => true,
                 "to_is_flexible" => true,
+                "to_need_help" => true,
+                "with_insurance" => $insurance,
                 "to_pickup_date" => $to_date,
                 "is_passenger" => false,
                 "is_packaged" => true,
@@ -704,7 +713,7 @@ class Cocolis extends CarrierModule
                     "from_address" => Configuration::get('COCOLIS_ADDRESS'),
                     "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
                     "from_city" => Configuration::get('COCOLIS_CITY'),
-                    "from_country" => 'FR', //TODO
+                    "from_country" => 'FR',
                     "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
                     "from_contact_phone" => $phone,
                     "from_contact_name" => Configuration::get('PS_SHOP_NAME'),
@@ -718,6 +727,19 @@ class Cocolis extends CarrierModule
                     "to_contact_phone" => $address->phone
                 ],
             ];
+
+            if($insurance){
+                array_push($params['ride_delivery_information_attributes'], 
+                    ["insurance_firstname" => $customer->firstname,
+                    "insurance_lastname" =>  $customer->lastname,
+                    "insurance_address" => $address->address1,
+                    "insurance_postalcode" => $address->postcode,
+                    "insurance_city" => $address->city,
+                    "insurance_country" => $address->country,
+                    "insurance_birthdate" => $customer->birthdate
+                    ]
+                );
+            }
 
             $client = $client->getRideClient();
             $client->create($params);
