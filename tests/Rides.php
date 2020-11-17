@@ -2,7 +2,7 @@
 
 class Rides
 {
-  public function testCreate() {
-    
-  }
+    public function testCreate()
+    {
+    }
 }

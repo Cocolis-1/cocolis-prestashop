@@ -4,6 +4,13 @@ Une fois le module installé, il est nécessaire d'effectuer quelques réglages.
 
 ![Capture d'écran de la page de configuration](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/config-module_u3nv4c.png)
 
+## Authentification
+
+> Avant toute chose, vous devez avoir un compte développeur, vous trouverez plus d'information ici :
+> [Demander un compte développeur](https://doc.cocolis.fr/docs/cocolis-api/docs/Tutoriel-impl%C3%A9mentation/Getting-Started.md#2-demander-un-compte-d%C3%A9veloppeur)
+
+Renseignez par la suite les **champs d'authentification** qui se trouvent en bas de page.
+
 ## Environnements
 
 Il existe **deux environnements**, l'environnement de test (**sandbox**) et l'environnement de **production**, vous pouvez en savoir plus [ici](https://doc.cocolis.fr/docs/cocolis-api/docs/Installation-et-utilisation/01-Environnements.md).
@@ -46,15 +53,8 @@ Vous devez aussi rendre obligatoire la saisie du numéro de téléphone pour tou
 
 - Clients > Adresses >  Définir les champs requis pour cette section
 
-Activez l'option "**phone**", "**phone_mobile**" puis validez.
+Activez l'option "**phone**" ET "**phone_mobile**" puis validez.
 
-C'est terminé pour la configuration dans le PrestaShop ! Il manque plus que l'authentification et tout sera bon.
+C'est terminé pour la configuration dans le PrestaShop !
 
 ![Téléphone](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/champ-obligatoire_ft802b.png)
-
-## Authentification
-
-> Avant toute chose, vous devez avoir un compte développeur, vous trouverez plus d'information ici :
-> [Demander un compte développeur](https://doc.cocolis.fr/docs/cocolis-api/docs/Tutoriel-impl%C3%A9mentation/Getting-Started.md#2-demander-un-compte-d%C3%A9veloppeur)
-
-Renseignez par la suite les **champs d'authentification** qui se trouvent en bas de page.

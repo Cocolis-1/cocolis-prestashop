@@ -116,8 +116,6 @@ class Cocolis extends CarrierModule
     public function uninstall()
     {
         Configuration::deleteByName('COCOLIS_LIVE_MODE');
-        Configuration::deleteByName('COCOLIS_CARRIER_ID');
-        Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -389,7 +387,7 @@ class Cocolis extends CarrierModule
                     $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
                 }
                 $product_ids = serialize($product_ids);
-                Db::getInstance()->execute("INSERT INTO `"._DB_PREFIX_."cocolis_cart` (`hash_cart`, `products`, `cost`) VALUES ('". $cart_hash ."', '" . $product_ids .  "', 0)");
+                Db::getInstance()->execute("INSERT INTO `" . _DB_PREFIX_ . "cocolis_cart` (`hash_cart`, `products`, `cost`) VALUES ('" . $cart_hash . "', '" . $product_ids .  "', 0)");
             } elseif (!empty(array_diff($product_ids_2, $product_ids)) || !empty(array_diff($product_ids, $product_ids_2))) {
                 $cache = false;
             } else {
@@ -443,7 +441,7 @@ class Cocolis extends CarrierModule
                     $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
                 }
                 $product_ids = serialize($product_ids);
-                Db::getInstance()->execute("UPDATE `"._DB_PREFIX_."cocolis_cart` SET products = '". $product_ids ."', cost = '" . $shipping_cost . "', cost_insurance = '" . $shipping_cost_insurance . "' WHERE hash_cart = '". $cart_hash ."'");
+                Db::getInstance()->execute("UPDATE `" . _DB_PREFIX_ . "cocolis_cart` SET products = '" . $product_ids . "', cost = '" . $shipping_cost . "', cost_insurance = '" . $shipping_cost_insurance . "' WHERE hash_cart = '" . $cart_hash . "'");
             }
         }
 
@@ -462,7 +460,7 @@ class Cocolis extends CarrierModule
         if ($shipping_cost_insurance == 0) {
             $shipping_cost_insurance = false;
         }
-         
+
         if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
             return $shipping_cost;
         }
@@ -546,8 +544,10 @@ class Cocolis extends CarrierModule
                     'tracking' => $ride->buyer_tracking, 'buyerURL' => $ride->getBuyerURL(), 'sellerURL' => $ride->getSellerURL()
                 ));
             } else {
-                $this->context->smarty->assign(array('ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state,
-                'tracking' => '#', 'buyerURL' => '#', 'sellerURL' => '#'));
+                $this->context->smarty->assign(array(
+                    'ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state,
+                    'tracking' => '#', 'buyerURL' => '#', 'sellerURL' => '#'
+                ));
             }
             return $this->display(__FILE__, '/views/templates/hook/content_ship_front.tpl');
         }
@@ -597,8 +597,10 @@ class Cocolis extends CarrierModule
                     'tracking' => $ride->seller_tracking, 'buyerURL' => $ride->getBuyerURL(), 'sellerURL' => $ride->getSellerURL()
                 ));
             } else {
-                $this->context->smarty->assign(array('ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state,
-                'tracking' => '#', 'buyerURL' => '#', 'sellerURL' => '#'));
+                $this->context->smarty->assign(array(
+                    'ridelink' => '#', 'order_cocolis' => $results, 'actual_state' => $state,
+                    'tracking' => '#', 'buyerURL' => '#', 'sellerURL' => '#'
+                ));
             }
             return $this->display(__FILE__, '/views/templates/hook/content_ship.tpl');
         }
@@ -651,6 +653,9 @@ class Cocolis extends CarrierModule
 
                 if ($width == 0 || $depth == 0 || $height == 0) {
                     $dimensions += Configuration::get('COCOLIS_VOLUME') * (int) $product['quantity'];
+                    $width = Configuration::get('COCOLIS_WIDTH');
+                    $depth = Configuration::get('COCOLIS_LENGTH');
+                    $height = Configuration::get('COCOLIS_HEIGHT');
                 } // Use the default value of volume for delivery fees
                 else {
                     $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
@@ -660,9 +665,9 @@ class Cocolis extends CarrierModule
                 array_push($arrayproducts, [
                     "title" => $product['name'],
                     "qty" => $product['cart_quantity'],
-                    "height" => 50, //TODO  A CHANGER
-                    "width" => 100,
-                    "length" => 100,
+                    "height" => intval($height),
+                    "width" => intval($width),
+                    "length" => intval($depth),
                 ]);
             }
 
@@ -683,62 +688,101 @@ class Cocolis extends CarrierModule
 
             if ($orderCarrier->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
                 $insurance = true;
-            }else{
+            } else {
                 $insurance = false;
             }
 
-            $params = [
-                "description" => "Commande envoyée via module PrestaShop du partenaire",
-                "external_id" => $id_order,
-                "from_address" => $from_composed_address,
-                "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
-                "to_address" => $composed_address,
-                "to_postal_code" => $address->postcode,
-                "from_is_flexible" => true,
-                "from_pickup_date" => $from_date,
-                "from_need_help" => true,
-                "to_is_flexible" => true,
-                "to_need_help" => true,
-                "with_insurance" => $insurance,
-                "to_pickup_date" => $to_date,
-                "is_passenger" => false,
-                "is_packaged" => true,
-                "price" => (int) $order->total_shipping_tax_incl * 100,
-                "volume" => $dimensions,
-                "environment" => "objects",
-                "photo_urls" => $images,
-                "rider_extra_information" => "Bonjour, Je souhaite envoyer les objets suivants : " . implode(", ", $arrayname) . '. Merci !' . " Achat effectué sur une marketplace",
-                "ride_objects_attributes" => $arrayproducts,
-                "ride_delivery_information_attributes" => [
-                    "from_address" => Configuration::get('COCOLIS_ADDRESS'),
-                    "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
-                    "from_city" => Configuration::get('COCOLIS_CITY'),
-                    "from_country" => 'FR',
-                    "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
-                    "from_contact_phone" => $phone,
-                    "from_contact_name" => Configuration::get('PS_SHOP_NAME'),
-                    "from_extra_information" => 'Vendeur MarketPlace',
-                    "to_address" => $address->address1,
-                    "to_postal_code" => $address->postcode,
-                    "to_city" => $address->city,
-                    "to_country" => 'FR',
-                    "to_contact_name" => $customer->firstname . ' ' . $customer->lastname,
-                    "to_contact_email" => $customer->email,
-                    "to_contact_phone" => $address->phone
-                ],
-            ];
+            if ($insurance == true) {
+                $birthday = new DateTime($customer->birthday);
 
-            if($insurance){
-                array_push($params['ride_delivery_information_attributes'], 
-                    ["insurance_firstname" => $customer->firstname,
-                    "insurance_lastname" =>  $customer->lastname,
-                    "insurance_address" => $address->address1,
-                    "insurance_postalcode" => $address->postcode,
-                    "insurance_city" => $address->city,
-                    "insurance_country" => $address->country,
-                    "insurance_birthdate" => $customer->birthdate
-                    ]
-                );
+                $params = [
+                    "description" => "Commande envoyée via module PrestaShop du partenaire",
+                    "external_id" => $id_order,
+                    "from_address" => $from_composed_address,
+                    "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
+                    "to_address" => $composed_address,
+                    "to_postal_code" => $address->postcode,
+                    "from_is_flexible" => true,
+                    "from_pickup_date" => $from_date,
+                    "from_need_help" => "true",
+                    "to_is_flexible" => true,
+                    "to_need_help" => "true",
+                    "with_insurance" => $insurance,
+                    "to_pickup_date" => $to_date,
+                    "is_passenger" => false,
+                    "is_packaged" => true,
+                    "price" => (int) $order->total_shipping_tax_incl * 100,
+                    "volume" => $dimensions,
+                    "environment" => "objects",
+                    "photo_urls" => $images,
+                    "rider_extra_information" => "Bonjour, Je souhaite envoyer les objets suivants : " . implode(", ", $arrayname) . '. Merci !' . " Achat effectué sur une marketplace",
+                    "ride_objects_attributes" => $arrayproducts,
+                    "ride_delivery_information_attributes" => [
+                        "from_address" => Configuration::get('COCOLIS_ADDRESS'),
+                        "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
+                        "from_city" => Configuration::get('COCOLIS_CITY'),
+                        "from_country" => 'FR',
+                        "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
+                        "from_contact_phone" => $phone,
+                        "from_contact_name" => Configuration::get('PS_SHOP_NAME'),
+                        "from_extra_information" => 'Vendeur MarketPlace',
+                        "to_address" => $address->address1,
+                        "to_postal_code" => $address->postcode,
+                        "to_city" => $address->city,
+                        "to_country" => 'FR',
+                        "to_contact_name" => $customer->firstname . ' ' . $customer->lastname,
+                        "to_contact_email" => $customer->email,
+                        "to_contact_phone" => $address->phone,
+                        "insurance_firstname" => $customer->firstname,
+                        "insurance_lastname" =>  $customer->lastname,
+                        "insurance_address" => $address->address1,
+                        "insurance_postalcode" => $address->postcode,
+                        "insurance_city" => $address->city,
+                        "insurance_country" => $address->country,
+                        "insurance_birthdate" => $birthday->format('c')
+                    ],
+                ];
+            } else {
+                $params = [
+                    "description" => "Commande envoyée via module PrestaShop du partenaire",
+                    "external_id" => $id_order,
+                    "from_address" => $from_composed_address,
+                    "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
+                    "to_address" => $composed_address,
+                    "to_postal_code" => $address->postcode,
+                    "from_is_flexible" => true,
+                    "from_pickup_date" => $from_date,
+                    "from_need_help" => true,
+                    "to_is_flexible" => true,
+                    "to_need_help" => true,
+                    "with_insurance" => $insurance,
+                    "to_pickup_date" => $to_date,
+                    "is_passenger" => false,
+                    "is_packaged" => true,
+                    "price" => (int) $order->total_shipping_tax_incl * 100,
+                    "volume" => $dimensions,
+                    "environment" => "objects",
+                    "photo_urls" => $images,
+                    "rider_extra_information" => "Bonjour, Je souhaite envoyer les objets suivants : " . implode(", ", $arrayname) . '. Merci !' . " Achat effectué sur une marketplace",
+                    "ride_objects_attributes" => $arrayproducts,
+                    "ride_delivery_information_attributes" => [
+                        "from_address" => Configuration::get('COCOLIS_ADDRESS'),
+                        "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
+                        "from_city" => Configuration::get('COCOLIS_CITY'),
+                        "from_country" => 'FR',
+                        "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
+                        "from_contact_phone" => $phone,
+                        "from_contact_name" => Configuration::get('PS_SHOP_NAME'),
+                        "from_extra_information" => 'Vendeur MarketPlace',
+                        "to_address" => $address->address1,
+                        "to_postal_code" => $address->postcode,
+                        "to_city" => $address->city,
+                        "to_country" => 'FR',
+                        "to_contact_name" => $customer->firstname . ' ' . $customer->lastname,
+                        "to_contact_email" => $customer->email,
+                        "to_contact_phone" => $address->phone
+                    ],
+                ];
             }
 
             $client = $client->getRideClient();
