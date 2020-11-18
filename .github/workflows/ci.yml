@@ -14,6 +14,7 @@ jobs:
       with:
         php-version: '7.3'
         coverage: xdebug
+
     - name: Cache Packages
       uses: actions/cache@v1
       with:
@@ -21,6 +22,8 @@ jobs:
         key: v2-dependencies-${{ hashFiles('composer.lock') }}
         restore-keys: |
           v2-dependencies-${{ hashFiles('composer.lock') }}
+
     - uses: php-actions/composer@v1 # or alternative dependency management
+
     - name: Run php-cs-fixer
       run: ./vendor/bin/php-cs-fixer fix ./ --diff --dry-run
