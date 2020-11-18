@@ -72,14 +72,14 @@ class Cocolis extends CarrierModule
             return false;
         }
 
-        if (Configuration::get('COCOLIS_CARRIER_ID') == null) {
+        if (is_null(Configuration::get('COCOLIS_CARRIER_ID'))) {
             $carrier = $this->addCarrier();
             $this->addZones($carrier);
             $this->addGroups($carrier);
             $this->addRanges($carrier);
         }
 
-        if (Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID') == null) {
+        if (is_null(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
             $carrier_insurance = $this->addCarrierInsurance();
             $this->addZones($carrier_insurance);
             $this->addGroups($carrier_insurance);
@@ -87,15 +87,6 @@ class Cocolis extends CarrierModule
         }
 
         Configuration::updateValue('COCOLIS_LIVE_MODE', false);
-        Configuration::updateValue('COCOLIS_VOLUME', 0.5);
-        Configuration::updateValue('COCOLIS_HEIGHT', 50);
-        Configuration::updateValue('COCOLIS_WIDTH', 100);
-        Configuration::updateValue('COCOLIS_LENGTH', 100);
-
-        Configuration::updateValue('COCOLIS_ADDRESS', 'Renseigner une adresse');
-        Configuration::updateValue('COCOLIS_ZIP', 75000);
-        Configuration::updateValue('COCOLIS_CITY', "Paris");
-        Configuration::updateValue('COCOLIS_COUNTRY', "France");
         include(dirname(__FILE__) . '/sql/install.php');
 
 
@@ -116,6 +107,15 @@ class Cocolis extends CarrierModule
     public function uninstall()
     {
         Configuration::deleteByName('COCOLIS_LIVE_MODE');
+        Configuration::deleteByName('COCOLIS_VOLUME');
+        Configuration::deleteByName('COCOLIS_HEIGHT');
+        Configuration::deleteByName('COCOLIS_WIDTH');
+        Configuration::deleteByName('COCOLIS_LENGTH');
+
+        Configuration::deleteByName('COCOLIS_ADDRESS');
+        Configuration::deleteByName('COCOLIS_ZIP');
+        Configuration::deleteByName('COCOLIS_CITY');
+        Configuration::deleteByName('COCOLIS_COUNTRY');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -360,6 +360,10 @@ class Cocolis extends CarrierModule
         $cache = false;
 
         if (Context::getContext()->customer->logged == true) {
+            if (is_null(Configuration::get('COCOLIS_VOLUME')) || is_null(Configuration::get('COCOLIS_HEIGHT')) || is_null(Configuration::get('COCOLIS_WIDTH')) || is_null(Configuration::get('COCOLIS_LENGTH'))) {
+                return false;
+            }
+
             $id_address_delivery = Context::getContext()->cart->id_address_delivery;
             $address = new Address($id_address_delivery);
 
@@ -787,26 +791,10 @@ class Cocolis extends CarrierModule
 
             $client = $client->getRideClient();
             $client->create($params);
-        }
-    }
-    public function hookModuleRoutes($params)
-    {
-        //URL without Rewrite : http://localhost:8084/index.php?fc=module&module=cocolis&controller=webhooks&id_lang=1
 
-        return array(
-            'module-cocolis-webhooks' => array(
-                'rule' => 'cocolis/webhooks{/:event}',
-                'controller' => 'webhooks',
-                'keywords' => array(
-                    'event' =>   array('regexp' => '[_a-zA-Z0-9-\pL]*', 'param' => 'event'),
-                ),
-                'params' => array(
-                    'fc' => 'module',
-                    'module' => 'cocolis',
-                    'controller' => 'webhooks',
-                )
-            )
-        );
+            // Clear cache cart
+            Db::getInstance()->execute("TRUNCATE TABLE `" . _DB_PREFIX_ . "cocolis_cart`");
+        }
     }
 
     protected function addCarrier()
@@ -896,14 +884,5 @@ class Cocolis extends CarrierModule
         foreach ($zones as $zone) {
             $carrier->addZone($zone['id_zone']);
         }
-    }
-
-
-    public function hookUpdateCarrier($params)
-    {
-        /**
-         * Not needed since 1.5
-         * You can identify the carrier by the id_reference
-         */
     }
 }

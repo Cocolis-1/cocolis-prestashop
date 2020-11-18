@@ -94,7 +94,7 @@
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // Get all elements with class="closebtn"
 var close = document.getElementsByClassName("closebtn");
 var i;
@@ -150,6 +150,7 @@ for (i = 0; i < close.length; i++) {
 	<h2>
 		{l s="Vous proposez maintenant sur votre site une livraison collaborative ❤️, économique 💸 et écologique 🍃" mod='cocolis'}<br />
 		{l s="Vos clients pourront ainsi trouver le meilleur transporteur pour effectuer leur livraison." mod='cocolis'}
+		{l s="Le module ne sera pas fonctionnel tant que la configuration sera incomplète !" mod='cocolis'}
 	</h2>
 	<h2>
 		<br />

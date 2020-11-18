@@ -39,7 +39,7 @@ L'adresse postale utilisée par le module se trouve dans la configuration du mod
 
 ![Capture d'écran Expedition](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/from-config-module_klm3ky.png)
 
-## Numéro de téléphonee
+## Numéro de téléphone
 
 Le numéro de téléphone du client et du vendeur est **obligatoire** pour le bon déroulé des livraisons.
 
@@ -58,3 +58,9 @@ Activez l'option "**phone**" ET "**phone_mobile**" puis validez.
 C'est terminé pour la configuration dans le PrestaShop !
 
 ![Téléphone](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/champ-obligatoire_ft802b.png)
+
+## Configuration automatique des Webhooks
+
+Après avoir effectué toute la configuration, vous pouvez sur votre site de production, configurer automatiquement les webhooks en cliquant sur le bouton **"Configurer automatiquement les Webhooks"**.
+
+Cela veut dire qu'à chaque nouvelle étape de livraison, l'API de Cocolis vous enverra des "notifications" sous la forme de webhooks.

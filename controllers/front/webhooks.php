@@ -24,11 +24,13 @@ class CocolisWebhooksModuleFrontController extends ModuleFrontController
             case 'offer_accepted':
                 $history->changeIdOrderState((int) 4, $orderid); // Expédié
                 $history->addWithemail(true);
+                echo json_encode(['success' => true]);
             break;
 
             case 'offer_completed':
                 $history->changeIdOrderState((int) 5, $orderid); // Livré
                 $history->addWithemail(true);
+                echo json_encode(['success' => true]);
             break;
         }
 
