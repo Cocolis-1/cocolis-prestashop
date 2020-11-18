@@ -28,10 +28,10 @@ class CustomerFormatter extends CustomerFormatterCore
       ->setType('text')
       ->setLabel(
           $this->translator->trans(
-            'Birthdate',
-            [],
-            'Shop.Forms.Labels'
-        )
+              'Birthdate',
+              [],
+              'Shop.Forms.Labels'
+          )
       )
       ->addAvailableValue('placeholder', Tools::getDateFormat())
       ->addAvailableValue(
