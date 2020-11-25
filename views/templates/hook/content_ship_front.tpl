@@ -69,9 +69,23 @@
           </div>
         {/if}
 
-        {if ($actual_state == "ride_published")}
+        {if ($actual_state == "api_pending")}
           <div class="progresstracking">
             <h4 class="tracking"><i class="far fa-clock"></i> {$order_cocolis[0]['created_at']|date_format:"%d/%m/%Y"} - {l s="Waiting for buyer's availability" mod='cocolis'}</h4>
+          </div>
+          <div class="waitingtracking">
+            <h4 class="tracking"><i class="far fa-clock"></i> {$order_cocolis[0]['created_at']|date_format:"%d/%m/%Y"} - {l s='Search for a carrier' mod='cocolis'}</h4>
+            <h4 class="tracking"><i class="far fa-dot-circle"></i> {l s='In delivering' mod='cocolis'}</h4>
+            <h4 class="tracking"><i class="far fa-dot-circle"></i> {l s='Delivered' mod='cocolis'}</h4>
+          </div>
+          <h4>{l s='You can access the ride:' mod='cocolis'} <a href="{$ridelink}">{l s='here' mod='cocolis'}</a></h4>
+        {/if}
+
+        {if ($actual_state == "ride_published")}
+          <div class="donetracking">
+            <h4 class="tracking"><i class="far fa-clock"></i> {$order_cocolis[0]['created_at']|date_format:"%d/%m/%Y"} - {l s="Waiting for buyer's availability" mod='cocolis'}</h4>
+          </div>
+          <div class="progresstracking">
             <h4 class="tracking"><i class="far fa-clock"></i> {$order_cocolis[0]['created_at']|date_format:"%d/%m/%Y"} - {l s='Search for a carrier' mod='cocolis'}</h4>
           </div>
           <div class="waitingtracking">

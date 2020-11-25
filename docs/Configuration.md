@@ -57,7 +57,7 @@ Activez l'option "**phone**" puis validez.
 
 C'est terminé pour la configuration dans le PrestaShop !
 
-![Téléphone](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/champ-obligatoire_ft802b.png)
+![Téléphone](https://res.cloudinary.com/cocolis-prod/image/upload/v1606291408/Documentation/prestashop/image_2_ls5ufw.png)
 
 ## Configuration automatique des Webhooks
 

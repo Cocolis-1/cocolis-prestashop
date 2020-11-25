@@ -692,7 +692,7 @@ class Cocolis extends CarrierModule
 
             $phone = Configuration::get('PS_SHOP_PHONE');
             if ($phone == null) {
-                echo ('<p style="color:red;">[Module Cocolis] 
+                echo('<p style="color:red;">[Module Cocolis] 
                 <b>Missing cell phone number !</b> 
                 You must configure your store to provide your phone number.
                 </br>Go in <b>Store settings > Contact > Stores</b> 
