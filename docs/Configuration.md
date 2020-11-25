@@ -53,7 +53,7 @@ Vous devez aussi rendre obligatoire la saisie du numéro de téléphone pour tou
 
 - Clients > Adresses >  Définir les champs requis pour cette section
 
-Activez l'option "**phone**" ET "**phone_mobile**" puis validez.
+Activez l'option "**phone**" puis validez.
 
 C'est terminé pour la configuration dans le PrestaShop !
 

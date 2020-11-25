@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2007-2020 PrestaShop
  *
@@ -52,10 +51,10 @@ class Cocolis extends CarrierModule
 
         parent::__construct();
         $this->displayName = $this->l('Cocolis');
-        $this->description = $this->l('Utilisez cocolis.fr comme mode de livraison. 
-        Spécialisé dans la livraison communautaire, cocolis vous permettra d\'envoyer des colis hors format.');
+        $this->description = $this->l("Utilisez cocolis.fr comme mode de livraison. 
+            Spécialisé dans la livraison communautaire, cocolis vous permettra d'envoyer des colis hors format.");
 
-        $this->confirmUninstall = $this->l('Notre service de livraison ne sera plus disponible sur votre site.');
+        $this->confirmUninstall = $this->l('Our delivery service will no longer be available on your site.');
 
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
     }
@@ -158,7 +157,15 @@ class Cocolis extends CarrierModule
                     if (strpos($webhook->url, Tools::getShopDomainSsl(true)) !== false) {
                         $status = 'already';
                     } else {
-                        $client->getWebhookClient()->update(['event' => $webhook->event, 'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=' . $webhook->event, 'active' => true], $webhook->id);
+                        $client->getWebhookClient()->update(
+                            [
+                                'event' => $webhook->event,
+                                'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
+                                &controller=webhooks&event=' . $webhook->event,
+                                'active' => true
+                            ],
+                            $webhook->id
+                        );
                         $status = 'updated';
                     }
                 }
@@ -166,27 +173,32 @@ class Cocolis extends CarrierModule
                 // Previously /cocolis/webhooks&event=blabla but not working with all versions
                 $client->getWebhookClient()->create([
                     'event' => 'ride_published',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=ride_published',
+                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
+                    &controller=webhooks&event=ride_published',
                     'active' => true
                 ]);
                 $client->getWebhookClient()->create([
                     'event' => 'ride_expired',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=ride_expired',
+                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
+                    &controller=webhooks&event=ride_expired',
                     'active' => true
                 ]);
                 $client->getWebhookClient()->create([
                     'event' => 'offer_accepted',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_accepted',
+                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
+                    &controller=webhooks&event=offer_accepted',
                     'active' => true
                 ]);
                 $client->getWebhookClient()->create([
                     'event' => 'offer_cancelled',
-                    'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis&controller=webhooks&event=offer_cancelled',
+                    'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis
+                    &controller=webhooks&event=offer_cancelled',
                     'active' => true
                 ]);
                 $client->getWebhookClient()->create([
                     'event' => 'offer_completed',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_completed',
+                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
+                    &controller=webhooks&event=offer_completed',
                     'active' => true
                 ]);
                 $status = 'success';
@@ -246,26 +258,26 @@ class Cocolis extends CarrierModule
         return array(
             'form' => array(
                 'legend' => array(
-                    'title' => $this->l('Paramètres'),
+                    'title' => $this->l('Settings'),
                     'icon' => 'icon-cogs',
                 ),
                 'input' => array(
                     array(
                         'type' => 'switch',
-                        'label' => $this->l('Mode production'),
+                        'label' => $this->l('Production mode'),
                         'name' => 'COCOLIS_LIVE_MODE',
                         'is_bool' => true,
-                        'desc' => $this->l('Utiliser ce module en mode développement (sandbox) ou production ?'),
+                        'desc' => $this->l('Use this module in development (sandbox) or production mode?'),
                         'values' => array(
                             array(
                                 'id' => 'active_on',
                                 'value' => true,
-                                'label' => $this->l('Activer le mode production')
+                                'label' => $this->l('Enable production mode')
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => false,
-                                'label' => $this->l('Désactiver le mode production')
+                                'label' => $this->l('Disable production mode')
                             )
                         ),
                     ),
@@ -274,25 +286,25 @@ class Cocolis extends CarrierModule
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-move"></i>',
                         'name' => 'COCOLIS_VOLUME',
-                        'label' => $this->l('Volume moyen'),
+                        'label' => $this->l('Average volume'),
                     ),
                     array(
                         'col' => 1,
                         'type' => 'text',
                         'name' => 'COCOLIS_WIDTH',
-                        'label' => $this->l('Largeur moyenne'),
+                        'label' => $this->l('Average width'),
                     ),
                     array(
                         'col' => 1,
                         'type' => 'text',
                         'name' => 'COCOLIS_HEIGHT',
-                        'label' => $this->l('Hauteur moyenne'),
+                        'label' => $this->l('Average height'),
                     ),
                     array(
                         'col' => 1,
                         'type' => 'text',
                         'name' => 'COCOLIS_LENGTH',
-                        'label' => $this->l('Longueur moyenne'),
+                        'label' => $this->l('Average length'),
                         'desc' => $this->l("Permet de calculer les frais en l'absence du volume renseigné 
                             dans la fiche produit")
                     ),
@@ -300,33 +312,33 @@ class Cocolis extends CarrierModule
                         'col' => 3,
                         'type' => 'text',
                         'name' => 'COCOLIS_ADDRESS',
-                        'label' => $this->l('Votre adresse'),
+                        'label' => $this->l('Your address'),
                     ),
                     array(
                         'col' => 1,
                         'type' => 'text',
                         'name' => 'COCOLIS_ZIP',
-                        'label' => $this->l('Votre code postal'),
+                        'label' => $this->l('Your postal code'),
                     ),
                     array(
                         'col' => 1,
                         'type' => 'text',
                         'name' => 'COCOLIS_CITY',
-                        'label' => $this->l('Votre ville'),
+                        'label' => $this->l('Your city'),
                     ),
                     array(
                         'col' => 1,
                         'type' => 'text',
                         'name' => 'COCOLIS_COUNTRY',
-                        'label' => $this->l('Votre pays'),
+                        'label' => $this->l('Your country'),
                     ),
                     array(
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-terminal"></i>',
-                        'desc' => $this->l("Entrez l'app-id qui vous a été fourni"),
+                        'desc' => $this->l("Enter the app-id provided to you"),
                         'name' => 'COCOLIS_APPID',
-                        'label' => $this->l("ID de l'application"),
+                        'label' => $this->l("Application ID"),
                     ),
                     array(
                         'type' => 'password',
@@ -335,7 +347,7 @@ class Cocolis extends CarrierModule
                     )
                 ),
                 'submit' => array(
-                    'title' => $this->l('Enregister'),
+                    'title' => $this->l('Save'),
                 ),
             ),
         );
@@ -373,7 +385,7 @@ class Cocolis extends CarrierModule
         }
     }
 
-    public function getOrderShippingCost($shipping_cost)
+    public function getOrderShippingCost($params, $shipping_cost)
     {
         $dimensions = 0;
         $total = 0;
@@ -381,8 +393,7 @@ class Cocolis extends CarrierModule
         $cache = false;
 
         if (Context::getContext()->customer->logged == true) {
-            if (
-                is_null(Configuration::get('COCOLIS_VOLUME')) || is_null(Configuration::get('COCOLIS_HEIGHT'))
+            if (is_null(Configuration::get('COCOLIS_VOLUME')) || is_null(Configuration::get('COCOLIS_HEIGHT'))
                 || is_null(Configuration::get('COCOLIS_WIDTH')) || is_null(Configuration::get('COCOLIS_LENGTH'))
             ) {
                 return false;
@@ -417,8 +428,7 @@ class Cocolis extends CarrierModule
                 $product_ids = serialize($product_ids);
                 Db::getInstance()->execute("INSERT INTO `" . _DB_PREFIX_ . "cocolis_cart` 
                 (`hash_cart`, `products`, `cost`) VALUES ('" . $cart_hash . "', '" . $product_ids .  "', 0)");
-            } elseif (
-                !empty(array_diff($product_ids_2, $product_ids)) ||
+            } elseif (!empty(array_diff($product_ids_2, $product_ids)) ||
                 !empty(array_diff($product_ids, $product_ids_2))
             ) {
                 $cache = false;
@@ -514,7 +524,7 @@ class Cocolis extends CarrierModule
         return $client;
     }
 
-    public function getOrderShippingCostExternal()
+    public function getOrderShippingCostExternal($params)
     {
         return true;
     }
@@ -682,11 +692,11 @@ class Cocolis extends CarrierModule
 
             $phone = Configuration::get('PS_SHOP_PHONE');
             if ($phone == null) {
-                echo('<p style="color:red;">[Module Cocolis] 
-                <b>Numéro de téléphone portable manquant !</b> 
-                Vous devez configurer votre boutique afin de fournir un numéro de téléphone valide. 
-                </br>Rendez vous dans <b>Paramètres de la boutique > Contact > Magasins</b> 
-                et fournissez un numéro de téléphone <b>portable</b>. La commande reste inchangée.</p>');
+                echo ('<p style="color:red;">[Module Cocolis] 
+                <b>Missing cell phone number !</b> 
+                You must configure your store to provide your phone number.
+                </br>Go in <b>Store settings > Contact > Stores</b> 
+                and provide your phone number. The order remains unchanged.</p>');
                 exit;
             }
 
@@ -760,7 +770,7 @@ class Cocolis extends CarrierModule
                     "environment" => "objects",
                     "photo_urls" => $images,
                     "rider_extra_information" => "Bonjour, Je souhaite envoyer les objets suivants : "
-                        . implode(", ", $arrayname) . '. Merci !' . " Achat effectué sur une marketplace",
+                        . implode(", ", $arrayname) . '. Merci !' . " (Achat effectué sur une marketplace)",
                     "ride_objects_attributes" => $arrayproducts,
                     "ride_delivery_information_attributes" => [
                         "from_address" => Configuration::get('COCOLIS_ADDRESS'),
@@ -809,7 +819,7 @@ class Cocolis extends CarrierModule
                     "environment" => "objects",
                     "photo_urls" => $images,
                     "rider_extra_information" => "Bonjour, Je souhaite envoyer les objets suivants : "
-                        . implode(", ", $arrayname) . '. Merci !' . " Achat effectué sur une marketplace",
+                        . implode(", ", $arrayname) . '. Merci !' . " (Achat effectué sur une marketplace)",
                     "ride_objects_attributes" => $arrayproducts,
                     "ride_delivery_information_attributes" => [
                         "from_address" => Configuration::get('COCOLIS_ADDRESS'),
@@ -831,9 +841,6 @@ class Cocolis extends CarrierModule
                 ];
             }
 
-            var_dump(json_encode($params));
-            exit;
-
             $client = $client->getRideClient();
             $client->create($params);
 
@@ -846,7 +853,7 @@ class Cocolis extends CarrierModule
     {
         $carrier = new Carrier();
 
-        $carrier->name = $this->l('Livraison Cocolis');
+        $carrier->name = $this->l('Cocolis delivery');
         $carrier->is_module = true;
         $carrier->active = 1;
         $carrier->range_behavior = 1;
@@ -857,7 +864,7 @@ class Cocolis extends CarrierModule
         $carrier->shipping_method = 2;
 
         foreach (Language::getLanguages() as $lang) {
-            $carrier->delay[$lang['id_lang']] = $this->l('Délai variable');
+            $carrier->delay[$lang['id_lang']] = $this->l('Variable delay');
         }
 
         if ($carrier->add() == true) {
@@ -876,7 +883,7 @@ class Cocolis extends CarrierModule
     {
         $carrier = new Carrier();
 
-        $carrier->name = $this->l('Livraison Cocolis avec assurance');
+        $carrier->name = $this->l('Cocolis delivery with insurance');
         $carrier->is_module = true;
         $carrier->active = 1;
         $carrier->range_behavior = 1;
@@ -887,7 +894,7 @@ class Cocolis extends CarrierModule
         $carrier->shipping_method = 2;
 
         foreach (Language::getLanguages() as $lang) {
-            $carrier->delay[$lang['id_lang']] = $this->l('Délai variable');
+            $carrier->delay[$lang['id_lang']] = $this->l('Variable delay');
         }
 
         if ($carrier->add() == true) {

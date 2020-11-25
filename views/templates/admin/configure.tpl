@@ -123,42 +123,37 @@ for (i = 0; i < close.length; i++) {
 		{if ($notifications == 'webhook_success')}
     <div class="alert">
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-			<p><b>Webhooks configurés !</b> Tous les changements de status seront envoyés directement sur votre marketplace !</p>
+			<p>{l s='Webhooks updated ! All status changes will be sent directly to your marketplace!' mod='cocolis'}</p>
 		</div>
 		{/if}
 		{if ($notifications == 'webhook_already')}
     <div class="alert-red">
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-			<p><b>Webhooks déjà configurés !</b> Aucun changement de domaine n'a été détecté, la configuration reste similaire.</p>
-		{/if}
-		{if ($notifications == 'nophone')}
-    <div class="alert-red">
-			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-			<p><b>Numéro de téléphone portable manquant !</b> Vous devez configurer votre boutique afin de fournir un numéro de téléphone valide. </br>Rendez vous dans <b>Paramètres de la boutique > Contact > Magasins</b> et fournissez un numéro de téléphone <b>portable</b>. La commande reste inchangée.</p>
+			<p>{l s='Webhooks already updated ! No change of domain was detected, the configuration remains similar.' mod='cocolis'}</p>
 		{/if}
 		{if ($notifications == 'webhook_updated')}
     <div class="alert-orange">
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-			<p><b>Webhooks mis à jour !</b> Un changement de domaine a été détecté, la configuration a été mis à jour chez Cocolis.</p>
+			<p>{l s='Webhooks updated ! A change of domain has been detected, the configuration has been updated at Cocolis.' mod='cocolis'}</p>
 		{/if}
     {/block}
   {/if}
 
 	</aside>
 	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
-	<h2><strong>{l s="👋  Merci d'avoir installé Cocolis - Votre module de livraison collaborative !" mod='cocolis'}</strong><br /></h2>
+	<h2><strong>{l s="👋 Thank you for installing Cocolis - Your collaborative delivery module!" mod='cocolis'}</strong><br /></h2>
 	<h2>
-		{l s="Vous proposez maintenant sur votre site une livraison collaborative ❤️, économique 💸 et écologique 🍃" mod='cocolis'}<br />
-		{l s="Vos clients pourront ainsi trouver le meilleur transporteur pour effectuer leur livraison." mod='cocolis'}
-		{l s="Le module ne sera pas fonctionnel tant que la configuration sera incomplète !" mod='cocolis'}
+		{l s="You now offer collaborative ❤️, economical 💸 and ecological 🍃 delivery on your site" mod='cocolis'}<br />
+		{l s="Your customers will be able to find the best carrier to make their delivery." mod='cocolis'}
+		{l s="The module will not be functional as long as the configuration is incomplete!" mod='cocolis'}
 	</h2>
 	<h2>
 		<br />
 		<i class="icon icon-angle-right"></i> 
-		{l s='Vous pouvez en savoir plus sur la configuration de ce module' mod='cocolis'} <a href="https://doc.cocolis.fr/">ici.</a>
+		{l s='You can learn more about the configuration of this module' mod='cocolis'} <a href="https://doc.cocolis.fr/">{l s='here' mod='cocolis'}</a>
 	</h2>
 	<br />
 	<div style="margin:0 auto;">
-		<button type='submit' name='webhooks' class='myButton' form='module_form'>Configurer automatiquement les Webhooks</button>
+		<button type='submit' name='webhooks' class='myButton' form='module_form'>{l s='Automatically configure webhooks' mod='cocolis'}</button>
 	</div>
 </div>
