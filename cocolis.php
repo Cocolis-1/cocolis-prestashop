@@ -387,6 +387,7 @@ class Cocolis extends CarrierModule
 
     public function getOrderShippingCost($params, $shipping_cost)
     {
+        $cache = $params[0];
         $dimensions = 0;
         $total = 0;
         $cart_hash = hash('md5', Context::getContext()->cart->id . Context::getContext()->cart->id_address_delivery);
@@ -526,6 +527,7 @@ class Cocolis extends CarrierModule
 
     public function getOrderShippingCostExternal($params)
     {
+        $params[0];
         return true;
     }
 

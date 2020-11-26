@@ -1,5 +1,4 @@
 .vscode
 .DS_Store
-vendor
 .history
 .php_cs.cache

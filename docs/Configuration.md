@@ -63,4 +63,4 @@ C'est terminé pour la configuration dans le PrestaShop !
 
 Après avoir effectué toute la configuration, vous pouvez sur votre site de production, configurer automatiquement les webhooks en cliquant sur le bouton **"Configurer automatiquement les Webhooks"**.
 
-Cela veut dire qu'à chaque nouvelle étape de livraison, l'API de Cocolis vous enverra des "notifications" sous la forme de webhooks.
+Cela veut dire qu'à  chaque nouvelle étape de livraison, l'API de Cocolis vous enverra des "notifications" sous la forme de webhooks.
