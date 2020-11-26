@@ -23,6 +23,7 @@
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
+
 $sql = array();
 
 $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'cocolis` (
@@ -31,12 +32,14 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'cocolis` (
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
 $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'cocolis_order_history` (
-    `id` int(11) NOT NULL AUTO_INCREMENT, `order_id` INT NOT NULL, `comment` VARCHAR(255) NOT NULL, `created_at` DATE NOT NULL, `webhook_params` VARCHAR(255),
+    `id` int(11) NOT NULL AUTO_INCREMENT, `order_id` INT NOT NULL, `comment` VARCHAR(255) NOT NULL, 
+    `created_at` DATE NOT NULL, `webhook_params` VARCHAR(255),
     PRIMARY KEY  (`id`)
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
 $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'cocolis_cart` (
-    `id` int(11) NOT NULL AUTO_INCREMENT, `hash_cart` VARCHAR(255) NOT NULL, `products` VARCHAR(255) NOT NULL, `cost` DOUBLE NULL, `cost_insurance` DOUBLE NULL,
+    `id` int(11) NOT NULL AUTO_INCREMENT, `hash_cart` VARCHAR(255) NOT NULL, `products` VARCHAR(255) NOT NULL, 
+    `cost` DOUBLE NULL, `cost_insurance` DOUBLE NULL,
     PRIMARY KEY  (`id`)
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 

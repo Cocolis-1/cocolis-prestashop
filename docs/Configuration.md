@@ -53,14 +53,14 @@ Vous devez aussi rendre obligatoire la saisie du numéro de téléphone pour tou
 
 - Clients > Adresses >  Définir les champs requis pour cette section
 
-Activez l'option "**phone**" ET "**phone_mobile**" puis validez.
+Activez l'option "**phone**" puis validez.
 
 C'est terminé pour la configuration dans le PrestaShop !
 
-![Téléphone](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/champ-obligatoire_ft802b.png)
+![Téléphone](https://res.cloudinary.com/cocolis-prod/image/upload/v1606291408/Documentation/prestashop/image_2_ls5ufw.png)
 
 ## Configuration automatique des Webhooks
 
 Après avoir effectué toute la configuration, vous pouvez sur votre site de production, configurer automatiquement les webhooks en cliquant sur le bouton **"Configurer automatiquement les Webhooks"**.
 
-Cela veut dire qu'à chaque nouvelle étape de livraison, l'API de Cocolis vous enverra des "notifications" sous la forme de webhooks.
+Cela veut dire qu'à  chaque nouvelle étape de livraison, l'API de Cocolis vous enverra des "notifications" sous la forme de webhooks.
