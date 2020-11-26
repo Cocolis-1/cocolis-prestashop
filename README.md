@@ -2,7 +2,11 @@
 
 # Cocolis prestashop
 
-This is the repository for our Prestashop module to be able to add Cocolis.fr carrier as a delivery method.
+This is the repository for our Prestashop module to be able to add [Cocolis.fr](https://www.cocolis.fr/) carrier as a delivery method.
+
+# Documentation
+
+You can find our documentation on [doc.cocolis.fr](https://doc.cocolis.fr/)
 
 ## Test it
 
