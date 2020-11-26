@@ -15,7 +15,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - 8080:80
+      - 8081:80
     volumes:
       - .:/var/www/html/modules/${PS_MODULE_NAME}
     environment:
@@ -27,7 +27,7 @@ services:
       - DB_PASSWD=${DB_PASSWD}
       - DB_NAME=${DB_NAME}
       - PS_FOLDER_ADMIN=${PS_FOLDER_ADMIN}
-      - PS_DOMAIN=${PS_DOMAIN}:8080
+      - PS_DOMAIN=${PS_DOMAIN}:8081
       - PS_LANGUAGE=${PS_LANGUAGE}
       - PS_COUNTRY=${PS_COUNTRY}
       - PS_FOLDER_INSTALL=installed
@@ -37,7 +37,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - 8081:80
+      - 8082:80
     volumes:
       - .:/var/www/html/modules/${PS_MODULE_NAME}
     environment:
@@ -49,7 +49,7 @@ services:
       - DB_PASSWD=${DB_PASSWD}
       - DB_NAME=${DB_NAME}
       - PS_FOLDER_ADMIN=${PS_FOLDER_ADMIN}
-      - PS_DOMAIN=${PS_DOMAIN}:8081
+      - PS_DOMAIN=${PS_DOMAIN}:8082
       - PS_LANGUAGE=${PS_LANGUAGE}
       - PS_COUNTRY=${PS_COUNTRY}
       - PS_FOLDER_INSTALL=installed
@@ -59,7 +59,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - 8082:80
+      - 8083:80
     volumes:
       - .:/var/www/html/modules/${PS_MODULE_NAME}
     environment:
@@ -71,7 +71,7 @@ services:
       - DB_PASSWD=${DB_PASSWD}
       - DB_NAME=${DB_NAME}
       - PS_FOLDER_ADMIN=${PS_FOLDER_ADMIN}
-      - PS_DOMAIN=${PS_DOMAIN}:8082
+      - PS_DOMAIN=${PS_DOMAIN}:8083
       - PS_LANGUAGE=${PS_LANGUAGE}
       - PS_COUNTRY=${PS_COUNTRY}
       - PS_FOLDER_INSTALL=installed
@@ -81,7 +81,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - 8083:80
+      - 8084:80
     volumes:
       - .:/var/www/html/modules/${PS_MODULE_NAME}
     environment:
@@ -93,7 +93,30 @@ services:
       - DB_PASSWD=${DB_PASSWD}
       - DB_NAME=${DB_NAME}
       - PS_FOLDER_ADMIN=${PS_FOLDER_ADMIN}
-      - PS_DOMAIN=${PS_DOMAIN}:8083
+      - PS_DOMAIN=${PS_DOMAIN}:8084
+      - PS_LANGUAGE=${PS_LANGUAGE}
+      - PS_COUNTRY=${PS_COUNTRY}
+      - PS_FOLDER_INSTALL=installed
+
+  prestashop_1.7.5:
+    image: prestashop/prestashop:latest
+    depends_on:
+      - mysql
+    ports:
+      - 8085:80
+      - 8889:8888
+    volumes:
+      - .:/var/www/html/modules/${PS_MODULE_NAME}
+    environment:
+      - DB_SERVER=mysql
+      - DB_PREFIX=ps175_
+      - PS_DEV_MODE=${PS_DEV_MODE}
+      - PS_INSTALL_AUTO=1
+      - DB_USER=${DB_USER}
+      - DB_PASSWD=${DB_PASSWD}
+      - DB_NAME=${DB_NAME}
+      - PS_FOLDER_ADMIN=${PS_FOLDER_ADMIN}
+      - PS_DOMAIN=${PS_DOMAIN}:8085
       - PS_LANGUAGE=${PS_LANGUAGE}
       - PS_COUNTRY=${PS_COUNTRY}
       - PS_FOLDER_INSTALL=installed

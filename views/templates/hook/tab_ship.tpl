@@ -1,5 +1,4 @@
-<?php
-/**
+{*
 * 2007-2020 PrestaShop
 *
 * NOTICE OF LICENSE
@@ -22,22 +21,10 @@
 *  @copyright 2007-2020 PrestaShop SA
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
-*/
-if (!defined('_PS_VERSION_')) {
-    exit;
-}
+*}
 
-/**
- * This function updates your module from previous versions to the version 1.1,
- * usefull when you modify your database, or register a new hook ...
- * Don't forget to create one file per version.
- */
-function upgrade_module_1_1_0($module)
-{
-    /*
-     * Do everything you want right there,
-     * You could add a column in one of your module's tables
-     */
-
-    return true;
-}
+<li>
+						<a href="#cocolis">
+							{l s='Cocolis Status' mod='cocolis'}
+						</a>
+					</li>
