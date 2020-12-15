@@ -898,7 +898,7 @@ class Cocolis extends CarrierModule
                     "description" => "Commande envoyée via module PrestaShop du partenaire",
                     "external_id" => $id_order,
                     "from_address" => $from_composed_address,
-                    "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
+                    "from_postal_code" => $this->getZip(),
                     "to_address" => $composed_address,
                     "to_postal_code" => $address->postcode,
                     "from_is_flexible" => true,
