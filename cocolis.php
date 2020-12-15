@@ -37,6 +37,13 @@ class Cocolis extends CarrierModule
     protected $config_form = false;
     public $id_carrier;
 
+    private static $_name;
+    private static $_address;
+    private static $_zip;
+    private static $_city;
+    private static $_country;
+    private static $_phone;
+
     public function __construct()
     {
         $this->name = 'cocolis';
@@ -657,6 +664,91 @@ class Cocolis extends CarrierModule
         }
     }
 
+    // Override variables
+    public static function setName($name)
+    {
+        self::$_name = $name;
+    }
+  
+    public static function getName()
+    {
+        if (empty(self::$_name) || !isset(self::$_name)) {
+            return self::$_name;
+        } else {
+            return Configuration::get('PS_SHOP_NAME');
+        }
+    }
+
+    public static function setAddress($address)
+    {
+        self::$_address = $address;
+    }
+  
+    public static function getAddress()
+    {
+        if (empty(self::$_address) || !isset(self::$_address)) {
+            return self::$_address;
+        } else {
+            return Configuration::get('COCOLIS_ADDRESS');
+        }
+    }
+
+    public static function setZip($zip)
+    {
+        self::$_zip = $zip;
+    }
+  
+    public static function getZip()
+    {
+        if (empty(self::$_zip) || !isset(self::$_zip)) {
+            return self::$_zip;
+        } else {
+            return Configuration::get('COCOLIS_ZIP');
+        }
+    }
+    
+    public static function setCity($city)
+    {
+        self::$_city = $city;
+    }
+  
+    public static function getCity()
+    {
+        if (empty(self::$_city) || !isset(self::$_city)) {
+            return self::$_city;
+        } else {
+            return Configuration::get('COCOLIS_CITY');
+        }
+    }
+
+    public static function setCountry($country)
+    {
+        self::$_country = $country;
+    }
+  
+    public static function getCountry()
+    {
+        if (empty(self::$_country) || !isset(self::$_country)) {
+            return self::$_country;
+        } else {
+            return "FR";
+        }
+    }
+
+    public static function setPhone($phone)
+    {
+        self::$_phone = $phone;
+    }
+  
+    public static function getPhone()
+    {
+        if (empty(self::$_phone) || !isset(self::$_phone)) {
+            return self::$_phone;
+        } else {
+            return Configuration::get('PS_SHOP_PHONE');
+        }
+    }
+
     public function hookActionPaymentConfirmation($params)
     {
         $id_order = (int) $params['id_order'];
@@ -668,8 +760,10 @@ class Cocolis extends CarrierModule
 
         if ($carrier->external_module_name == "cocolis") {
             $address = new Address($order->id_address_delivery);
-            $from_composed_address = Configuration::get('COCOLIS_ADDRESS') . ', '
-                . Configuration::get('COCOLIS_ZIP') . ' ' . Configuration::get('COCOLIS_CITY');
+
+            $from_composed_address = $this->getAddress() . ', '
+                    . $this->getZip() . ' ' . $this->getCity();
+            
             $composed_address = $address->address1 . ', ' . $address->postcode . ' ' . $address->city;
 
             $from_date = new DateTime('NOW');
@@ -752,17 +846,17 @@ class Cocolis extends CarrierModule
                 $birthday = new DateTime($customer->birthday);
 
                 $params = [
-                    "description" => "Commande envoyée via module PrestaShop du partenaire",
+                    "description" => "Livraison de la commande : " . implode(", ", $arrayname) . " vendue sur le site marketplace.",
                     "external_id" => $id_order,
                     "from_address" => $from_composed_address,
-                    "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
+                    "from_postal_code" => $this->getZip(),
                     "to_address" => $composed_address,
                     "to_postal_code" => $address->postcode,
                     "from_is_flexible" => true,
                     "from_pickup_date" => $from_date,
-                    "from_need_help" => "true",
+                    "from_need_help" => true,
                     "to_is_flexible" => true,
-                    "to_need_help" => "true",
+                    "to_need_help" => true,
                     "with_insurance" => $insurance,
                     "to_pickup_date" => $to_date,
                     "is_passenger" => false,
@@ -775,13 +869,13 @@ class Cocolis extends CarrierModule
                         . implode(", ", $arrayname) . '. Merci !' . " (Achat effectué sur une marketplace)",
                     "ride_objects_attributes" => $arrayproducts,
                     "ride_delivery_information_attributes" => [
-                        "from_address" => Configuration::get('COCOLIS_ADDRESS'),
-                        "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
-                        "from_city" => Configuration::get('COCOLIS_CITY'),
+                        "from_address" => $this->getAddress(),
+                        "from_postal_code" => $this->getZip(),
+                        "from_city" => $this->getCity(),
                         "from_country" => 'FR',
                         "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
                         "from_contact_phone" => $phone,
-                        "from_contact_name" => Configuration::get('PS_SHOP_NAME'),
+                        "from_contact_name" => $this->getName(),
                         "from_extra_information" => 'Vendeur MarketPlace',
                         "to_address" => $address->address1,
                         "to_postal_code" => $address->postcode,
@@ -866,7 +960,7 @@ class Cocolis extends CarrierModule
         $carrier->shipping_method = 2;
 
         foreach (Language::getLanguages() as $lang) {
-            $carrier->delay[$lang['id_lang']] = $this->l('Variable delay');
+            $carrier->delay[$lang['id_lang']] = $this->l('Between 2 and 4 weeks');
         }
 
         if ($carrier->add() == true) {
