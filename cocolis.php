@@ -37,12 +37,35 @@ class Cocolis extends CarrierModule
     protected $config_form = false;
     public $id_carrier;
 
-    private static $_name;
-    private static $_address;
-    private static $_zip;
-    private static $_city;
-    private static $_country;
-    private static $_phone;
+    public static function getName()
+    {
+        return Configuration::get('PS_SHOP_NAME');
+    }
+  
+    public static function getAddress()
+    {
+        return Configuration::get('COCOLIS_ADDRESS');
+    }
+
+    public static function getZip()
+    {
+        return Configuration::get('COCOLIS_ZIP');
+    }
+  
+    public static function getCity()
+    {
+        return Configuration::get('COCOLIS_CITY');
+    }
+  
+    public static function getCountry()
+    {
+        return "FR";
+    }
+  
+    public static function getPhone()
+    {
+        return Configuration::get('PS_SHOP_PHONE');
+    }
 
     public function __construct()
     {
@@ -78,14 +101,14 @@ class Cocolis extends CarrierModule
             return false;
         }
 
-        if (is_null(Configuration::get('COCOLIS_CARRIER_ID'))) {
+        if (is_null(Configuration::get('COCOLIS_CARRIER_ID')) || null == (Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
             $carrier = $this->addCarrier();
             $this->addZones($carrier);
             $this->addGroups($carrier);
             $this->addRanges($carrier);
         }
 
-        if (is_null(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
+        if (is_null(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID')) || null == (Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
             $carrier_insurance = $this->addCarrierInsurance();
             $this->addZones($carrier_insurance);
             $this->addGroups($carrier_insurance);
@@ -122,6 +145,8 @@ class Cocolis extends CarrierModule
         Configuration::deleteByName('COCOLIS_ZIP');
         Configuration::deleteByName('COCOLIS_CITY');
         Configuration::deleteByName('COCOLIS_COUNTRY');
+        Configuration::deleteByName('COCOLIS_CARRIER_ID');
+        Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -394,7 +419,6 @@ class Cocolis extends CarrierModule
 
     public function getOrderShippingCost($params, $shipping_cost)
     {
-        $cache = $params[0];
         $dimensions = 0;
         $total = 0;
         $cart_hash = hash('md5', Context::getContext()->cart->id . Context::getContext()->cart->id_address_delivery);
@@ -410,7 +434,7 @@ class Cocolis extends CarrierModule
             $id_address_delivery = Context::getContext()->cart->id_address_delivery;
             $address = new Address($id_address_delivery);
 
-            $from_zip = Configuration::get('COCOLIS_ZIP');
+            $from_zip = $this->getZip();
 
             $sql = new DbQuery();
             $sql->from("cocolis_cart");
@@ -534,7 +558,6 @@ class Cocolis extends CarrierModule
 
     public function getOrderShippingCostExternal($params)
     {
-        $params[0];
         return true;
     }
 
@@ -664,91 +687,6 @@ class Cocolis extends CarrierModule
         }
     }
 
-    // Override variables
-    public static function setName($name)
-    {
-        self::$_name = $name;
-    }
-  
-    public static function getName()
-    {
-        if (empty(self::$_name) || !isset(self::$_name)) {
-            return self::$_name;
-        } else {
-            return Configuration::get('PS_SHOP_NAME');
-        }
-    }
-
-    public static function setAddress($address)
-    {
-        self::$_address = $address;
-    }
-  
-    public static function getAddress()
-    {
-        if (empty(self::$_address) || !isset(self::$_address)) {
-            return self::$_address;
-        } else {
-            return Configuration::get('COCOLIS_ADDRESS');
-        }
-    }
-
-    public static function setZip($zip)
-    {
-        self::$_zip = $zip;
-    }
-  
-    public static function getZip()
-    {
-        if (empty(self::$_zip) || !isset(self::$_zip)) {
-            return self::$_zip;
-        } else {
-            return Configuration::get('COCOLIS_ZIP');
-        }
-    }
-    
-    public static function setCity($city)
-    {
-        self::$_city = $city;
-    }
-  
-    public static function getCity()
-    {
-        if (empty(self::$_city) || !isset(self::$_city)) {
-            return self::$_city;
-        } else {
-            return Configuration::get('COCOLIS_CITY');
-        }
-    }
-
-    public static function setCountry($country)
-    {
-        self::$_country = $country;
-    }
-  
-    public static function getCountry()
-    {
-        if (empty(self::$_country) || !isset(self::$_country)) {
-            return self::$_country;
-        } else {
-            return "FR";
-        }
-    }
-
-    public static function setPhone($phone)
-    {
-        self::$_phone = $phone;
-    }
-  
-    public static function getPhone()
-    {
-        if (empty(self::$_phone) || !isset(self::$_phone)) {
-            return self::$_phone;
-        } else {
-            return Configuration::get('PS_SHOP_PHONE');
-        }
-    }
-
     public function hookActionPaymentConfirmation($params)
     {
         $id_order = (int) $params['id_order'];
@@ -786,7 +724,7 @@ class Cocolis extends CarrierModule
 
             $arrayname = [];
 
-            $phone = Configuration::get('PS_SHOP_PHONE');
+            $phone = $this->getPhone();
             if ($phone == null) {
                 echo('<p style="color:red;">[Module Cocolis] 
                 <b>Missing cell phone number !</b> 
@@ -990,7 +928,7 @@ class Cocolis extends CarrierModule
         $carrier->shipping_method = 2;
 
         foreach (Language::getLanguages() as $lang) {
-            $carrier->delay[$lang['id_lang']] = $this->l('Variable delay');
+            $carrier->delay[$lang['id_lang']] = $this->l('Between 2 and 4 weeks');
         }
 
         if ($carrier->add() == true) {
