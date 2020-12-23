@@ -136,7 +136,6 @@ class Cocolis extends CarrierModule
     public function uninstall()
     {
         Configuration::deleteByName('COCOLIS_LIVE_MODE');
-        Configuration::deleteByName('COCOLIS_VOLUME');
         Configuration::deleteByName('COCOLIS_HEIGHT');
         Configuration::deleteByName('COCOLIS_WIDTH');
         Configuration::deleteByName('COCOLIS_LENGTH');
@@ -316,27 +315,20 @@ class Cocolis extends CarrierModule
                     array(
                         'col' => 1,
                         'type' => 'text',
-                        'prefix' => '<i class="icon icon-move"></i>',
-                        'name' => 'COCOLIS_VOLUME',
-                        'label' => $this->l('Average volume'),
-                    ),
-                    array(
-                        'col' => 1,
-                        'type' => 'text',
                         'name' => 'COCOLIS_WIDTH',
-                        'label' => $this->l('Average width'),
+                        'label' => $this->l('Average width (in cm)'),
                     ),
                     array(
                         'col' => 1,
                         'type' => 'text',
                         'name' => 'COCOLIS_HEIGHT',
-                        'label' => $this->l('Average height'),
+                        'label' => $this->l('Average height (in cm)'),
                     ),
                     array(
                         'col' => 1,
                         'type' => 'text',
                         'name' => 'COCOLIS_LENGTH',
-                        'label' => $this->l('Average length'),
+                        'label' => $this->l('Average length (in cm)'),
                         'desc' => $this->l("Permet de calculer les frais en l'absence du volume renseigné 
                             dans la fiche produit")
                     ),
@@ -395,7 +387,6 @@ class Cocolis extends CarrierModule
             'COCOLIS_APPID' => Configuration::get('COCOLIS_APPID', 'app_id'),
             'COCOLIS_PASSWORD' => Configuration::get('COCOLIS_PASSWORD', null),
             'COCOLIS_ZIP' => Configuration::get('COCOLIS_ZIP', null),
-            'COCOLIS_VOLUME' => Configuration::get('COCOLIS_VOLUME', 0.25),
             'COCOLIS_HEIGHT' => Configuration::get('COCOLIS_HEIGHT', null),
             'COCOLIS_WIDTH' => Configuration::get('COCOLIS_WIDTH', null),
             'COCOLIS_LENGTH' => Configuration::get('COCOLIS_LENGTH', null),
@@ -425,7 +416,7 @@ class Cocolis extends CarrierModule
         $cache = false;
 
         if (Context::getContext()->customer->logged == true) {
-            if (is_null(Configuration::get('COCOLIS_VOLUME')) || is_null(Configuration::get('COCOLIS_HEIGHT'))
+            if (is_null(Configuration::get('COCOLIS_HEIGHT'))
                 || is_null(Configuration::get('COCOLIS_WIDTH')) || is_null(Configuration::get('COCOLIS_LENGTH'))
             ) {
                 return false;
@@ -485,7 +476,10 @@ class Cocolis extends CarrierModule
                     $height = (int) $product['height'];
 
                     if ($width == 0 || $depth == 0 || $height == 0) {
-                        $dimensions += Configuration::get('COCOLIS_VOLUME') * (int) $product['quantity'];
+                        $width = Configuration::get('COCOLIS_WIDTH');
+                        $depth = Configuration::get('COCOLIS_LENGTH');
+                        $height = Configuration::get('COCOLIS_HEIGHT');
+                        $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
                     } else { // Use the default value of volume for delivery fees
                         $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
                     }
@@ -740,10 +734,10 @@ class Cocolis extends CarrierModule
                 $height = (int) $product['height'];
 
                 if ($width == 0 || $depth == 0 || $height == 0) {
-                    $dimensions += Configuration::get('COCOLIS_VOLUME') * (int) $product['quantity'];
                     $width = Configuration::get('COCOLIS_WIDTH');
                     $depth = Configuration::get('COCOLIS_LENGTH');
                     $height = Configuration::get('COCOLIS_HEIGHT');
+                    $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
                 } else { // Use the default value of volume for delivery fees
                     $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
                 }
