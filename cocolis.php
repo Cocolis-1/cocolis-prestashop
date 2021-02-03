@@ -778,16 +778,16 @@ class Cocolis extends CarrierModule
                 $birthday = new DateTime($customer->birthday);
 
                 $params = [
-                    "description" => "Livraison de la commande : " . implode(", ", $arrayname) . " vendue sur le site marketplace.",
+                    "description" => "Livraison de la commande : " . implode(", ", $arrayname) . "",
                     "external_id" => $id_order,
                     "from_address" => $from_composed_address,
                     "from_postal_code" => $this->getZip(),
                     "to_address" => $composed_address,
                     "to_postal_code" => $address->postcode,
-                    "from_is_flexible" => true,
+                    "from_is_flexible" => false,
                     "from_pickup_date" => $from_date,
                     "from_need_help" => true,
-                    "to_is_flexible" => true,
+                    "to_is_flexible" => false,
                     "to_need_help" => true,
                     "with_insurance" => $insurance,
                     "to_pickup_date" => $to_date,
@@ -797,8 +797,8 @@ class Cocolis extends CarrierModule
                     "volume" => $dimensions,
                     "environment" => "objects",
                     "photo_urls" => $images,
-                    "rider_extra_information" => "Bonjour, Je souhaite envoyer les objets suivants : "
-                        . implode(", ", $arrayname) . '. Merci !' . " (Achat effectué sur une marketplace)",
+                    "rider_extra_information" => "Livraison de la commande :  "
+                        . implode(", ", $arrayname),
                     "ride_objects_attributes" => $arrayproducts,
                     "ride_delivery_information_attributes" => [
                         "from_address" => $this->getAddress(),
@@ -846,17 +846,17 @@ class Cocolis extends CarrierModule
                     "volume" => $dimensions,
                     "environment" => "objects",
                     "photo_urls" => $images,
-                    "rider_extra_information" => "Bonjour, Je souhaite envoyer les objets suivants : "
-                        . implode(", ", $arrayname) . '. Merci !' . " (Achat effectué sur une marketplace)",
+                    "rider_extra_information" => "Livraison de la commande :  " 
+                        . implode(", ", $arrayname),
                     "ride_objects_attributes" => $arrayproducts,
                     "ride_delivery_information_attributes" => [
-                        "from_address" => Configuration::get('COCOLIS_ADDRESS'),
-                        "from_postal_code" => Configuration::get('COCOLIS_ZIP'),
-                        "from_city" => Configuration::get('COCOLIS_CITY'),
+                        "from_address" => $this->getAddress(),
+                        "from_postal_code" => $this->getZip(),
+                        "from_city" => $this->getCity(),
                         "from_country" => 'FR',
                         "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
                         "from_contact_phone" => $phone,
-                        "from_contact_name" => Configuration::get('PS_SHOP_NAME'),
+                        "from_contact_name" => $this->getName(),
                         "from_extra_information" => 'Vendeur MarketPlace',
                         "to_address" => $address->address1,
                         "to_postal_code" => $address->postcode,
