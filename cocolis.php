@@ -846,7 +846,7 @@ class Cocolis extends CarrierModule
                     "volume" => $dimensions,
                     "environment" => "objects",
                     "photo_urls" => $images,
-                    "rider_extra_information" => "Livraison de la commande :  " 
+                    "rider_extra_information" => "Livraison de la commande :  "
                         . implode(", ", $arrayname),
                     "ride_objects_attributes" => $arrayproducts,
                     "ride_delivery_information_attributes" => [
