@@ -191,8 +191,7 @@ class Cocolis extends CarrierModule
                         $client->getWebhookClient()->update(
                             [
                                 'event' => $webhook->event,
-                                'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
-                                &controller=webhooks&event=' . $webhook->event,
+                                'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=' . $webhook->event,
                                 'active' => true
                             ],
                             $webhook->id
@@ -204,32 +203,27 @@ class Cocolis extends CarrierModule
                 // Previously /cocolis/webhooks&event=blabla but not working with all versions
                 $client->getWebhookClient()->create([
                     'event' => 'ride_published',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
-                    &controller=webhooks&event=ride_published',
+                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=ride_published',
                     'active' => true
                 ]);
                 $client->getWebhookClient()->create([
                     'event' => 'ride_expired',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
-                    &controller=webhooks&event=ride_expired',
+                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=ride_expired',
                     'active' => true
                 ]);
                 $client->getWebhookClient()->create([
                     'event' => 'offer_accepted',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
-                    &controller=webhooks&event=offer_accepted',
+                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_accepted',
                     'active' => true
                 ]);
                 $client->getWebhookClient()->create([
                     'event' => 'offer_cancelled',
-                    'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis
-                    &controller=webhooks&event=offer_cancelled',
+                    'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis&controller=webhooks&event=offer_cancelled',
                     'active' => true
                 ]);
                 $client->getWebhookClient()->create([
                     'event' => 'offer_completed',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis
-                    &controller=webhooks&event=offer_completed',
+                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_completed',
                     'active' => true
                 ]);
                 $status = 'success';
@@ -833,10 +827,10 @@ class Cocolis extends CarrierModule
                     "from_postal_code" => $this->getZip(),
                     "to_address" => $composed_address,
                     "to_postal_code" => $address->postcode,
-                    "from_is_flexible" => true,
+                    "from_is_flexible" => false,
                     "from_pickup_date" => $from_date,
                     "from_need_help" => true,
-                    "to_is_flexible" => true,
+                    "to_is_flexible" => false,
                     "to_need_help" => true,
                     "with_insurance" => $insurance,
                     "to_pickup_date" => $to_date,
