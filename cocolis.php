@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2020 PrestaShop
  *
@@ -26,11 +27,12 @@
 
 require_once dirname(__FILE__) . '/vendor/autoload.php';
 
-use Cocolis\Api\Client;
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
+
+use Cocolis\Api\Client;
+use PrestaShop\PrestaShop\Core\Checkout\TermsAndConditions;
 
 class Cocolis extends CarrierModule
 {
@@ -41,7 +43,7 @@ class Cocolis extends CarrierModule
     {
         return Configuration::get('PS_SHOP_NAME');
     }
-  
+
     public static function getAddress()
     {
         return Configuration::get('COCOLIS_ADDRESS');
@@ -51,17 +53,17 @@ class Cocolis extends CarrierModule
     {
         return Configuration::get('COCOLIS_ZIP');
     }
-  
+
     public static function getCity()
     {
         return Configuration::get('COCOLIS_CITY');
     }
-  
+
     public static function getCountry()
     {
         return "FR";
     }
-  
+
     public static function getPhone()
     {
         return Configuration::get('PS_SHOP_PHONE');
@@ -86,7 +88,7 @@ class Cocolis extends CarrierModule
 
         $this->confirmUninstall = $this->l('Our delivery service will no longer be available on your site.');
 
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
     }
 
     /**
@@ -130,6 +132,7 @@ class Cocolis extends CarrierModule
             $this->registerHook('displayAdminOrderTabShip') &&
             $this->registerHook('displayAdminOrderTabOrder') &&
             $this->registerHook('displayAdminOrder') &&
+            $this->registerHook('termsAndConditions') &&
             $this->registerHook('displayOrderDetail');
     }
 
@@ -410,7 +413,8 @@ class Cocolis extends CarrierModule
         $cache = false;
 
         if (Context::getContext()->customer->logged == true) {
-            if (is_null(Configuration::get('COCOLIS_HEIGHT'))
+            if (
+                is_null(Configuration::get('COCOLIS_HEIGHT'))
                 || is_null(Configuration::get('COCOLIS_WIDTH')) || is_null(Configuration::get('COCOLIS_LENGTH'))
             ) {
                 return false;
@@ -445,7 +449,8 @@ class Cocolis extends CarrierModule
                 $product_ids = serialize($product_ids);
                 Db::getInstance()->execute("INSERT INTO `" . _DB_PREFIX_ . "cocolis_cart` 
                 (`hash_cart`, `products`, `cost`) VALUES ('" . $cart_hash . "', '" . $product_ids .  "', 0)");
-            } elseif (!empty(array_diff($product_ids_2, $product_ids)) ||
+            } elseif (
+                !empty(array_diff($product_ids_2, $product_ids)) ||
                 !empty(array_diff($product_ids, $product_ids_2))
             ) {
                 $cache = false;
@@ -688,8 +693,8 @@ class Cocolis extends CarrierModule
             $address = new Address($order->id_address_delivery);
 
             $from_composed_address = $this->getAddress() . ', '
-                    . $this->getZip() . ' ' . $this->getCity();
-            
+                . $this->getZip() . ' ' . $this->getCity();
+
             $composed_address = $address->address1 . ', ' . $address->postcode . ' ' . $address->city;
 
             $from_date = new DateTime('NOW');
@@ -714,7 +719,7 @@ class Cocolis extends CarrierModule
 
             $phone = $this->getPhone();
             if ($phone == null) {
-                echo('<p style="color:red;">[Module Cocolis] 
+                echo ('<p style="color:red;">[Module Cocolis] 
                 <b>Missing cell phone number !</b> 
                 You must configure your store to provide your phone number.
                 </br>Go in <b>Store settings > Contact > Stores</b> 
@@ -869,6 +874,35 @@ class Cocolis extends CarrierModule
             // Clear cache cart
             Db::getInstance()->execute("TRUNCATE TABLE `" . _DB_PREFIX_ . "cocolis_cart`");
         }
+    }
+
+    public function hookTermsAndConditions($params)
+    {
+        $customTerms = [];
+
+        if ($params['cart']->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
+            $max_value = 0;
+            $objCart = new Cart($params['cart']->id);
+            $total = $objCart->getOrderTotal(true, 7);
+
+            // Maximal cost insurance
+            if ($total <= 1500) {
+                $max_value = 1500;
+            } elseif ($total <= 3000) {
+                $max_value = 3000;
+            } elseif ($total <= 5000) {
+                $max_value = 5000;
+            } else {
+                $max_value = 5000;
+            }
+
+            $terms = new TermsAndConditions();
+            $terms->setIdentifier('custom1');
+            $terms->setText("Je confirme que j’ai lu les [conditions d’assurance] et que je choisis l’assurance jusqu'à " . $max_value . " €.", 'https://www.cocolis.fr/static/docs/notice_information_COCOLIS_AO.pdf');
+            $customTerms[] = $terms;
+        }
+
+        return $customTerms;
     }
 
     protected function addCarrier()
