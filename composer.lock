@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cocolis-1/cocolis-php.git",
-                "reference": "f304f6f78048340d7d9058d9bad4ee1e98c12f44"
+                "reference": "82ffb2e571cd12ad1135bc04d15529965a80d83f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cocolis-1/cocolis-php/zipball/f304f6f78048340d7d9058d9bad4ee1e98c12f44",
-                "reference": "f304f6f78048340d7d9058d9bad4ee1e98c12f44",
+                "url": "https://api.github.com/repos/Cocolis-1/cocolis-php/zipball/82ffb2e571cd12ad1135bc04d15529965a80d83f",
+                "reference": "82ffb2e571cd12ad1135bc04d15529965a80d83f",
                 "shasum": ""
             },
             "require": {
@@ -64,7 +64,7 @@
                 "issues": "https://github.com/Cocolis-1/cocolis-php/issues",
                 "source": "https://github.com/Cocolis-1/cocolis-php/tree/develop"
             },
-            "time": "2020-11-07T20:43:09+00:00"
+            "time": "2021-04-06T07:37:42+00:00"
         }
     ],
     "packages-dev": [
@@ -256,12 +256,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "e3324ecbde7319b0bbcf0fd7ca4af19469c38da9"
+                "reference": "f8d350d8514ff60b5993dd0121c62299480c989c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/e3324ecbde7319b0bbcf0fd7ca4af19469c38da9",
-                "reference": "e3324ecbde7319b0bbcf0fd7ca4af19469c38da9",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/f8d350d8514ff60b5993dd0121c62299480c989c",
+                "reference": "f8d350d8514ff60b5993dd0121c62299480c989c",
                 "shasum": ""
             },
             "require": {
@@ -305,7 +305,7 @@
                 "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
                 "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/master"
             },
-            "time": "2020-11-18T14:27:38+00:00"
+            "time": "2021-03-07T11:12:25+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -1468,7 +1468,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.22.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.22.1"
             },
             "funding": [
                 {
@@ -1563,12 +1563,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozarts/assert.git",
-                "reference": "9c89b265ccc4092d58e66d72af5d343ee77a41ae"
+                "reference": "f07851c5b43e4cb502c24068620e9af6cbdd953f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozarts/assert/zipball/9c89b265ccc4092d58e66d72af5d343ee77a41ae",
-                "reference": "9c89b265ccc4092d58e66d72af5d343ee77a41ae",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/f07851c5b43e4cb502c24068620e9af6cbdd953f",
+                "reference": "f07851c5b43e4cb502c24068620e9af6cbdd953f",
                 "shasum": ""
             },
             "require": {
@@ -1577,7 +1577,7 @@
             },
             "conflict": {
                 "phpstan/phpstan": "<0.12.20",
-                "vimeo/psalm": "<3.9.1"
+                "vimeo/psalm": "<4.6.1 || 4.6.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.5.13"
@@ -1614,7 +1614,7 @@
                 "issues": "https://github.com/webmozarts/assert/issues",
                 "source": "https://github.com/webmozarts/assert/tree/master"
             },
-            "time": "2021-01-18T12:52:36+00:00"
+            "time": "2021-03-11T07:08:13+00:00"
         }
     ],
     "aliases": [],
