@@ -492,11 +492,17 @@ class Cocolis extends CarrierModule
 
                 $dimensions = round($dimensions, 2);
 
+                $total = Context::getContext()->cart->getOrderTotal(true, 4);
+
                 $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total * 100);
                 $shipping_cost = ($match->estimated_prices->regular) / 100;
 
-                if ($total >= 500) {
-                    $shipping_cost_insurance = ($match->estimated_prices->with_insurance) / 100;
+                if ($total >= 150) {
+                    if (isset($match->estimated_prices->with_insurance)) {
+                        $shipping_cost_insurance = ($match->estimated_prices->with_insurance) / 100;
+                    } else {
+                        $shipping_cost_insurance = 0;
+                    }
                 } else {
                     $shipping_cost_insurance = 0;
                 }
@@ -883,22 +889,20 @@ class Cocolis extends CarrierModule
         if ($params['cart']->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
             $max_value = 0;
             $objCart = new Cart($params['cart']->id);
-            $total = $objCart->getOrderTotal(true, 7);
+            $total = $objCart->getOrderTotal(true, 4);
 
             // Maximal cost insurance
             if ($total <= 1500) {
                 $max_value = 1500;
             } elseif ($total <= 3000) {
                 $max_value = 3000;
-            } elseif ($total <= 5000) {
-                $max_value = 5000;
             } else {
                 $max_value = 5000;
             }
 
             $terms = new TermsAndConditions();
             $terms->setIdentifier('custom1');
-            $terms->setText("Je confirme que j’ai lu les [conditions d’assurance] et que je choisis l’assurance jusqu'à " . $max_value . " €.", 'https://www.cocolis.fr/static/docs/notice_information_COCOLIS_AO.pdf');
+            $terms->setText("Je confirme que j’ai lu les [conditions d’assurance] et que je choisis l’assurance complémentaire jusqu'à " . $max_value . " €.", 'https://www.cocolis.fr/static/docs/notice_information_COCOLIS_AO.pdf');
             $customTerms[] = $terms;
         }
 
