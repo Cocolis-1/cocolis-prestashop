@@ -902,7 +902,7 @@ class Cocolis extends CarrierModule
 
             $terms = new TermsAndConditions();
             $terms->setIdentifier('custom1');
-            $terms->setText("Je confirme que j’ai lu les [conditions d’assurance] et que je choisis l’assurance complémentaire jusqu'à " . $max_value . " €.", 'https://www.cocolis.fr/static/docs/notice_information_COCOLIS_AO.pdf');
+            $terms->setText("Je confirme que j’ai lu les <span onclick=\"window.open('https://www.cocolis.fr/static/docs/notice_information_COCOLIS_AO.pdf', '_blank')\" style=\"color: #2fb5d2; cursor:pointer;\">conditions d'assurance</span> et que je choisis l’assurance complémentaire jusqu'à " . $max_value . " €.");
             $customTerms[] = $terms;
         }
 
