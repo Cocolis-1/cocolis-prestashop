@@ -497,7 +497,7 @@ class Cocolis extends CarrierModule
                 $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total * 100);
                 $shipping_cost = ($match->estimated_prices->regular) / 100;
 
-                if ($total >= 150) {
+                if ($total >= 500) {
                     if (isset($match->estimated_prices->with_insurance)) {
                         $shipping_cost_insurance = ($match->estimated_prices->with_insurance) / 100;
                     } else {
