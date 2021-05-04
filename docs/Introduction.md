@@ -7,22 +7,29 @@ Vous pouvez signaler des bugs sur cette [page](https://github.com/Cocolis-1/coco
 
 # Installation
 
-Il existe plusieurs moyens d'installer le module sur votre site.
+Téléchargez la dernière version du module Cocolis (le **cocolis.zip**) : [ici](https://github.com/Cocolis-1/cocolis-prestashop/releases) 
 
+![Capture écran Git](https://dsc.cloud/b60e61/github-2x.png)
 
-**Pour des raisons techniques, il est impératif que le dossier du module se nomme "cocolis".**
+Rendez-vous ensuite dans **Catalogue de modules** :
 
-Une fois le module dans le répertoire, il suffit de se connecter au back-office de votre PrestaShop et de vous rendre dans le Catalogue des modules.
+![Catalogue de module](https://dsc.cloud/b60e61/CleanShot-2021-05-04-at-18.01.15-2x.png)
 
-Recherchez : **Cocolis** puis cliquer tout simplement sur **Install**.
+Cliquez ensuite sur **Installer un module** :
 
-![Capture d'écran Catalogue Modules](https://res.cloudinary.com/cocolis-prod/image/upload/v1605524040/Documentation/prestashop/install-module_cagxy9.png)
+![Installer](https://dsc.cloud/b60e61/CleanShot-2021-05-04-at-18.03.28-2x.png)
+
+Glissez le zip dans l'installateur et vous êtes bon ! 😉
+
+Rendez vous ensuite dans la partie [Configuration](Configuration.md) 
+
+**Pour des raisons techniques, il est impératif que le fichier du module se nomme cocolis.zip.**
 
 ## Réinstallation
 
 > En cas de réinstallation, veillez à ce que le mode de livraison avec assurance et sans assurance Cocolis dans le back-office ne soit pas en double, si cela est le cas, supprimez les doublons.
 
-# Pour les développeurs
+# Alternative pour installer le module (les développeurs)
 
 Avant toute chose, vous devez vous rendre dans le dossier "**modules**" de votre PrestaShop.
 
@@ -34,10 +41,6 @@ Le chemin est généralement celui-ci : **/var/www/modules/**
 composer require cocolis/prestashop
 ```
 
-## Marketpace Prestashop
-
-@TODO
-
 ## Git
 
 ```bash
@@ -48,5 +51,5 @@ Pour ces deux commandes, vous devez avoir un accès SSH sur votre serveur Web. S
 
 ## Documentation API
 
-Le principe du module étant essentiellement basé sur la **documentation officielle de l'API et de la librairie PHP**, vous pouvez la retrouver sur **[https://doc.cocolis.fr/docs/cocolis-api](https://doc.cocolis.fr/docs/cocolis-api)**.
+Le principe du module étant essentiellement basé sur la **documentation officielle de l'API et de la librairie PHP**, vous pouvez la retrouver **[ici](https://doc.cocolis.fr/docs/cocolis-api)**.
 
