@@ -73,7 +73,7 @@ class Cocolis extends CarrierModule
     {
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.0';
+        $this->version = '1.0.4';
         $this->author = 'Cocolis';
         $this->need_instance = 1;
         /**
@@ -147,8 +147,8 @@ class Cocolis extends CarrierModule
         Configuration::deleteByName('COCOLIS_ZIP');
         Configuration::deleteByName('COCOLIS_CITY');
         Configuration::deleteByName('COCOLIS_COUNTRY');
-        Configuration::deleteByName('COCOLIS_CARRIER_ID');
-        Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
+        //Configuration::deleteByName('COCOLIS_CARRIER_ID');
+        //Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -407,140 +407,146 @@ class Cocolis extends CarrierModule
 
     public function getOrderShippingCost($params, $shipping_cost)
     {
-        $dimensions = 0;
-        $total = 0;
-        $cart_hash = hash('md5', Context::getContext()->cart->id . Context::getContext()->cart->id_address_delivery);
-        $cache = false;
-
-        if (Context::getContext()->customer->logged == true) {
-            if (
-                is_null(Configuration::get('COCOLIS_HEIGHT'))
-                || is_null(Configuration::get('COCOLIS_WIDTH')) || is_null(Configuration::get('COCOLIS_LENGTH'))
-            ) {
-                return false;
-            }
-
+        try {
+            $dimensions = 0;
+            $total = 0;
             $id_address_delivery = Context::getContext()->cart->id_address_delivery;
             $address = new Address($id_address_delivery);
 
-            $from_zip = $this->getZip();
+            $cart_hash = hash('md5', Context::getContext()->cart->id . $id_address_delivery . $this->getZip() . $address->postcode);
+            $cache = false;
 
-            $sql = new DbQuery();
-            $sql->from("cocolis_cart");
-            $sql->select('products');
-            $sql->where('hash_cart= "' . $cart_hash . '"');
-            $products = Db::getInstance()->getValue($sql);
-
-            if (!empty($products)) {
-                $product_ids = unserialize($products);
-
-                $product_ids_2 = array();
-                foreach (Context::getContext()->cart->getProducts() as $product) {
-                    $product_ids_2[] = (int)$product['id_product'] . (int)$product['quantity'];
+            if (Context::getContext()->customer->logged == true) {
+                if (
+                    is_null(Configuration::get('COCOLIS_HEIGHT'))
+                    || is_null(Configuration::get('COCOLIS_WIDTH')) || is_null(Configuration::get('COCOLIS_LENGTH'))
+                ) {
+                    return false;
                 }
-            }
 
-            if (empty($products)) {
-                $products = Context::getContext()->cart->getProducts();
-                $product_ids = array();
-                foreach ($products as $product) {
-                    $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
+                $from_zip = $this->getZip();
+
+                $sql = new DbQuery();
+                $sql->from("cocolis_cart");
+                $sql->select('products');
+                $sql->where('hash_cart= "' . $cart_hash . '"');
+                $products = Db::getInstance()->getValue($sql);
+
+                if (!empty($products)) {
+                    $product_ids = unserialize($products);
+
+                    $product_ids_2 = array();
+                    foreach (Context::getContext()->cart->getProducts() as $product) {
+                        $product_ids_2[] = (int)$product['id_product'] . (int)$product['quantity'];
+                    }
                 }
-                $product_ids = serialize($product_ids);
-                Db::getInstance()->execute("INSERT INTO `" . _DB_PREFIX_ . "cocolis_cart` 
+
+                if (empty($products)) {
+                    $products = Context::getContext()->cart->getProducts();
+                    $product_ids = array();
+                    foreach ($products as $product) {
+                        $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
+                    }
+                    $product_ids = serialize($product_ids);
+                    Db::getInstance()->execute("INSERT INTO `" . _DB_PREFIX_ . "cocolis_cart` 
                 (`hash_cart`, `products`, `cost`) VALUES ('" . $cart_hash . "', '" . $product_ids .  "', 0)");
-            } elseif (
-                !empty(array_diff($product_ids_2, $product_ids)) ||
-                !empty(array_diff($product_ids, $product_ids_2))
-            ) {
-                $cache = false;
-            } else {
-                $cache = true;
-            }
+                } elseif (
+                    !empty(array_diff($product_ids_2, $product_ids)) ||
+                    !empty(array_diff($product_ids, $product_ids_2))
+                ) {
+                    $cache = false;
+                } else {
+                    $cache = true;
+                }
 
-            if (!is_null($address->postcode) && $cache == false) {
-                $to_zip = $address->postcode;
+                if (!is_null($address->postcode) && $cache == false) {
+                    $to_zip = $address->postcode;
 
-                /**
-                 * Send the details through the API
-                 * Return the price sent by the API
-                 */
+                    /**
+                     * Send the details through the API
+                     * Return the price sent by the API
+                     */
 
-                $products = Context::getContext()->cart->getProducts();
+                    $products = Context::getContext()->cart->getProducts();
 
-                $client = $this->authenticatedClient();
-                foreach ($products as $product) {
-                    $width = (int) $product['width'];
-                    $depth = (int) $product['depth'];
-                    $height = (int) $product['height'];
+                    $client = $this->authenticatedClient();
+                    foreach ($products as $product) {
+                        $width = (int) $product['width'];
+                        $depth = (int) $product['depth'];
+                        $height = (int) $product['height'];
 
-                    if ($width == 0 || $depth == 0 || $height == 0) {
-                        $width = Configuration::get('COCOLIS_WIDTH');
-                        $depth = Configuration::get('COCOLIS_LENGTH');
-                        $height = Configuration::get('COCOLIS_HEIGHT');
-                        $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
-                    } else { // Use the default value of volume for delivery fees
-                        $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
+                        if ($width == 0 || $depth == 0 || $height == 0) {
+                            $width = Configuration::get('COCOLIS_WIDTH');
+                            $depth = Configuration::get('COCOLIS_LENGTH');
+                            $height = Configuration::get('COCOLIS_HEIGHT');
+                            $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
+                        } else { // Use the default value of volume for delivery fees
+                            $dimensions += (($width * $depth * $height) / pow(10, 6)) * (int) $product['quantity'];
+                        }
+
+                        $total += $product['price'] * (int) $product['quantity'];
                     }
 
-                    $total += $product['price'] * (int) $product['quantity'];
-                }
+                    if ($dimensions < 0.01) {
+                        $dimensions += 0.01;
+                    }
 
-                if ($dimensions < 0.01) {
-                    $dimensions += 0.01;
-                }
+                    $dimensions = round($dimensions, 2);
 
-                $dimensions = round($dimensions, 2);
+                    $total = Context::getContext()->cart->getOrderTotal(true, 4);
 
-                $total = Context::getContext()->cart->getOrderTotal(true, 4);
+                    $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total * 100);
+                    $shipping_cost = ($match->estimated_prices->regular) / 100;
 
-                $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total * 100);
-                $shipping_cost = ($match->estimated_prices->regular) / 100;
-
-                if ($total >= 500) {
-                    if (isset($match->estimated_prices->with_insurance)) {
-                        $shipping_cost_insurance = ($match->estimated_prices->with_insurance) / 100;
+                    if ($total >= 500) {
+                        if (isset($match->estimated_prices->with_insurance)) {
+                            $shipping_cost_insurance = ($match->estimated_prices->with_insurance) / 100;
+                        } else {
+                            $shipping_cost_insurance = 0;
+                        }
                     } else {
                         $shipping_cost_insurance = 0;
                     }
-                } else {
-                    $shipping_cost_insurance = 0;
-                }
 
-                $products = Context::getContext()->cart->getProducts();
-                $product_ids = array();
-                foreach ($products as $product) {
-                    $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
-                }
-                $product_ids = serialize($product_ids);
-                Db::getInstance()->execute("UPDATE `" . _DB_PREFIX_ . "cocolis_cart` 
+                    $products = Context::getContext()->cart->getProducts();
+                    $product_ids = array();
+                    foreach ($products as $product) {
+                        $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
+                    }
+                    $product_ids = serialize($product_ids);
+                    Db::getInstance()->execute("UPDATE `" . _DB_PREFIX_ . "cocolis_cart` 
                 SET products = '" . $product_ids . "', cost = '" . $shipping_cost . "', 
                 cost_insurance = '" . $shipping_cost_insurance . "' WHERE hash_cart = '" . $cart_hash . "'");
+                }
             }
-        }
 
-        $sql = new DbQuery();
-        $sql->from("cocolis_cart");
-        $sql->select('cost');
-        $sql->where('hash_cart= "' . $cart_hash . '"');
-        $shipping_cost = Db::getInstance()->getValue($sql);
+            $sql = new DbQuery();
+            $sql->from("cocolis_cart");
+            $sql->select('cost');
+            $sql->where('hash_cart= "' . $cart_hash . '"');
+            $shipping_cost = Db::getInstance()->getValue($sql);
 
-        $sql = new DbQuery();
-        $sql->from("cocolis_cart");
-        $sql->select('cost_insurance');
-        $sql->where('hash_cart= "' . $cart_hash . '"');
-        $shipping_cost_insurance = Db::getInstance()->getValue($sql);
+            $sql = new DbQuery();
+            $sql->from("cocolis_cart");
+            $sql->select('cost_insurance');
+            $sql->where('hash_cart= "' . $cart_hash . '"');
+            $shipping_cost_insurance = Db::getInstance()->getValue($sql);
 
-        if ($shipping_cost_insurance == 0) {
-            $shipping_cost_insurance = false;
-        }
+            if ($shipping_cost_insurance == 0) {
+                $shipping_cost_insurance = false;
+            }
 
-        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
-            return $shipping_cost;
-        }
+            if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
+                return $shipping_cost;
+            }
 
-        if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
-            return $shipping_cost_insurance;
+            if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
+                return $shipping_cost_insurance;
+            }
+
+            return false;
+        } catch (Exception $e) {
+            return false;
         }
     }
 

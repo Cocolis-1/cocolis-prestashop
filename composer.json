@@ -2,12 +2,12 @@
   "name": "cocolis/cocolisprestashop",
   "description": "Utilisez cocolis.fr comme mode de livraison. Spécialisé dans la livraison communautaire, Cocolis vous permettra d'envoyer des colis hors format.",
   "authors": [
-      {
-          "name": "Cocolis",
-          "email": "contact@cocolis.fr"
-      }
+    {
+      "name": "Cocolis",
+      "email": "contact@cocolis.fr"
+    }
   ],
-  "version": "1.0.0",
+  "version": "1.0.4",
   "require": {
     "php": ">=5.6.0",
     "cocolis/php": "dev-develop"
@@ -19,8 +19,8 @@
     }
   },
   "config": {
-      "preferred-install": "dist",
-      "prepend-autoloader": false
+    "preferred-install": "dist",
+    "prepend-autoloader": false
   },
   "type": "prestashop-module",
   "author": "Cocolis",
