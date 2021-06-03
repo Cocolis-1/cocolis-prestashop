@@ -496,6 +496,8 @@ class Cocolis extends CarrierModule
                     $total = Context::getContext()->cart->getOrderTotal(true, 4);
 
                     $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total * 100);
+                    if ($match->result == false) return false;
+
                     $shipping_cost = ($match->estimated_prices->regular) / 100;
 
                     if ($total >= 500) {
