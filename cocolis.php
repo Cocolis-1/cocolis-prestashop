@@ -500,7 +500,7 @@ class Cocolis extends CarrierModule
 
                     $shipping_cost = ($match->estimated_prices->regular) / 100;
 
-                    if ($total >= 500) {
+                    if ($total >= 150) {
                         if (isset($match->estimated_prices->with_insurance)) {
                             $shipping_cost_insurance = ($match->estimated_prices->with_insurance) / 100;
                         } else {
@@ -900,7 +900,9 @@ class Cocolis extends CarrierModule
             $total = $objCart->getOrderTotal(true, 4);
 
             // Maximal cost insurance
-            if ($total <= 1500) {
+            if ($total <= 500) {
+                $max_value = 500;
+            } elseif ($total <= 1500) {
                 $max_value = 1500;
             } elseif ($total <= 3000) {
                 $max_value = 3000;
