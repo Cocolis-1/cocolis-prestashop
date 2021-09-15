@@ -9,15 +9,15 @@ Vous pouvez signaler des bugs sur cette [page](https://github.com/Cocolis-1/coco
 
 Téléchargez la dernière version du module Cocolis (le **cocolis.zip**) : [ici](https://github.com/Cocolis-1/cocolis-prestashop/releases) 
 
-![Capture écran Git](https://dsc.cloud/b60e61/github-2x.png)
+![Capture écran Git](https://res.cloudinary.com/cocolis-prod/image/upload/v1631736838/Documentation/prestashop/GitHub%20Presta.png)
 
 Rendez-vous ensuite dans **Catalogue de modules** :
 
-![Catalogue de module](https://dsc.cloud/b60e61/CleanShot-2021-05-04-at-18.01.15-2x.png)
+![Catalogue de module](https://res.cloudinary.com/cocolis-prod/image/upload/v1631736982/Documentation/prestashop/Catalogue%20modules%20presta.png)
 
 Cliquez ensuite sur **Installer un module** :
 
-![Installer](https://dsc.cloud/b60e61/CleanShot-2021-05-04-at-18.03.28-2x.png)
+![Installer](https://res.cloudinary.com/cocolis-prod/image/upload/v1631737152/Documentation/prestashop/Installer%20un%20module%20Presta.png)
 
 Glissez le zip dans l'installateur et vous êtes bon ! 😉
 
