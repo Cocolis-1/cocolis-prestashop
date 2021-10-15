@@ -721,7 +721,7 @@ class Cocolis extends CarrierModule
             $from_date = $from_date->format('c');
             $to_date = $to_date->format('c');
 
-            $cart = new Cart($params['cart']->id);
+            $cart = new Cart($order->id_cart);
             $products = $cart->getProducts();
             $dimensions = 0;
 
