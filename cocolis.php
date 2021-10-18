@@ -73,7 +73,7 @@ class Cocolis extends CarrierModule
     {
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.4';
+        $this->version = '1.0.6';
         $this->author = 'Cocolis';
         $this->need_instance = 1;
         /**
