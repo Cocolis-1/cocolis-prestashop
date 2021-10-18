@@ -7,7 +7,7 @@ if (!defined('_PS_VERSION_')) {
 class CocolisOverride extends Cocolis
 {
     // Test create fake address
-    
+
     /* WORKING
     public static function getName()
     {

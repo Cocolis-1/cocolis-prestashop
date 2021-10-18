@@ -496,7 +496,9 @@ class Cocolis extends CarrierModule
                     $total = Context::getContext()->cart->getOrderTotal(true, 4);
 
                     $match = $client->getRideClient()->canMatch($from_zip, $to_zip, $dimensions, $total * 100);
-                    if ($match->result == false) return false;
+                    if ($match->result == false) {
+                        return false;
+                    }
 
                     $shipping_cost = ($match->estimated_prices->regular) / 100;
 
@@ -733,7 +735,7 @@ class Cocolis extends CarrierModule
 
             $phone = $this->getPhone();
             if ($phone == null) {
-                echo ('<p style="color:red;">[Module Cocolis] 
+                echo('<p style="color:red;">[Module Cocolis] 
                 <b>Missing cell phone number !</b> 
                 You must configure your store to provide your phone number.
                 </br>Go in <b>Store settings > Contact > Stores</b> 
