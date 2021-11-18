@@ -703,9 +703,9 @@ class Cocolis extends CarrierModule
         $orderCarrier = new OrderCarrier($order->getIdOrderCarrier());
         $carrier = new Carrier($orderCarrier->id_carrier);
 
-        $client = $this->authenticatedClient();
-
         if ($carrier->external_module_name == "cocolis") {
+            $client = $this->authenticatedClient();
+
             $address = new Address($order->id_address_delivery);
 
             $from_composed_address = $this->getAddress() . ', '
@@ -735,7 +735,7 @@ class Cocolis extends CarrierModule
 
             $phone = $this->getPhone();
             if ($phone == null) {
-                echo('<p style="color:red;">[Module Cocolis] 
+                echo ('<p style="color:red;">[Module Cocolis] 
                 <b>Missing cell phone number !</b> 
                 You must configure your store to provide your phone number.
                 </br>Go in <b>Store settings > Contact > Stores</b> 
