@@ -73,7 +73,7 @@ class Cocolis extends CarrierModule
     {
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.6';
+        $this->version = '1.0.8';
         $this->author = 'Cocolis';
         $this->need_instance = 1;
         /**
@@ -413,7 +413,7 @@ class Cocolis extends CarrierModule
             $id_address_delivery = Context::getContext()->cart->id_address_delivery;
             $address = new Address($id_address_delivery);
 
-            $cart_hash = hash('md5', Context::getContext()->cart->id . $id_address_delivery . $this->getZip() . $address->postcode);
+            $cart_hash = hash('md5', Context::getContext()->cart->id . $id_address_delivery . $this->getZip() . $address->postcode . $this->version);
             $cache = false;
 
             if (Context::getContext()->customer->logged == true) {
@@ -538,6 +538,10 @@ class Cocolis extends CarrierModule
 
             if ($shipping_cost_insurance == 0) {
                 $shipping_cost_insurance = false;
+            }
+
+            if ($shipping_cost == 0) {
+                $shipping_cost = false;
             }
 
             if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
