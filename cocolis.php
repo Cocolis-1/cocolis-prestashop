@@ -73,7 +73,7 @@ class Cocolis extends CarrierModule
     {
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.8';
+        $this->version = '1.0.9';
         $this->author = 'Cocolis';
         $this->need_instance = 1;
         /**
@@ -133,12 +133,14 @@ class Cocolis extends CarrierModule
             $this->registerHook('displayAdminOrderTabOrder') &&
             $this->registerHook('displayAdminOrder') &&
             $this->registerHook('termsAndConditions') &&
+            $this->registerHook('actionFrontControllerSetMedia') &&
             $this->registerHook('displayOrderDetail');
     }
 
     public function uninstall()
     {
         Configuration::deleteByName('COCOLIS_LIVE_MODE');
+        Configuration::deleteByName('COCOLIS_DEBUG_MODE');
         Configuration::deleteByName('COCOLIS_HEIGHT');
         Configuration::deleteByName('COCOLIS_WIDTH');
         Configuration::deleteByName('COCOLIS_LENGTH');
@@ -168,6 +170,7 @@ class Cocolis extends CarrierModule
     public function redirectWithNotifications($type)
     {
         $this->context->smarty->assign(array('notifications' => 'webhook_' . $type));
+
         return $this->display(__FILE__, "views/templates/admin/configure.tpl");
     }
 
@@ -244,6 +247,7 @@ class Cocolis extends CarrierModule
         }
 
         $this->context->smarty->assign('module_dir', $this->_path);
+        $this->context->smarty->assign(array('cocolis_debug_mode' => Configuration::get('COCOLIS_DEBUG_MODE'), 'cocolis_carrier_id' => Configuration::get('COCOLIS_CARRIER_ID'), 'cocolis_carrier_assurance_id' => Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'), 'cocolis_module_version' => $this->version));
 
         $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
 
@@ -300,12 +304,31 @@ class Cocolis extends CarrierModule
                             array(
                                 'id' => 'active_on',
                                 'value' => true,
-                                'label' => $this->l('Enable production mode')
+                                'label' => $this->l('Production mode enabled')
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => false,
-                                'label' => $this->l('Disable production mode')
+                                'label' => $this->l('Production mode disabled')
+                            )
+                        ),
+                    ),
+                    array(
+                        'type' => 'switch',
+                        'label' => $this->l('Debug mode'),
+                        'name' => 'COCOLIS_DEBUG_MODE',
+                        'is_bool' => true,
+                        'desc' => $this->l('In case of problems you can activate this option to help the Cocolis development team to solve anomalies'),
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => true,
+                                'label' => $this->l('Debug mode enabled')
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => false,
+                                'label' => $this->l('Debug mode disabled')
                             )
                         ),
                     ),
@@ -381,6 +404,7 @@ class Cocolis extends CarrierModule
     {
         return array(
             'COCOLIS_LIVE_MODE' => Configuration::get('COCOLIS_LIVE_MODE', true),
+            'COCOLIS_DEBUG_MODE' => Configuration::get('COCOLIS_DEBUG_MODE', false),
             'COCOLIS_APPID' => Configuration::get('COCOLIS_APPID', 'app_id'),
             'COCOLIS_PASSWORD' => Configuration::get('COCOLIS_PASSWORD', null),
             'COCOLIS_ZIP' => Configuration::get('COCOLIS_ZIP', null),
@@ -536,6 +560,10 @@ class Cocolis extends CarrierModule
             $sql->where('hash_cart= "' . $cart_hash . '"');
             $shipping_cost_insurance = Db::getInstance()->getValue($sql);
 
+            if (Configuration::get('COCOLIS_DEBUG_MODE')) {
+                Logger::addLog('[Module Cocolis] Valeurs : SHIPPING COST : ' . $shipping_cost . ' - SHIPPING COST INSURANCE : ' . $shipping_cost_insurance . ' - ID CARRIER : ' . $this->id_carrier, 1);
+            }
+
             if ($shipping_cost_insurance == 0) {
                 $shipping_cost_insurance = false;
             }
@@ -554,6 +582,10 @@ class Cocolis extends CarrierModule
 
             return false;
         } catch (Exception $e) {
+            if (Configuration::get('COCOLIS_DEBUG_MODE')) {
+                Logger::addLog('[Module Cocolis] Erreur : ' . $e->getMessage(), 3);
+            }
+
             return false;
         }
     }
@@ -572,6 +604,15 @@ class Cocolis extends CarrierModule
     public function getOrderShippingCostExternal($params)
     {
         return true;
+    }
+
+    /**
+     * Javascript Debug
+     * @param array $params
+     */
+    public function hookActionFrontControllerSetMedia($params)
+    {
+        $this->context->controller->addJS($this->_path . 'views/js/debug.js');
     }
 
     /**
@@ -739,7 +780,7 @@ class Cocolis extends CarrierModule
 
             $phone = $this->getPhone();
             if ($phone == null) {
-                echo('<p style="color:red;">[Module Cocolis] 
+                echo ('<p style="color:red;">[Module Cocolis] 
                 <b>Missing cell phone number !</b> 
                 You must configure your store to provide your phone number.
                 </br>Go in <b>Store settings > Contact > Stores</b> 

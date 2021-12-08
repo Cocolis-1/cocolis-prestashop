@@ -7,7 +7,7 @@
       "email": "contact@cocolis.fr"
     }
   ],
-  "version": "1.0.8",
+  "version": "1.0.9",
   "require": {
     "php": ">=5.6.0",
     "cocolis/php": "dev-develop"
