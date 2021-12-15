@@ -73,7 +73,7 @@ class Cocolis extends CarrierModule
     {
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.9';
+        $this->version = '1.0.10';
         $this->author = 'Cocolis';
         $this->need_instance = 1;
         /**
@@ -98,19 +98,29 @@ class Cocolis extends CarrierModule
 
     public function install()
     {
+        global $cookie;
+
         if (extension_loaded('curl') == false) {
             $this->_errors[] = $this->l('You have to enable the cURL extension on your server to install this module');
             return false;
         }
 
-        if (is_null(Configuration::get('COCOLIS_CARRIER_ID')) || null == (Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
+        $carriers = Carrier::getCarriers($cookie->id_lang, true, false, false, null, PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
+
+        // Saving id carrier list
+        $id_carrier_list = array();
+        foreach ($carriers as $carrier) {
+            $id_carrier_list[] .= $carrier['id_carrier'];
+        }
+
+        if (!in_array((int)(Configuration::get('COCOLIS_CARRIER_ID')), $id_carrier_list) || is_null(Configuration::get('COCOLIS_CARRIER_ID'))) {
             $carrier = $this->addCarrier();
             $this->addZones($carrier);
             $this->addGroups($carrier);
             $this->addRanges($carrier);
         }
 
-        if (is_null(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID')) || null == (Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
+        if (!in_array((int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID')), $id_carrier_list) || is_null(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
             $carrier_insurance = $this->addCarrierInsurance();
             $this->addZones($carrier_insurance);
             $this->addGroups($carrier_insurance);
@@ -149,8 +159,8 @@ class Cocolis extends CarrierModule
         Configuration::deleteByName('COCOLIS_ZIP');
         Configuration::deleteByName('COCOLIS_CITY');
         Configuration::deleteByName('COCOLIS_COUNTRY');
-        //Configuration::deleteByName('COCOLIS_CARRIER_ID');
-        //Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
+        // Configuration::deleteByName('COCOLIS_CARRIER_ID');
+        // Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
