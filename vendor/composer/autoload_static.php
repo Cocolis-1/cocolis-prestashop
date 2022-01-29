@@ -11,6 +11,10 @@ class ComposerStaticInit6832f015dfc0d8ecde151c1efa3ebb51
         array (
             'PrestaShop\\Module\\Cocolis\\' => 26,
         ),
+        'C' => 
+        array (
+            'Cocolis\\Api\\' => 12,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -18,6 +22,14 @@ class ComposerStaticInit6832f015dfc0d8ecde151c1efa3ebb51
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
+        'Cocolis\\Api\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cocolis/php/src',
+        ),
+    );
+
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -25,6 +37,7 @@ class ComposerStaticInit6832f015dfc0d8ecde151c1efa3ebb51
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit6832f015dfc0d8ecde151c1efa3ebb51::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit6832f015dfc0d8ecde151c1efa3ebb51::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit6832f015dfc0d8ecde151c1efa3ebb51::$classMap;
 
         }, null, ClassLoader::class);
     }

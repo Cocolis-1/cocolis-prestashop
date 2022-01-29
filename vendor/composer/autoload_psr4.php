@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'PrestaShop\\Module\\Cocolis\\' => array($baseDir . '/src'),
+    'Cocolis\\Api\\' => array($vendorDir . '/cocolis/php/src'),
 );

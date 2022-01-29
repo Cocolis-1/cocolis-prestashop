@@ -76,6 +76,18 @@
   transition: opacity 0.6s; /* 600ms to fade out */
 }
 
+.alert-gray {
+  padding: 15px;
+	padding-top: 15px;
+	border-radius: 10px;
+  background-color: #34495e;
+  color: white;
+	margin-top: 15px;
+  margin-bottom: 15px;
+	opacity: 1;
+  transition: opacity 0.6s; /* 600ms to fade out */
+}
+
 /* The close button */
 .closebtn {
   margin-left: 15px;
@@ -130,11 +142,13 @@ for (i = 0; i < close.length; i++) {
     <div class="alert-red">
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 			<p>{l s='Webhooks already updated ! No change of domain was detected, the configuration remains similar.' mod='cocolis'}</p>
+		</div>
 		{/if}
 		{if ($notifications == 'webhook_updated')}
     <div class="alert-orange">
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
 			<p>{l s='Webhooks updated ! A change of domain has been detected, the configuration has been updated at Cocolis.' mod='cocolis'}</p>
+		</div>
 		{/if}
     {/block}
   {/if}
@@ -156,4 +170,14 @@ for (i = 0; i < close.length; i++) {
 	<div style="margin:0 auto;">
 		<button type='submit' name='webhooks' class='myButton' form='module_form'>{l s='Automatically configure webhooks' mod='cocolis'}</button>
 	</div>
+
+	{if $cocolis_debug_mode}
+    <div class="alert-gray">
+			<h6 style="font-weight: bold;">{l s='DEBUG INFORMATIONS' mod='cocolis'}</h6>
+				<p>{l s='Cocolis module version' mod='cocolis'} : <b>{$cocolis_module_version}</b></p>
+				<p>{l s='PrestaShop shipping ID without insurance' mod='cocolis'} : <b>{$cocolis_carrier_id}</b></p>
+				<p>{l s='PrestaShop shipping ID with insurance' mod='cocolis'} : <b>{$cocolis_carrier_assurance_id}</b></p>
+				<b>{l s='This information is intended for Cocolis staff, if you don\'t need it, disable the debug mode' mod='cocolis'}</b>
+			</div>
+	{/if}
 </div>
