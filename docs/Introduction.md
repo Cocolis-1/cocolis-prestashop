@@ -25,9 +25,8 @@ Rendez vous ensuite dans la partie [Configuration](Configuration.md)
 
 **Pour des raisons techniques, il est impératif que le fichier du module se nomme cocolis.zip.**
 
-## Réinstallation
-
-> En cas de réinstallation, veillez à ce que le mode de livraison avec assurance et sans assurance Cocolis dans le back-office ne soit pas en double, si cela est le cas, supprimez les doublons.
+# Comment notre module fonctionne ?
+![Workflow](https://res.cloudinary.com/cocolis-prod/image/upload/v1644931549/Documentation/prestashop/workflow_c46eaa.png)
 
 # Alternative pour installer le module (les développeurs)
 
