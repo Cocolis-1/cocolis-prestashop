@@ -7,6 +7,5 @@ docs export-ignore
 .php-cs-fixer.cache export-ignore
 .php_cs.cache export-ignore
 .stoplight.json export-ignore
-README.MD export-ignore
 docker-compose.yml  export-ignore
 toc.json export-ignore
