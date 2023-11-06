@@ -28,6 +28,10 @@ Rendez vous ensuite dans la partie [Configuration](Configuration.md)
 # Comment notre module fonctionne ?
 ![Workflow](https://res.cloudinary.com/cocolis-prod/image/upload/v1644931549/Documentation/prestashop/workflow_c46eaa.png)
 
+## Réinstallation
+
+> En cas de réinstallation, veillez à ce que le mode de livraison avec assurance et sans assurance Cocolis dans le back-office ne soit pas en double, si cela est le cas, supprimez les doublons.
+
 # Alternative pour installer le module (les développeurs)
 
 Avant toute chose, vous devez vous rendre dans le dossier "**modules**" de votre PrestaShop.
