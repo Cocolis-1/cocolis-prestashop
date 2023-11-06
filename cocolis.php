@@ -457,7 +457,6 @@ class Cocolis extends CarrierModule
                 ) {
                     return false;
                 }
-
                 $from_zip = $this->getZip();
 
                 $sql = new DbQuery();
@@ -897,7 +896,7 @@ class Cocolis extends CarrierModule
                 ];
             } else {
                 $params = [
-                    "description" => "Commande envoyée via module PrestaShop du partenaire",
+                    "description" => "Livraison de la commande : " . implode(", ", $arrayname) . "",
                     "external_id" => $id_order,
                     "from_address" => $from_composed_address,
                     "from_postal_code" => $this->getZip(),
@@ -938,6 +937,8 @@ class Cocolis extends CarrierModule
                     ],
                 ];
             }
+
+            $params['content_value'] = ((float) ($order->total_paid - $order->total_shipping_tax_incl)) * 100;
 
             $client = $client->getRideClient();
             $client->create($params);

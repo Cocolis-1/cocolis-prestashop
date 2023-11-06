@@ -1,1 +1,1 @@
-window.cocolis_module_infos = '1.0.10';
+window.cocolis_module_infos = '1.1.0';
