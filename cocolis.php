@@ -69,11 +69,17 @@ class Cocolis extends CarrierModule
         return Configuration::get('PS_SHOP_PHONE');
     }
 
+    public static function isPhoneOnAddressMandatory()
+    {
+        $requiredFields = AddressFormat::getFieldsRequired();
+        return in_array('phone', $requiredFields) || in_array('phone_mobile', $requiredFields);
+    }
+
     public function __construct()
     {
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.10';
+        $this->version = '1.1.0';
         $this->author = 'Cocolis';
         $this->need_instance = 1;
         /**
@@ -83,7 +89,7 @@ class Cocolis extends CarrierModule
 
         parent::__construct();
         $this->displayName = $this->l('Cocolis');
-        $this->description = $this->l("Utilisez cocolis.fr comme mode de livraison. 
+        $this->description = $this->l("Utilisez cocolis.fr comme mode de livraison.
             Spécialisé dans la livraison communautaire, cocolis vous permettra d'envoyer des colis hors format.");
 
         $this->confirmUninstall = $this->l('Our delivery service will no longer be available on your site.');
@@ -105,7 +111,8 @@ class Cocolis extends CarrierModule
             return false;
         }
 
-        $carriers = Carrier::getCarriers($cookie->id_lang, true, false, false, null, PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
+        $filter = defined('PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE') ? constant('PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE') : 4;
+        $carriers = Carrier::getCarriers($cookie->id_lang, true, false, false, null, $filter);
 
         // Saving id carrier list
         $id_carrier_list = array();
@@ -120,13 +127,6 @@ class Cocolis extends CarrierModule
             $this->addRanges($carrier);
         }
 
-        if (!in_array((int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID')), $id_carrier_list) || is_null(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
-            $carrier_insurance = $this->addCarrierInsurance();
-            $this->addZones($carrier_insurance);
-            $this->addGroups($carrier_insurance);
-            $this->addRanges($carrier_insurance);
-        }
-
         Configuration::updateValue('COCOLIS_LIVE_MODE', false);
         include(dirname(__FILE__) . '/sql/install.php');
 
@@ -134,6 +134,7 @@ class Cocolis extends CarrierModule
         return parent::install() &&
             $this->registerHook('header') &&
             $this->registerHook('backOfficeHeader') &&
+            $this->registerHook('displayBackOfficeHeader') &&
             $this->registerHook('updateCarrier') &&
             $this->registerHook('actionPaymentConfirmation') &&
             $this->registerHook('moduleRoutes') &&
@@ -144,6 +145,7 @@ class Cocolis extends CarrierModule
             $this->registerHook('displayAdminOrder') &&
             $this->registerHook('termsAndConditions') &&
             $this->registerHook('actionFrontControllerSetMedia') &&
+            $this->registerHook('actionCarrierUpdate') &&
             $this->registerHook('displayOrderDetail');
     }
 
@@ -159,12 +161,38 @@ class Cocolis extends CarrierModule
         Configuration::deleteByName('COCOLIS_ZIP');
         Configuration::deleteByName('COCOLIS_CITY');
         Configuration::deleteByName('COCOLIS_COUNTRY');
-        // Configuration::deleteByName('COCOLIS_CARRIER_ID');
-        // Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
+
+        Configuration::deleteByName('COCOLIS_CARRIER_ID');
+        Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
-        return parent::uninstall();
+        return parent::uninstall() &&
+            $this->unregisterHook('header') &&
+            $this->unregisterHook('backOfficeHeader') &&
+            $this->unregisterHook('displayBackOfficeHeader') &&
+            $this->unregisterHook('updateCarrier') &&
+            $this->unregisterHook('actionPaymentConfirmation') &&
+            $this->unregisterHook('moduleRoutes') &&
+            $this->unregisterHook('displayAdminOrderContentShip') &&
+            $this->unregisterHook('displayAdminOrderContentOrder') &&
+            $this->unregisterHook('displayAdminOrderTabShip') &&
+            $this->unregisterHook('displayAdminOrderTabOrder') &&
+            $this->unregisterHook('displayAdminOrder') &&
+            $this->unregisterHook('termsAndConditions') &&
+            $this->unregisterHook('actionFrontControllerSetMedia') &&
+            $this->unregisterHook('actionCarrierUpdate') &&
+            $this->unregisterHook('displayOrderDetail');
+    }
+
+
+    public function hookActionCarrierUpdate($params)
+    {
+        $id_carrier_old = (int) $params['id_carrier'];
+        $id_carrier_new = (int) $params['carrier']->id;
+        if ($id_carrier_old === (int) Configuration::get('COCOLIS_CARRIER_ID')) {
+            Configuration::updateValue('COCOLIS_CARRIER_ID', $id_carrier_new);
+        }
     }
 
     /**
@@ -257,7 +285,15 @@ class Cocolis extends CarrierModule
         }
 
         $this->context->smarty->assign('module_dir', $this->_path);
-        $this->context->smarty->assign(array('cocolis_debug_mode' => Configuration::get('COCOLIS_DEBUG_MODE'), 'cocolis_carrier_id' => Configuration::get('COCOLIS_CARRIER_ID'), 'cocolis_carrier_assurance_id' => Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'), 'cocolis_module_version' => $this->version));
+        $this->context->smarty->assign(
+            array(
+                'cocolis_is_phone_fill_on_store_address' => (bool)Configuration::get('PS_SHOP_PHONE'),
+                'cocolis_is_phone_on_address_mandatory' => (bool)$this->isPhoneOnAddressMandatory(),
+                'cocolis_debug_mode' => Configuration::get('COCOLIS_DEBUG_MODE'),
+                'cocolis_carrier_id' => Configuration::get('COCOLIS_CARRIER_ID'),
+                'cocolis_module_version' => $this->version
+            )
+        );
 
         $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
 
@@ -359,7 +395,7 @@ class Cocolis extends CarrierModule
                         'type' => 'text',
                         'name' => 'COCOLIS_LENGTH',
                         'label' => $this->l('Average length (in cm)'),
-                        'desc' => $this->l("Permet de calculer les frais en l'absence du volume renseigné 
+                        'desc' => $this->l("Permet de calculer les frais en l'absence du volume renseigné
                             dans la fiche produit")
                     ),
                     array(
@@ -441,6 +477,10 @@ class Cocolis extends CarrierModule
 
     public function getOrderShippingCost($params, $shipping_cost)
     {
+        if ( $this->id_carrier !== (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
+            return false;
+        }
+
         try {
             $dimensions = 0;
             $total = 0;
@@ -481,7 +521,7 @@ class Cocolis extends CarrierModule
                         $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
                     }
                     $product_ids = serialize($product_ids);
-                    Db::getInstance()->execute("INSERT INTO `" . _DB_PREFIX_ . "cocolis_cart` 
+                    Db::getInstance()->execute("INSERT INTO `" . _DB_PREFIX_ . "cocolis_cart`
                 (`hash_cart`, `products`, `cost`) VALUES ('" . $cart_hash . "', '" . $product_ids .  "', 0)");
                 } elseif (
                     !empty(array_diff($product_ids_2, $product_ids)) ||
@@ -535,25 +575,13 @@ class Cocolis extends CarrierModule
 
                     $shipping_cost = ($match->estimated_prices->regular) / 100;
 
-                    if ($total >= 150) {
-                        if (isset($match->estimated_prices->with_insurance)) {
-                            $shipping_cost_insurance = ($match->estimated_prices->with_insurance) / 100;
-                        } else {
-                            $shipping_cost_insurance = 0;
-                        }
-                    } else {
-                        $shipping_cost_insurance = 0;
-                    }
-
                     $products = Context::getContext()->cart->getProducts();
                     $product_ids = array();
                     foreach ($products as $product) {
                         $product_ids[] = (int)$product['id_product'] . (int)$product['quantity'];
                     }
                     $product_ids = serialize($product_ids);
-                    Db::getInstance()->execute("UPDATE `" . _DB_PREFIX_ . "cocolis_cart` 
-                SET products = '" . $product_ids . "', cost = '" . $shipping_cost . "', 
-                cost_insurance = '" . $shipping_cost_insurance . "' WHERE hash_cart = '" . $cart_hash . "'");
+                    Db::getInstance()->execute("UPDATE `" . _DB_PREFIX_ . "cocolis_cart` SET products = '" . $product_ids . "', cost = '" . $shipping_cost . "' WHERE hash_cart = '" . $cart_hash . "'");
                 }
             }
 
@@ -563,33 +591,15 @@ class Cocolis extends CarrierModule
             $sql->where('hash_cart= "' . $cart_hash . '"');
             $shipping_cost = Db::getInstance()->getValue($sql);
 
-            $sql = new DbQuery();
-            $sql->from("cocolis_cart");
-            $sql->select('cost_insurance');
-            $sql->where('hash_cart= "' . $cart_hash . '"');
-            $shipping_cost_insurance = Db::getInstance()->getValue($sql);
-
             if (Configuration::get('COCOLIS_DEBUG_MODE')) {
-                Logger::addLog('[Module Cocolis] Valeurs : SHIPPING COST : ' . $shipping_cost . ' - SHIPPING COST INSURANCE : ' . $shipping_cost_insurance . ' - ID CARRIER : ' . $this->id_carrier, 1);
-            }
-
-            if ($shipping_cost_insurance == 0) {
-                $shipping_cost_insurance = false;
+                Logger::addLog('[Module Cocolis] Valeurs : SHIPPING COST : ' . $shipping_cost, 1);
             }
 
             if ($shipping_cost == 0) {
                 $shipping_cost = false;
             }
 
-            if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
-                return $shipping_cost;
-            }
-
-            if ($this->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
-                return $shipping_cost_insurance;
-            }
-
-            return false;
+            return $shipping_cost;
         } catch (Exception $e) {
             if (Configuration::get('COCOLIS_DEBUG_MODE')) {
                 Logger::addLog('[Module Cocolis] Erreur : ' . $e->getMessage(), 3);
@@ -622,6 +632,26 @@ class Cocolis extends CarrierModule
     public function hookActionFrontControllerSetMedia($params)
     {
         $this->context->controller->addJS($this->_path . 'views/js/debug.js');
+    }
+
+    /**
+     * Hook pour le back-office (anciennes versions de PrestaShop)
+     * @param array $params
+     */
+    public function hookBackOfficeHeader($params)
+    {
+        // Logique pour le back-office si nécessaire
+        return '';
+    }
+
+    /**
+     * Hook pour le back-office (PrestaShop 8+)
+     * @param array $params
+     */
+    public function hookDisplayBackOfficeHeader($params)
+    {
+        // Appel de l'ancien hook pour compatibilité
+        return $this->hookBackOfficeHeader($params);
     }
 
     /**
@@ -789,10 +819,10 @@ class Cocolis extends CarrierModule
 
             $phone = $this->getPhone();
             if ($phone == null) {
-                echo('<p style="color:red;">[Module Cocolis] 
-                <b>Missing cell phone number !</b> 
+                echo('<p style="color:red;">[Module Cocolis]
+                <b>Missing cell phone number !</b>
                 You must configure your store to provide your phone number.
-                </br>Go in <b>Store settings > Contact > Stores</b> 
+                </br>Go in <b>Store settings > Contact > Stores</b>
                 and provide your phone number. The order remains unchanged.</p>');
                 exit;
             }
@@ -837,106 +867,46 @@ class Cocolis extends CarrierModule
                 }
             }
 
-            if ($orderCarrier->id_carrier == (int)(Configuration::get('COCOLIS_CARRIER_ASSURANCE_ID'))) {
-                $insurance = true;
-            } else {
-                $insurance = false;
-            }
-
-            if ($insurance == true) {
-                $birthday = new DateTime($customer->birthday);
-
-                $params = [
-                    "description" => "Livraison de la commande : " . implode(", ", $arrayname) . "",
-                    "external_id" => $id_order,
-                    "from_address" => $from_composed_address,
+            $params = [
+                "description" => "Livraison de la commande : " . implode(", ", $arrayname) . "",
+                "external_id" => $id_order,
+                "from_address" => $from_composed_address,
+                "from_postal_code" => $this->getZip(),
+                "to_address" => $composed_address,
+                "to_postal_code" => $address->postcode,
+                "from_is_flexible" => false,
+                "from_pickup_date" => $from_date,
+                "from_need_help" => true,
+                "to_is_flexible" => false,
+                "to_need_help" => true,
+                "to_pickup_date" => $to_date,
+                "is_passenger" => false,
+                "is_packaged" => true,
+                "price" => (int) $order->total_shipping_tax_incl * 100,
+                "volume" => $dimensions,
+                "environment" => "objects",
+                "photo_urls" => $images,
+                "rider_extra_information" => "Livraison de la commande :  "
+                    . implode(", ", $arrayname),
+                "ride_objects_attributes" => $arrayproducts,
+                "ride_delivery_information_attributes" => [
+                    "from_address" => $this->getAddress(),
                     "from_postal_code" => $this->getZip(),
-                    "to_address" => $composed_address,
+                    "from_city" => $this->getCity(),
+                    "from_country" => 'FR',
+                    "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
+                    "from_contact_phone" => $phone,
+                    "from_contact_name" => $this->getName(),
+                    "from_extra_information" => 'Vendeur MarketPlace',
+                    "to_address" => $address->address1,
                     "to_postal_code" => $address->postcode,
-                    "from_is_flexible" => false,
-                    "from_pickup_date" => $from_date,
-                    "from_need_help" => true,
-                    "to_is_flexible" => false,
-                    "to_need_help" => true,
-                    "with_insurance" => $insurance,
-                    "to_pickup_date" => $to_date,
-                    "is_passenger" => false,
-                    "is_packaged" => true,
-                    "price" => (int) $order->total_shipping_tax_incl * 100,
-                    "volume" => $dimensions,
-                    "environment" => "objects",
-                    "photo_urls" => $images,
-                    "rider_extra_information" => "Livraison de la commande :  "
-                        . implode(", ", $arrayname),
-                    "ride_objects_attributes" => $arrayproducts,
-                    "ride_delivery_information_attributes" => [
-                        "from_address" => $this->getAddress(),
-                        "from_postal_code" => $this->getZip(),
-                        "from_city" => $this->getCity(),
-                        "from_country" => 'FR',
-                        "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
-                        "from_contact_phone" => $phone,
-                        "from_contact_name" => $this->getName(),
-                        "from_extra_information" => 'Vendeur MarketPlace',
-                        "to_address" => $address->address1,
-                        "to_postal_code" => $address->postcode,
-                        "to_city" => $address->city,
-                        "to_country" => 'FR',
-                        "to_contact_name" => $customer->firstname . ' ' . $customer->lastname,
-                        "to_contact_email" => $customer->email,
-                        "to_contact_phone" => $address->phone,
-                        "insurance_firstname" => $customer->firstname,
-                        "insurance_lastname" =>  $customer->lastname,
-                        "insurance_address" => $address->address1,
-                        "insurance_postal_code" => $address->postcode,
-                        "insurance_city" => $address->city,
-                        "insurance_country" => "FR",
-                        "insurance_birthdate" => $birthday->format('c')
-                    ],
-                ];
-            } else {
-                $params = [
-                    "description" => "Livraison de la commande : " . implode(", ", $arrayname) . "",
-                    "external_id" => $id_order,
-                    "from_address" => $from_composed_address,
-                    "from_postal_code" => $this->getZip(),
-                    "to_address" => $composed_address,
-                    "to_postal_code" => $address->postcode,
-                    "from_is_flexible" => false,
-                    "from_pickup_date" => $from_date,
-                    "from_need_help" => true,
-                    "to_is_flexible" => false,
-                    "to_need_help" => true,
-                    "with_insurance" => $insurance,
-                    "to_pickup_date" => $to_date,
-                    "is_passenger" => false,
-                    "is_packaged" => true,
-                    "price" => (int) $order->total_shipping_tax_incl * 100,
-                    "volume" => $dimensions,
-                    "environment" => "objects",
-                    "photo_urls" => $images,
-                    "rider_extra_information" => "Livraison de la commande :  "
-                        . implode(", ", $arrayname),
-                    "ride_objects_attributes" => $arrayproducts,
-                    "ride_delivery_information_attributes" => [
-                        "from_address" => $this->getAddress(),
-                        "from_postal_code" => $this->getZip(),
-                        "from_city" => $this->getCity(),
-                        "from_country" => 'FR',
-                        "from_contact_email" => Configuration::get('PS_SHOP_EMAIL'),
-                        "from_contact_phone" => $phone,
-                        "from_contact_name" => $this->getName(),
-                        "from_extra_information" => 'Vendeur MarketPlace',
-                        "to_address" => $address->address1,
-                        "to_postal_code" => $address->postcode,
-                        "to_city" => $address->city,
-                        "to_country" => 'FR',
-                        "to_contact_name" => $customer->firstname . ' ' . $customer->lastname,
-                        "to_contact_email" => $customer->email,
-                        "to_contact_phone" => $address->phone
-                    ],
-                ];
-            }
+                    "to_city" => $address->city,
+                    "to_country" => 'FR',
+                    "to_contact_name" => $customer->firstname . ' ' . $customer->lastname,
+                    "to_contact_email" => $customer->email,
+                    "to_contact_phone" => $address->phone
+                ],
+            ];
 
             $params['content_value'] = ((float) ($order->total_paid - $order->total_shipping_tax_incl)) * 100;
 
@@ -1007,36 +977,6 @@ class Cocolis extends CarrierModule
         return false;
     }
 
-    protected function addCarrierInsurance()
-    {
-        $carrier = new Carrier();
-
-        $carrier->name = $this->l('Cocolis delivery with insurance');
-        $carrier->is_module = true;
-        $carrier->active = 1;
-        $carrier->range_behavior = 1;
-        $carrier->need_range = 1;
-        $carrier->shipping_external = true;
-        $carrier->range_behavior = 0;
-        $carrier->external_module_name = $this->name;
-        $carrier->shipping_method = 2;
-
-        foreach (Language::getLanguages() as $lang) {
-            $carrier->delay[$lang['id_lang']] = $this->l('Between 2 and 4 weeks');
-        }
-
-        if ($carrier->add() == true) {
-            @copy(
-                dirname(__FILE__) . '/views/img/carrier_image.jpg',
-                _PS_SHIP_IMG_DIR_ . '/' . (int)$carrier->id . '.jpg'
-            );
-            Configuration::updateValue('COCOLIS_CARRIER_ASSURANCE_ID', (int)$carrier->id);
-            return $carrier;
-        }
-
-        return false;
-    }
-
     protected function addGroups($carrier)
     {
         $groups_ids = array();
@@ -1061,6 +1001,36 @@ class Cocolis extends CarrierModule
         $range_weight->delimiter1 = '0';
         $range_weight->delimiter2 = '10000';
         $range_weight->add();
+
+        // PrestaShop 9 compatibility: add zones with prices to ranges
+        $zones = Zone::getZones();
+        foreach ($zones as $zone) {
+            Db::getInstance()->insert(
+                'carrier_zone',
+                array(
+                    'id_carrier' => (int)$carrier->id,
+                    'id_zone' => (int)$zone['id_zone']
+                ),
+                false,
+                true,
+                Db::ON_DUPLICATE_KEY
+            );
+
+            // Add price for range_price
+            Db::getInstance()->insert(
+                'delivery',
+                array(
+                    'id_carrier' => (int)$carrier->id,
+                    'id_range_price' => (int)$range_price->id,
+                    'id_range_weight' => null,
+                    'id_zone' => (int)$zone['id_zone'],
+                    'price' => 0
+                ),
+                false,
+                true,
+                Db::ON_DUPLICATE_KEY
+            );
+        }
     }
 
     protected function addZones($carrier)

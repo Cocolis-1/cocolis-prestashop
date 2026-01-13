@@ -44,65 +44,70 @@
 
 /* The alert message box */
 .alert {
-  padding: 15px;
-	padding-top: 20px;
+	padding: 15px;
 	border-radius: 10px;
-  background-color: #4caf50;
-  color: white;
-  margin-bottom: 15px;
+	background-color: #4caf50;
+	color: white;
+	margin-bottom: 15px;
 	opacity: 1;
-  transition: opacity 0.6s; /* 600ms to fade out */
+	transition: opacity 0.6s; /* 600ms to fade out */
 }
 
 .alert-red {
-  padding: 15px;
-	padding-top: 20px;
+	padding: 15px;
 	border-radius: 10px;
-  background-color: #f44336;
-  color: white;
-  margin-bottom: 15px;
+	background-color: #f44336;
+	color: white;
+	margin-bottom: 15px;
 	opacity: 1;
-  transition: opacity 0.6s; /* 600ms to fade out */
+	transition: opacity 0.6s; /* 600ms to fade out */
 }
 
 .alert-orange {
-  padding: 15px;
-	padding-top: 20px;
+	padding: 15px;
 	border-radius: 10px;
-  background-color: #ff9800;
-  color: white;
-  margin-bottom: 15px;
+	background-color: #ff9800;
+	color: white;
+	margin-bottom: 15px;
 	opacity: 1;
-  transition: opacity 0.6s; /* 600ms to fade out */
+	transition: opacity 0.6s; /* 600ms to fade out */
 }
 
 .alert-gray {
-  padding: 15px;
+	padding: 15px;
 	padding-top: 15px;
 	border-radius: 10px;
-  background-color: #34495e;
-  color: white;
+	background-color: #34495e;
+	color: white;
 	margin-top: 15px;
-  margin-bottom: 15px;
+	margin-bottom: 15px;
 	opacity: 1;
-  transition: opacity 0.6s; /* 600ms to fade out */
+	transition: opacity 0.6s; /* 600ms to fade out */
 }
 
 /* The close button */
 .closebtn {
-  margin-left: 15px;
-  color: white;
-  font-weight: bold;
-  float: right;
-  font-size: 22px;
-  line-height: 20px;
-  cursor: pointer;
-  transition: 0.3s;
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.mt-15 {
+	margin-top:15px;
 }
 
 /* When moving the mouse over the close button */
 .closebtn:hover {
-  color: black;
+	color: black;
+}
+
+.panel-cocolis {
+	font-size: 14px;
 }
 </style>
 
@@ -128,7 +133,7 @@ for (i = 0; i < close.length; i++) {
 }
 </script>
 
-<div class="panel">
+<div class="panel panel-cocolis">
 	<aside id="notifications">
   {if isset($notifications)}
     {block name='notifications_info'}
@@ -155,28 +160,50 @@ for (i = 0; i < close.length; i++) {
 
 	</aside>
 	<img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-right" />
-	<h2><strong>{l s="👋 Thank you for installing Cocolis - Your collaborative delivery module!" mod='cocolis'}</strong><br /></h2>
-	<h2>
+	<p><strong>{l s="👋 Thank you for installing Cocolis - Your collaborative delivery module!" mod='cocolis'}</strong><br /></p>
+	<p>
 		{l s="You now offer collaborative ❤️, economical 💸 and ecological 🍃 delivery on your site" mod='cocolis'}<br />
 		{l s="Your customers will be able to find the best carrier to make their delivery." mod='cocolis'}
 		{l s="The module will not be functional as long as the configuration is incomplete!" mod='cocolis'}
-	</h2>
-	<h2>
+	</p>
+	<p>
 		<br />
-		<i class="icon icon-angle-right"></i> 
+		<i class="icon icon-angle-right"></i>
 		{l s='You can learn more about the configuration of this module' mod='cocolis'} <a href="https://doc.cocolis.fr/">{l s='here' mod='cocolis'}</a>
-	</h2>
+	</p>
 	<br />
 	<div style="margin:0 auto;">
 		<button type='submit' name='webhooks' class='myButton' form='module_form'>{l s='Automatically configure webhooks' mod='cocolis'}</button>
 	</div>
 
+	{if !$cocolis_is_phone_fill_on_store_address}
+		<div class="alert-orange mt-15">
+			{l s='You haven\'t filled in your store\'s phone number; it\'s required for Cocolis to function. You can enter it in Store Settings > Contact > Stores > Contact Details' mod='cocolis'}
+		</div>
+	{else}
+		<div class="alert-green mt-15">
+			{l s='✅ Store phone number configured' mod='cocolis'}
+			✅ Numéro de téléphone de la boutique configuré
+		</div>
+	{/if}
+
+	{if !$cocolis_is_phone_on_address_mandatory}
+		<div class="alert-orange mt-15">
+			{l s='You must make the phone number mandatory here: Customers > Addresses > Set the Phone field as required for this section' mod='cocolis'}
+			Vous devez rendre le numéro de téléphone obligatoire ici : Clients > Adresses > Définir le champs Téléphone comme requis pour cette section
+		</div>
+	{else}
+		<div class="alert-green mt-15">
+			{l s='✅ Phone number mandatary in addresses' mod='cocolis'}
+			✅ Numéro de téléphone sur les adresses obligatoire
+		</div>
+	{/if}
+
 	{if $cocolis_debug_mode}
-    <div class="alert-gray">
+    <div class="alert-gray mt-15">
 			<h6 style="font-weight: bold;">{l s='DEBUG INFORMATIONS' mod='cocolis'}</h6>
 				<p>{l s='Cocolis module version' mod='cocolis'} : <b>{$cocolis_module_version}</b></p>
 				<p>{l s='PrestaShop shipping ID without insurance' mod='cocolis'} : <b>{$cocolis_carrier_id}</b></p>
-				<p>{l s='PrestaShop shipping ID with insurance' mod='cocolis'} : <b>{$cocolis_carrier_assurance_id}</b></p>
 				<b>{l s='This information is intended for Cocolis staff, if you don\'t need it, disable the debug mode' mod='cocolis'}</b>
 			</div>
 	{/if}
