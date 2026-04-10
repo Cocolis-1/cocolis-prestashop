@@ -477,7 +477,7 @@ class Cocolis extends CarrierModule
 
     public function getOrderShippingCost($params, $shipping_cost)
     {
-        if ( $this->id_carrier !== (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
+        if ($this->id_carrier !== (int)(Configuration::get('COCOLIS_CARRIER_ID'))) {
             return false;
         }
 
