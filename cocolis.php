@@ -69,6 +69,11 @@ class Cocolis extends CarrierModule
         return Configuration::get('PS_SHOP_PHONE');
     }
 
+    public static function getWebhookUrl($event)
+    {
+        return Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=' . $event;
+    }
+
     public static function isPhoneOnAddressMandatory()
     {
         $requiredFields = AddressFormat::getFieldsRequired();
@@ -79,7 +84,7 @@ class Cocolis extends CarrierModule
     {
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.1.0';
+        $this->version = '1.1.1';
         $this->author = 'Cocolis';
         $this->need_instance = 1;
         /**
@@ -164,6 +169,7 @@ class Cocolis extends CarrierModule
 
         Configuration::deleteByName('COCOLIS_CARRIER_ID');
         Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
+        Configuration::deleteByName('COCOLIS_WEBHOOK_SECRET');
 
         include(dirname(__FILE__) . '/sql/uninstall.php');
 
@@ -214,6 +220,107 @@ class Cocolis extends CarrierModule
 
 
     /**
+     * Secret used by Cocolis to sign the webhooks it sends, fetched from the API on first use.
+     */
+    public function getWebhookSigningSecret()
+    {
+        $secret = (string) Configuration::get('COCOLIS_WEBHOOK_SECRET');
+        if ($secret === '') {
+            try {
+                $secret = $this->refreshWebhookSigningSecret();
+            } catch (Exception $e) {
+                PrestaShopLogger::addLog('[Module Cocolis] Unable to fetch the webhook signing secret: ' . $e->getMessage(), 3);
+            }
+        }
+
+        return $secret;
+    }
+
+    public function refreshWebhookSigningSecret()
+    {
+        $response = $this->authenticatedClient()->callAuthentificated('applications/webhook_signing_secret', 'GET');
+        $json = json_decode($response->text(), true);
+        $secret = isset($json['data']['webhook_signing_secret']) ? (string) $json['data']['webhook_signing_secret'] : '';
+        Configuration::updateValue('COCOLIS_WEBHOOK_SECRET', $secret);
+
+        return $secret;
+    }
+
+    /**
+     * Check the X-Cocolis-Signature header: "t=<timestamp>,v1=<HMAC-SHA256 of '<timestamp>.<raw body>'>".
+     */
+    public function isValidWebhookSignature($body, $header)
+    {
+        $parts = [];
+        foreach (explode(',', (string) $header) as $part) {
+            $pair = explode('=', trim($part), 2);
+            if (count($pair) === 2) {
+                $parts[$pair[0]] = $pair[1];
+            }
+        }
+
+        if (empty($parts['t']) || empty($parts['v1']) || abs(time() - (int) $parts['t']) > 300) {
+            return false;
+        }
+
+        $secret = $this->getWebhookSigningSecret();
+        if ($secret === '') {
+            return false;
+        }
+
+        return hash_equals(hash_hmac('sha256', $parts['t'] . '.' . $body, $secret), $parts['v1']);
+    }
+
+    /**
+     * Register the webhooks at Cocolis, or update them when their URL changed.
+     *
+     * @return string pending|already|updated|success
+     */
+    public function registerWebhooks()
+    {
+        $this->refreshWebhookSigningSecret();
+
+        $client = $this->authenticatedClient();
+        $webhooks = $client->getWebhookClient()->getAll();
+        $status = 'pending';
+
+        if (!empty($webhooks)) {
+            foreach ($webhooks as $webhook) {
+                $url = self::getWebhookUrl($webhook->event);
+                if ($webhook->url === $url) {
+                    if ($status === 'pending') {
+                        $status = 'already';
+                    }
+                } else {
+                    // Domain changed
+                    $client->getWebhookClient()->update(
+                        [
+                            'event' => $webhook->event,
+                            'url' => $url,
+                            'active' => true
+                        ],
+                        $webhook->id
+                    );
+                    $status = 'updated';
+                }
+            }
+        } else {
+            $events = ['ride_published', 'ride_expired', 'offer_accepted', 'offer_cancelled', 'offer_completed'];
+            foreach ($events as $event) {
+                // Previously /cocolis/webhooks&event=blabla but not working with all versions
+                $client->getWebhookClient()->create([
+                    'event' => $event,
+                    'url' => self::getWebhookUrl($event),
+                    'active' => true
+                ]);
+            }
+            $status = 'success';
+        }
+
+        return $status;
+    }
+
+    /**
      * Load the configuration form
      */
     public function getContent()
@@ -223,55 +330,7 @@ class Cocolis extends CarrierModule
          */
 
         if (((bool)Tools::isSubmit('webhooks')) == true) {
-            $client = $this->authenticatedClient();
-            $webhooks = $client->getWebhookClient()->getAll();
-            $status = 'pending';
-
-            if (!empty($webhooks)) {
-                foreach ($webhooks as $webhook) {
-                    if (strpos($webhook->url, Tools::getShopDomainSsl(true)) !== false) {
-                        $status = 'already';
-                    } else {
-                        $client->getWebhookClient()->update(
-                            [
-                                'event' => $webhook->event,
-                                'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=' . $webhook->event,
-                                'active' => true
-                            ],
-                            $webhook->id
-                        );
-                        $status = 'updated';
-                    }
-                }
-            } else {
-                // Previously /cocolis/webhooks&event=blabla but not working with all versions
-                $client->getWebhookClient()->create([
-                    'event' => 'ride_published',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=ride_published',
-                    'active' => true
-                ]);
-                $client->getWebhookClient()->create([
-                    'event' => 'ride_expired',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=ride_expired',
-                    'active' => true
-                ]);
-                $client->getWebhookClient()->create([
-                    'event' => 'offer_accepted',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_accepted',
-                    'active' => true
-                ]);
-                $client->getWebhookClient()->create([
-                    'event' => 'offer_cancelled',
-                    'url' => Tools::getShopDomainSsl(true) . '//index.php?fc=module&module=cocolis&controller=webhooks&event=offer_cancelled',
-                    'active' => true
-                ]);
-                $client->getWebhookClient()->create([
-                    'event' => 'offer_completed',
-                    'url' => Tools::getShopDomainSsl(true) . '/index.php?fc=module&module=cocolis&controller=webhooks&event=offer_completed',
-                    'active' => true
-                ]);
-                $status = 'success';
-            }
+            $status = $this->registerWebhooks();
 
             if ($status == 'already') {
                 $this->redirectWithNotifications('already');
@@ -473,6 +532,9 @@ class Cocolis extends CarrierModule
         foreach (array_keys($form_values) as $key) {
             Configuration::updateValue($key, Tools::getValue($key));
         }
+
+        // The credentials or the mode may have changed: fetch the signing secret again on next use
+        Configuration::deleteByName('COCOLIS_WEBHOOK_SECRET');
     }
 
     public function getOrderShippingCost($params, $shipping_cost)
@@ -679,34 +741,30 @@ class Cocolis extends CarrierModule
             $sql->from("cocolis_order_history");
             $sql->select('*');
             $sql->orderby('id');
-            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $sql->where('order_id = ' . (int) $order->id);
             $results = Db::getInstance()->executes($sql);
 
             $sql = new DbQuery();
             $sql->from("cocolis_order_history");
             $sql->select('comment');
             $sql->orderby('id DESC');
-            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $sql->where('order_id = ' . (int) $order->id);
             $state = Db::getInstance()->getValue($sql);
 
             $sql = new DbQuery();
             $sql->from("cocolis_order_history");
             $sql->select('webhook_params');
             $sql->orderby('id DESC');
-            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $sql->where('order_id = ' . (int) $order->id);
             $webhook = Db::getInstance()->getValue($sql);
 
-            $array = json_decode($webhook, true);
-
-            $resource_id = $array['resource_id'];
-            if (!empty($resource_id)) {
-                $client = $this->authenticatedClient();
-                $client = $client->getRideClient();
-                $ride = $client->get($resource_id);
+            $ride = $this->fetchRideFromWebhookParams($webhook);
+            if ($ride) {
+                $resource_id = $ride->id;
                 $slug = $ride->slug;
 
                 $link = Configuration::get('COCOLIS_LIVE_MODE') ? 'https://cocolis.fr/ride-public/' .
-                    $slug : 'https://sandbox.cocolis.fr/ride-public/' . $slug;
+                    $slug . '-' . $resource_id : 'https://sandbox.cocolis.fr/ride-public/' . $slug . '-' . $resource_id;
 
                 $this->context->smarty->assign(array(
                     'ridelink' => $link, 'order_cocolis' => $results, 'actual_state' => $state,
@@ -735,30 +793,26 @@ class Cocolis extends CarrierModule
             $sql->from("cocolis_order_history");
             $sql->select('*');
             $sql->orderby('id');
-            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $sql->where('order_id = ' . (int) $order->id);
             $results = Db::getInstance()->executes($sql);
 
             $sql = new DbQuery();
             $sql->from("cocolis_order_history");
             $sql->select('comment');
             $sql->orderby('id DESC');
-            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $sql->where('order_id = ' . (int) $order->id);
             $state = Db::getInstance()->getValue($sql);
 
             $sql = new DbQuery();
             $sql->from("cocolis_order_history");
             $sql->select('webhook_params');
             $sql->orderby('id DESC');
-            $sql->where('order_id =' . $order->getIdOrderCarrier());
+            $sql->where('order_id = ' . (int) $order->id);
             $webhook = Db::getInstance()->getValue($sql);
 
-            $array = json_decode($webhook, true);
-
-            $resource_id = $array['resource_id'];
-            if (!empty($resource_id)) {
-                $client = $this->authenticatedClient();
-                $client = $client->getRideClient();
-                $ride = $client->get($resource_id);
+            $ride = $this->fetchRideFromWebhookParams($webhook);
+            if ($ride) {
+                $resource_id = $ride->id;
                 $slug = $ride->slug;
 
                 $link = Configuration::get('COCOLIS_LIVE_MODE') ? 'https://cocolis.fr/ride-public/' .
@@ -777,6 +831,31 @@ class Cocolis extends CarrierModule
                 ));
             }
             return $this->display(__FILE__, '/views/templates/hook/content_ship.tpl');
+        }
+    }
+
+    /**
+     * Load the Cocolis ride referenced by the last webhook of an order, or null when unavailable.
+     */
+    protected function fetchRideFromWebhookParams($webhook_params)
+    {
+        $params = json_decode((string) $webhook_params, true);
+        // For offer events, resource_id is the offer ID: ride_id is always the ride
+        if (!empty($params['ride_id'])) {
+            $ride_id = $params['ride_id'];
+        } elseif (!empty($params['resource_id']) && isset($params['resource_type']) && $params['resource_type'] === 'ride') {
+            $ride_id = $params['resource_id'];
+        } else {
+            return null;
+        }
+
+        try {
+            return $this->authenticatedClient()->getRideClient()->get((string) $ride_id);
+        } catch (Exception $e) {
+            // Never break the order page because the Cocolis API is unavailable
+            PrestaShopLogger::addLog('[Module Cocolis] Unable to load ride ' . (int) $ride_id . ': ' . $e->getMessage(), 2);
+
+            return null;
         }
     }
 
