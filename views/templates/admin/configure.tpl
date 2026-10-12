@@ -155,6 +155,24 @@ for (i = 0; i < close.length; i++) {
 			<p>{l s='Webhooks updated ! A change of domain has been detected, the configuration has been updated at Cocolis.' mod='cocolis'}</p>
 		</div>
 		{/if}
+		{if ($notifications == 'webhook_missing_credentials')}
+    <div class="alert-red">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p>{l s='Please fill in your application ID and password before configuring the webhooks.' mod='cocolis'}</p>
+		</div>
+		{/if}
+		{if ($notifications == 'webhook_invalid_credentials')}
+    <div class="alert-red">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p>{l s='Cocolis rejected your application ID or password. Check them, and check that they match the selected mode (production or sandbox).' mod='cocolis'}</p>
+		</div>
+		{/if}
+		{if ($notifications == 'webhook_api_error')}
+    <div class="alert-red">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p>{l s='The Cocolis API returned an error while configuring the webhooks. Please try again later.' mod='cocolis'}</p>
+		</div>
+		{/if}
     {/block}
   {/if}
 

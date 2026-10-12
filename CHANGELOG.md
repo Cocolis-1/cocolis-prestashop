@@ -2,6 +2,38 @@
 
 All notable changes to this module are documented in this file.
 
+## [1.2.0] - 2026-10-12
+
+Compatible with PrestaShop 1.7 to 9 (tested on 1.7.5 and 9.1.5).
+
+### Added
+
+- Cocolis tracking tab on the order page of PrestaShop 1.7.7 and later
+  (`displayAdminOrderTabLink` / `displayAdminOrderTabContent`).
+- The weight class and a photo of each product are sent with the ride.
+- Clear messages on the configuration page when the credentials are missing or rejected, or when
+  the Cocolis API is unavailable.
+
+### Fixed
+
+- The module could not be installed on PrestaShop 9 in debug mode: hooks without any matching
+  method are no longer registered, and are removed during the upgrade.
+- The shipping price could be computed with the stock quantity instead of the cart quantity,
+  giving a much higher price.
+- The shipping price and the goods value sent to Cocolis were truncated (12.50 € was sent as
+  12 €).
+- A product without image made the ride creation fail on PHP 8.
+- A missing shop phone number stopped the payment of the order. The error is now logged in
+  Advanced parameters > Logs, like any other ride creation error.
+- The customer mobile phone is used when the phone field of the address is empty.
+- The configuration form no longer erases the saved password when the password field is left
+  empty, and the webhook button saves the credentials before configuring the webhooks.
+- The carriers created by the module are disabled when it is uninstalled.
+
+### Removed
+
+- The terms and conditions of the former insurance carrier.
+
 ## [1.1.1] - 2026-10-12
 
 ### Security
