@@ -11,6 +11,11 @@ All notable changes to this module are documented in this file.
 - The configuration page checks the credentials when they are saved, and invites the shops still
   connected with the application ID and password to create an API key.
 
+### Fixed
+
+- PHP notices on the configuration page after clicking "Automatically configure webhooks" in
+  debug mode.
+
 ## [1.2.0] - 2026-10-12
 
 Compatible with PrestaShop 1.7 to 9 (tested on 1.7.5, 1.7.8 and 9.1.5), with PHP 7.1 or later.

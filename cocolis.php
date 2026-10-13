@@ -228,9 +228,8 @@ class Cocolis extends CarrierModule
 
     public function redirectWithNotifications($type)
     {
+        // The configuration page is rendered once by getContent(), with all its template variables
         $this->context->smarty->assign(array('notifications' => 'webhook_' . $type));
-
-        return $this->display(__FILE__, "views/templates/admin/configure.tpl");
     }
 
 
