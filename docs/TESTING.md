@@ -142,6 +142,10 @@ Install the previous release zip, place an order with it, then install the new z
 - The module upgrades without error and the new version is displayed.
 - The past order still shows its Cocolis tracking.
 - A new order goes through sections 6 and 8.
+- From 1.1.x or earlier (PrestaShop 1.7): before the upgrade, `override/classes/form/CustomerFormatter.php`
+  exists and the birthdate is required at sign up. After it, the Cocolis part of the override is
+  removed (the file is deleted when no other module overrides the class) and the birthdate is
+  optional again.
 
 ## 12. Cleanup
 
