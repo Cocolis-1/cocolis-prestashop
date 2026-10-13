@@ -4,7 +4,7 @@ All notable changes to this module are documented in this file.
 
 ## [1.2.0] - 2026-10-12
 
-Compatible with PrestaShop 1.7 to 9 (tested on 1.7.5 and 9.1.5).
+Compatible with PrestaShop 1.7 to 9 (tested on 1.7.5, 1.7.8 and 9.1.5), with PHP 7.1 or later.
 
 ### Added
 

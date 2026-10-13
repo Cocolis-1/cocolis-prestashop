@@ -13,7 +13,7 @@ This is the repository for our Prestashop module to be able to add [Cocolis.fr](
 | 1.7.x              | 1.2.0 and later (1.0.10 and earlier also work, but are no longer maintained) |
 | 1.6.x and earlier  | Not supported |
 
-PHP 5.6 or later, within the PHP versions supported by your PrestaShop version.
+PHP 7.1 or later, within the PHP versions supported by your PrestaShop version.
 
 Version 1.2.0 was tested on PrestaShop 1.7.5, 1.7.8 and 9.1.5. Always upgrade to the latest
 version: older versions no longer receive fixes, including security fixes, and cannot be installed
