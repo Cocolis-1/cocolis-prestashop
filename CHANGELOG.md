@@ -33,6 +33,8 @@ Compatible with PrestaShop 1.7 to 9 (tested on 1.7.5 and 9.1.5).
 ### Removed
 
 - The terms and conditions of the former insurance carrier.
+- The former insurance carrier ("Livraison Cocolis avec assurance"), still active on the shops
+  installed with 1.0.10 or 1.1.0, is deleted during the upgrade. Past orders keep their carrier.
 
 ## [1.1.1] - 2026-10-12
 

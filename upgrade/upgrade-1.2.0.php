@@ -30,7 +30,7 @@ if (!defined('_PS_VERSION_')) {
 
 /**
  * Register the order tab hooks of PrestaShop 1.7.7+ and unregister the hooks without any method,
- * which PrestaShop refuses in debug mode.
+ * which PrestaShop refuses in debug mode. Remove the carrier of the former insurance offer.
  *
  * @param Cocolis $module
  *
@@ -42,5 +42,30 @@ function upgrade_module_1_2_0($module)
         $module->unregisterHook($hook);
     }
 
+    upgrade_module_1_2_0_delete_insurance_carrier($module);
+
     return $module->registerHook(Cocolis::$hooks);
+}
+
+/**
+ * Soft delete the module carriers other than the main one (the insurance carrier created up to 1.1.0),
+ * so that past orders keep their carrier. Nothing is deleted when the main carrier is unknown.
+ *
+ * @param Cocolis $module
+ */
+function upgrade_module_1_2_0_delete_insurance_carrier($module)
+{
+    $main_carrier = new Carrier((int) Configuration::get('COCOLIS_CARRIER_ID'));
+    if (Validate::isLoadedObject($main_carrier) && !$main_carrier->deleted) {
+        $carriers = Carrier::getCarriers((int) Configuration::get('PS_LANG_DEFAULT'), false, false, false, null, Carrier::ALL_CARRIERS);
+        foreach ($carriers as $row) {
+            if ($row['external_module_name'] === $module->name && (int) $row['id_carrier'] !== (int) $main_carrier->id) {
+                $carrier = new Carrier((int) $row['id_carrier']);
+                $carrier->deleted = true;
+                $carrier->update();
+            }
+        }
+    }
+
+    Configuration::deleteByName('COCOLIS_CARRIER_ASSURANCE_ID');
 }
