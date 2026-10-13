@@ -47,7 +47,11 @@
 
 <script src="https://kit.fontawesome.com/c73bb87b99.js" crossorigin="anonymous"></script>
 
+{if isset($cocolis_tab_link) && $cocolis_tab_link}
+<div class="tab-pane fade" id="cocolisTabContent" role="tabpanel" aria-labelledby="cocolisTab">
+{else}
 <div class="tab-pane" id="cocolis">
+{/if}
     <h4 class="visible-print">{l s='Cocolis Status' mod='cocolis'}</h4>
     <img src="{$module_dir|escape:'html':'UTF-8'}/logo.png" id="payment-logo" class="pull-left" />
     <h2 style="text-align:center; padding-right: 32px;"><b>{l s='Track your delivery' mod='cocolis'}</b> <b

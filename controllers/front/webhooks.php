@@ -34,11 +34,29 @@ class CocolisWebhooksModuleFrontController extends ModuleFrontController
 
     public function postProcess()
     {
-        $orderid = Tools::getValue('external_id');
-        $event = Tools::getValue('event');
+        // Cocolis posts a signed JSON payload
+        $body = (string) file_get_contents('php://input');
+        $signature = isset($_SERVER['HTTP_X_COCOLIS_SIGNATURE']) ? $_SERVER['HTTP_X_COCOLIS_SIGNATURE'] : '';
+        if (!$this->module->isValidWebhookSignature($body, $signature)) {
+            header('HTTP/1.1 401 Unauthorized');
+            echo json_encode(['success' => false, 'error' => 'Invalid webhook signature']);
+            exit;
+        }
+
+        $payload = json_decode($body, true);
+        $orderid = isset($payload['external_id']) ? (int) $payload['external_id'] : 0;
+        $event = isset($payload['event']) ? (string) $payload['event'] : '';
 
         if (empty($event) || empty($orderid)) {
             echo('Event or order ID missing from Webhook');
+            exit;
+        }
+
+        $order = new Order($orderid);
+        $carrier = new Carrier((int) $order->id_carrier);
+        if (!Validate::isLoadedObject($order) || $carrier->external_module_name !== $this->module->name) {
+            header('HTTP/1.1 404 Not Found');
+            echo json_encode(['success' => false, 'error' => 'Unknown Cocolis order']);
             exit;
         }
 
@@ -59,10 +77,13 @@ class CocolisWebhooksModuleFrontController extends ModuleFrontController
                 break;
         }
 
-        Logger::addLog('Webhook ' . $event . ' intercepté par le module Cocolis pour la commande ' . $orderid);
-        Db::getInstance()->execute("INSERT INTO `" . _DB_PREFIX_ . "cocolis_order_history` 
-            (`order_id`, `comment`, `created_at`, `webhook_params`) 
-            VALUES (" . (int) $orderid . ", '" . $event .  "', NOW(), '" . json_encode(Tools::getAllValues()) . "')");
+        PrestaShopLogger::addLog('Webhook ' . $event . ' intercepté par le module Cocolis pour la commande ' . $orderid);
+        Db::getInstance()->insert('cocolis_order_history', [
+            'order_id' => $orderid,
+            'comment' => pSQL($event),
+            'created_at' => date('Y-m-d'),
+            'webhook_params' => pSQL(json_encode($payload)),
+        ]);
         exit;
     }
 }
