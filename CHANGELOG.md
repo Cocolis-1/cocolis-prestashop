@@ -13,6 +13,9 @@ All notable changes to this module are documented in this file.
 
 ### Fixed
 
+- The customer form override installed up to 1.1.x (birthdate required at sign up), which breaks
+  the checkout on PrestaShop 9, is removed during the upgrade. The overrides of other modules on
+  the same class are kept.
 - PHP notices on the configuration page after clicking "Automatically configure webhooks" in
   debug mode.
 
