@@ -13,3 +13,5 @@ You can find our documentation on [doc.cocolis.fr](https://doc.cocolis.fr/)
 You can use docker to test it :
 
 `docker-compose up`
+
+The validation procedure to run before each release is described in [docs/TESTING.md](docs/TESTING.md).
