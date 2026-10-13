@@ -68,13 +68,14 @@ The Cocolis webhooks must reach the shop:
 
 | # | Check | Expected |
 |---|-------|----------|
-| 4.1 | Click "Automatically configure webhooks" with empty credentials. | "Please fill in your application ID and password…" message. |
-| 4.2 | Same with a wrong password. | "Cocolis rejected your application ID or password…" message. |
-| 4.3 | Fill in the sandbox App ID and password, sandbox mode, the pickup address, the default dimensions, and save. | Saved. |
-| 4.4 | Save again with the password field left empty. | The saved password is kept (4.5 still works). |
+| 4.1 | Click "Automatically configure webhooks" with empty credentials. | "Please fill in your API key…" message. |
+| 4.2 | Save a wrong API key. | "Cocolis rejected your API key…" message. |
+| 4.3 | Create an API key in the sandbox account (*API keys* page), fill it in with sandbox mode, the pickup address and the default dimensions, and save. | Saved, no error message. |
+| 4.4 | Save again with the API key field left empty. | The saved key is kept (4.5 still works). |
 | 4.5 | Click "Automatically configure webhooks". | "Webhooks updated !" message. In the sandbox, the webhooks point to `https://<ngrok domain>/index.php?fc=module&module=cocolis&controller=webhooks&event=...`. |
 | 4.6 | Click it again. | "Webhooks already updated !" message. |
 | 4.7 | Set the shop phone number (*Shop parameters > Contact > Stores*) and make the phone field required in the addresses (*Customers > Addresses*). | Both checks are green on the configuration page. |
+| 4.8 | Former connection: no API key saved, sandbox App ID and password filled in. | The page invites to create an API key. Sections 5 to 8 pass with these credentials too. |
 
 ## 5. Checkout
 
