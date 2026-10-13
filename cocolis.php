@@ -114,7 +114,7 @@ class Cocolis extends CarrierModule
     {
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.2.0';
+        $this->version = '1.3.0';
         $this->author = 'Cocolis';
         $this->need_instance = 1;
         /**
@@ -228,9 +228,8 @@ class Cocolis extends CarrierModule
 
     public function redirectWithNotifications($type)
     {
+        // The configuration page is rendered once by getContent(), with all its template variables
         $this->context->smarty->assign(array('notifications' => 'webhook_' . $type));
-
-        return $this->display(__FILE__, "views/templates/admin/configure.tpl");
     }
 
 
@@ -348,7 +347,7 @@ class Cocolis extends CarrierModule
             // The webhook button belongs to the settings form: save the credentials typed in first
             $this->postProcess();
 
-            if (!Configuration::get('COCOLIS_APPID') || !Configuration::get('COCOLIS_PASSWORD')) {
+            if (!$this->hasCredentials()) {
                 $this->redirectWithNotifications('missing_credentials');
             } else {
                 try {
@@ -370,6 +369,7 @@ class Cocolis extends CarrierModule
             }
         } elseif (((bool)Tools::isSubmit('submitCocolisModule')) == true) {
             $this->postProcess();
+            $this->checkCredentials();
         }
 
         $this->context->smarty->assign('module_dir', $this->_path);
@@ -379,13 +379,41 @@ class Cocolis extends CarrierModule
                 'cocolis_is_phone_on_address_mandatory' => (bool)$this->isPhoneOnAddressMandatory(),
                 'cocolis_debug_mode' => Configuration::get('COCOLIS_DEBUG_MODE'),
                 'cocolis_carrier_id' => Configuration::get('COCOLIS_CARRIER_ID'),
-                'cocolis_module_version' => $this->version
+                'cocolis_module_version' => $this->version,
+                'cocolis_uses_former_credentials' => !$this->usesApiKey() && $this->hasCredentials(),
+                'cocolis_api_keys_url' => $this->getApiKeysUrl()
             )
         );
 
         $output = $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
 
         return $output . $this->renderForm();
+    }
+
+    /**
+     * Check the saved credentials against the Cocolis API, and fetch the webhook signing secret.
+     */
+    protected function checkCredentials()
+    {
+        if (!$this->hasCredentials()) {
+            return;
+        }
+
+        try {
+            $this->refreshWebhookSigningSecret();
+        } catch (\Cocolis\Api\Errors\UnauthorizedException $e) {
+            $this->redirectWithNotifications('invalid_credentials');
+        } catch (Exception $e) {
+            PrestaShopLogger::addLog('[Module Cocolis] Unable to check the credentials: ' . $e->getMessage(), 3);
+        }
+    }
+
+    /**
+     * Page of the Cocolis account where the API keys are created.
+     */
+    protected function getApiKeysUrl()
+    {
+        return (Configuration::get('COCOLIS_LIVE_MODE') ? 'https://www.cocolis.fr' : 'https://sandbox.cocolis.fr') . '/api-keys';
     }
 
     /**
@@ -511,10 +539,16 @@ class Cocolis extends CarrierModule
                         'label' => $this->l('Your country'),
                     ),
                     array(
+                        'type' => 'password',
+                        'name' => 'COCOLIS_API_KEY',
+                        'label' => $this->l('API key'),
+                        'desc' => $this->l('Create an API key in your Cocolis account, on the API keys page. Leave the field empty to keep the saved key.'),
+                    ),
+                    array(
                         'col' => 4,
                         'type' => 'text',
                         'prefix' => '<i class="icon icon-terminal"></i>',
-                        'desc' => $this->l("Enter the app-id provided to you"),
+                        'desc' => $this->l('Former connection method, used only when no API key is saved.'),
                         'name' => 'COCOLIS_APPID',
                         'label' => $this->l("Application ID"),
                     ),
@@ -539,6 +573,7 @@ class Cocolis extends CarrierModule
         return array(
             'COCOLIS_LIVE_MODE' => Configuration::get('COCOLIS_LIVE_MODE', true),
             'COCOLIS_DEBUG_MODE' => Configuration::get('COCOLIS_DEBUG_MODE', false),
+            'COCOLIS_API_KEY' => Configuration::get('COCOLIS_API_KEY', null),
             'COCOLIS_APPID' => Configuration::get('COCOLIS_APPID', 'app_id'),
             'COCOLIS_PASSWORD' => Configuration::get('COCOLIS_PASSWORD', null),
             'COCOLIS_ZIP' => Configuration::get('COCOLIS_ZIP', null),
@@ -561,8 +596,8 @@ class Cocolis extends CarrierModule
         foreach (array_keys($form_values) as $key) {
             $value = Tools::getValue($key);
 
-            // The password field is always rendered empty: an empty value keeps the saved password
-            if ($key === 'COCOLIS_PASSWORD' && $value === '') {
+            // The secret fields are always rendered empty: an empty value keeps the saved secret
+            if (in_array($key, array('COCOLIS_API_KEY', 'COCOLIS_PASSWORD')) && $value === '') {
                 continue;
             }
 
@@ -709,6 +744,14 @@ class Cocolis extends CarrierModule
 
     public function authenticatedClient()
     {
+        // The API key is sent with each request: no sign in needed
+        if ($this->usesApiKey()) {
+            return Client::create(array(
+                'api_key' => Configuration::get('COCOLIS_API_KEY'),
+                'live' => Configuration::get('COCOLIS_LIVE_MODE')
+            ));
+        }
+
         $client = Client::create(array(
             'app_id' => Configuration::get('COCOLIS_APPID'),
             'password' => Configuration::get('COCOLIS_PASSWORD'),
@@ -716,6 +759,19 @@ class Cocolis extends CarrierModule
         ));
         $client->signIn();
         return $client;
+    }
+
+    /**
+     * The API key replaces the former application ID and password, which are still supported.
+     */
+    public function usesApiKey()
+    {
+        return (string) Configuration::get('COCOLIS_API_KEY') !== '';
+    }
+
+    public function hasCredentials()
+    {
+        return $this->usesApiKey() || (Configuration::get('COCOLIS_APPID') && Configuration::get('COCOLIS_PASSWORD'));
     }
 
     public function getOrderShippingCostExternal($params)
