@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "071a2b1a963a714f2a7434021c9dd9f8",
+    "content-hash": "081b2f0a1708f6421bfdf5c7cbe64509",
     "packages": [
         {
             "name": "cocolis/php",

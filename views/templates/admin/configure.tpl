@@ -158,13 +158,13 @@ for (i = 0; i < close.length; i++) {
 		{if ($notifications == 'webhook_missing_credentials')}
     <div class="alert-red">
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-			<p>{l s='Please fill in your application ID and password before configuring the webhooks.' mod='cocolis'}</p>
+			<p>{l s='Please fill in your API key before configuring the webhooks.' mod='cocolis'}</p>
 		</div>
 		{/if}
 		{if ($notifications == 'webhook_invalid_credentials')}
     <div class="alert-red">
 			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-			<p>{l s='Cocolis rejected your application ID or password. Check them, and check that they match the selected mode (production or sandbox).' mod='cocolis'}</p>
+			<p>{l s='Cocolis rejected your API key (or your application ID and password). Check it, and check that it matches the selected mode (production or sandbox).' mod='cocolis'}</p>
 		</div>
 		{/if}
 		{if ($notifications == 'webhook_api_error')}
@@ -214,6 +214,13 @@ for (i = 0; i < close.length; i++) {
 		<div class="alert-green mt-15">
 			{l s='✅ Phone number mandatary in addresses' mod='cocolis'}
 			✅ Numéro de téléphone sur les adresses obligatoire
+		</div>
+	{/if}
+
+	{if $cocolis_uses_former_credentials}
+		<div class="alert-orange mt-15">
+			{l s='You are connected with the former application ID and password. Create an API key in your Cocolis account and save it in the API key field below.' mod='cocolis'}
+			<a href="{$cocolis_api_keys_url|escape:'html':'UTF-8'}" target="_blank" rel="noopener">{l s='Create an API key' mod='cocolis'}</a>
 		</div>
 	{/if}
 
