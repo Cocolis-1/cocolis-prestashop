@@ -2,13 +2,14 @@
 
 All notable changes to this module are documented in this file.
 
-## [Unreleased]
+## [1.4.0] - 2026-10-15
 
 ### Added
 
 - When the settings are saved, the module runs a test quotation (can_match) besides the
   authentication check, and warns when the Cocolis account has no active subscription (the
   carrier would silently disappear from the checkout otherwise).
+- French translations for the two new configuration page messages.
 
 ## [1.3.0] - 2026-10-13
 
