@@ -114,7 +114,7 @@ class Cocolis extends CarrierModule
     {
         $this->name = 'cocolis';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.3.0';
+        $this->version = '1.4.0';
         $this->author = 'Cocolis';
         $this->need_instance = 1;
         /**
@@ -403,8 +403,45 @@ class Cocolis extends CarrierModule
             $this->refreshWebhookSigningSecret();
         } catch (\Cocolis\Api\Errors\UnauthorizedException $e) {
             $this->redirectWithNotifications('invalid_credentials');
+            return;
         } catch (Exception $e) {
             PrestaShopLogger::addLog('[Module Cocolis] Unable to check the credentials: ' . $e->getMessage(), 3);
+            return;
+        }
+
+        $this->checkAccountCanMatch();
+    }
+
+    /**
+     * Run a test quotation (can_match) so account-level issues, such as a missing
+     * Cocolis subscription, surface on the configuration page instead of silently
+     * hiding the Cocolis carrier at checkout.
+     */
+    protected function checkAccountCanMatch()
+    {
+        $zip = (string) $this->getZip();
+        if ($zip === '') {
+            // The module is not fully configured yet: the missing shipping
+            // address has its own warning on the configuration page.
+            return;
+        }
+
+        try {
+            // 0.1 m3 and a 100 euros declared value: the goal is only to surface
+            // account-level errors, not to get a realistic quotation.
+            $this->authenticatedClient()->getRideClient()->canMatch($zip, $zip, 0.1, 10000);
+        } catch (\Cocolis\Api\Errors\UnprocessableEntityException $e) {
+            $json = json_decode($e->getMessage(), true);
+            $code = isset($json['code']) ? (string) $json['code'] : '';
+
+            if ($code === 'missing_subscription') {
+                $this->redirectWithNotifications('missing_subscription');
+            } else {
+                PrestaShopLogger::addLog('[Module Cocolis] The test quotation failed: ' . $e->getMessage(), 3);
+                $this->redirectWithNotifications('can_match_error');
+            }
+        } catch (Exception $e) {
+            PrestaShopLogger::addLog('[Module Cocolis] Unable to run the test quotation: ' . $e->getMessage(), 3);
         }
     }
 

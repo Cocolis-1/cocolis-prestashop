@@ -173,6 +173,18 @@ for (i = 0; i < close.length; i++) {
 			<p>{l s='The Cocolis API returned an error while configuring the webhooks. Please try again later.' mod='cocolis'}</p>
 		</div>
 		{/if}
+		{if ($notifications == 'webhook_missing_subscription')}
+    <div class="alert-red">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p>{l s='Your credentials are valid, but your Cocolis account has no active subscription: the Cocolis carrier will not be displayed at checkout. Please subscribe from your Cocolis account.' mod='cocolis'}</p>
+		</div>
+		{/if}
+		{if ($notifications == 'webhook_can_match_error')}
+    <div class="alert-orange">
+			<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+			<p>{l s='Your credentials are valid, but a Cocolis test quotation failed. Check the module configuration (shipping postal code, default dimensions). The error returned by the API is in the PrestaShop logs.' mod='cocolis'}</p>
+		</div>
+		{/if}
     {/block}
   {/if}
 
